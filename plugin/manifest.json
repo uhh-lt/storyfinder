@@ -20,7 +20,8 @@
     "tabs",
     "storage",
     "webRequest",
-    "<all_urls>"
+    "<all_urls>",
+    "contextMenus"
   ],
 
   "content_scripts": [
@@ -42,7 +43,8 @@
 
   "background": {
     "scripts": [
-      "my-background.js"
+      "my-background.js",
+      "contextmenu.js"
     ]
   }
 }
