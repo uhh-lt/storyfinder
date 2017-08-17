@@ -38,6 +38,12 @@ browser.contextMenus.create({
     contexts: ["all"],
     checked: true
 }, onCreated);
+browser.contextMenus.create({
+    id: "highlight",
+    title: "Highlight the word!",
+    contexts: ["all"],
+    checked: true
+}, onCreated);
 
 /*
 Set a colored border on the document in the given tab.
@@ -60,6 +66,15 @@ function extractHTML(tabId) {
     });
 }
 
+const CSS = ".storyfinder-highlight { color: red; }";
+
+function highlightWord(tabId) {
+    browser.tabs.executeScript(tabId, {
+        file: "/highlight.js"
+    });
+    browser.tabs.insertCSS({code: CSS});
+}
+
 /*
 The click event listener, where we perform the appropriate action given the
 ID of the menu item that was clicked.
@@ -77,6 +92,9 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
             break;
         case "htmlcode":
             extractHTML(tab.id);
+            break;
+        case "highlight":
+            highlightWord(tab.id);
             break;
     }
 });
