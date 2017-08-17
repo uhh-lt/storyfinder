@@ -32,6 +32,12 @@ browser.contextMenus.create({
     contexts: ["all"],
     checked: false
 }, onCreated);
+browser.contextMenus.create({
+    id: "htmlcode",
+    title: "Log the HTML Code",
+    contexts: ["all"],
+    checked: true
+}, onCreated);
 
 /*
 Set a colored border on the document in the given tab.
@@ -45,6 +51,12 @@ var green = 'document.body.style.border = "5px solid green"';
 function borderify(tabId, color) {
     browser.tabs.executeScript(tabId, {
         code: color
+    });
+}
+
+function extractHTML(tabId) {
+    browser.tabs.executeScript(tabId, {
+        file: "/extract-html.js"
     });
 }
 
@@ -62,6 +74,9 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
             break;
         case "greenify":
             borderify(tab.id, green);
+            break;
+        case "htmlcode":
+            extractHTML(tab.id);
             break;
     }
 });
