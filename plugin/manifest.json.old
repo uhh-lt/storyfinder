@@ -10,6 +10,12 @@
     "48": "icons/icon-48.png"
   },
 
+  "applications": {
+    "gecko": {
+      "id": "storyfinder@lt.informatik.tu-darmstadt.de"
+    }
+  },
+
   "permissions": [
     "tabs",
     "storage",
@@ -18,18 +24,10 @@
     "contextMenus"
   ],
 
-  "browser_action": {
-  },
-
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "css": ["content_scripts/contentstyle.css"],
-      "js": [
-        "thirdParty/jquery-3.2.1.min.js",
-        "content_scripts/sidebar-contentscript.js",
-        "content_scripts/contentscript.js"
-      ]
+      "matches": ["*://*.de/*"],
+      "js": ["content_scripts/contentscript.js"]
     }
   ],
 
@@ -37,15 +35,16 @@
     "page": "options/options.html"
   },
 
-  "background": {
-    "scripts": [
-      "background_scripts/sidebar-background.js",
-      "background_scripts/contextmenu.js"
-    ]
+  "sidebar_action": {
+    "default_title": "Storyfinder",
+    "default_panel": "sidebar/sidebar.html",
+    "default_icon": "icons/sidebar_icon.png"
   },
 
-  "web_accessible_resources":
-    [
-      "sidebar/sidebar.html"
+  "background": {
+    "scripts": [
+      "my-background.js",
+      "contextmenu.js"
     ]
+  }
 }

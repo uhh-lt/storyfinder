@@ -1,30 +1,32 @@
-function saveOptions(e) {
-    e.preventDefault();
-    browser.storage.local.set({
-        color: document.querySelector("#color").value,
-        word: document.querySelector("#word").value
+function saveChanges() {
+    // Get a value saved in a form.
+    var c = document.getElementById('color').value;
+    var w = document.getElementById('word').value;
+
+    // Save it using the Chrome extension storage API.
+    chrome.storage.sync.set({
+        color: c,
+        word: w
+    }, function() {
+        // Update status to let user know options were saved.
+        var status = document.getElementById('status');
+        status.textContent = 'Options saved.';
+        setTimeout(function() {
+            status.textContent = '';
+        }, 750);
     });
 }
 
 function restoreOptions() {
-
-    function setCurrentChoice(result) {
-        document.querySelector("#color").value = result.color || "blue";
-    }
-
-    function setCurrentWord(result) {
-        document.querySelector("#word").value = result.word || "";
-    }
-
-    function onError(error) {
-        console.log(`Error: ${error}`);
-    }
-
-    var getting = browser.storage.local.get("color");
-    getting.then(setCurrentChoice, onError);
-    var getting2 = browser.storage.local.get("word");
-    getting2.then(setCurrentWord, onError);
+    // Use default value color = 'red' and word = 'the'.
+    chrome.storage.sync.get({
+        color: 'red',
+        word: 'the'
+    }, function(items) {
+        document.getElementById('color').value = items.color;
+        document.getElementById('word').value = items.word;
+    });
 }
 
 document.addEventListener("DOMContentLoaded", restoreOptions);
-document.querySelector("form").addEventListener("submit", saveOptions);
+document.querySelector("form").addEventListener("submit", saveChanges);
