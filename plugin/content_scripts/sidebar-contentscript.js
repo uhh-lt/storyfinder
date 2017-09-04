@@ -1,5 +1,3 @@
-// Registriere toggle() als Funktion die ausgelöst wird, wenn auf das
-// Storyfinder-Icon in der Browserbar geklickt wird.
 chrome.runtime.onMessage.addListener(function(msg, sender){
     switch (msg.type) {
         case "toggle-sidebar":
