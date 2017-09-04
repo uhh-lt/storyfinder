@@ -1,8 +1,5 @@
 function saveChanges() {
     // Get a value saved in a form.
-    var c = document.getElementById('color').value;
-    var w = document.getElementById('word').value;
-
     var u = document.getElementById('username').value;
     var p = document.getElementById('password').value;
     var uid = document.getElementById('userid').value;
@@ -11,8 +8,6 @@ function saveChanges() {
 
     // Save it using the Chrome extension storage API.
     chrome.storage.sync.set({
-        color: c,
-        word: w,
         username: u,
         password: p,
         userid: uid,
@@ -31,17 +26,12 @@ function saveChanges() {
 function restoreOptions() {
     // Use default value color = 'red' and word = 'the'.
     chrome.storage.sync.get({
-        color: 'red',
-        word: 'the',
         username: "a@b.com",
         password: "12345678",
         userid: 0,
         server: "http://localhost:3055",
         showSidebar: true
     }, function(items) {
-        document.getElementById('color').value = items.color;
-        document.getElementById('word').value = items.word;
-
         document.getElementById('username').value = items.username;
         document.getElementById('password').value = items.password;
         document.getElementById('userid').value = items.userid;

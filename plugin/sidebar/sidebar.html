@@ -1,9 +1,91 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
+    <title>Storyfinder</title>
 </head>
-<body>
-    Testing Sidebar
+<style>
+    iframe {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        bottom: 0px;
+        right: 0px;
+        width: 100%;
+        height: 100%;
+        border: 0;
+        display: none;
+    }
+
+    iframe.active {
+        display: block;
+    }
+</style>
+<script>
+    var baseUrl = '';
+
+    function initialize(){
+        window.addEventListener("message", function(event){
+            var origin = event.origin || event.originalEvent.origin;
+            if(baseUrl.substr(0, origin.length) !== origin){
+                alert('Wrong origin: ' + baseUrl.substr(0, origin.length) + ' !== ' + origin);
+                return;
+            }
+
+            //if(typeof event.data !== 'object' || typeof event.data[0] === 'undefined' || typeof event.data[1] === 'undefined')return;
+
+            if(event.data[0] === 'msg'){
+                addon.port.emit('msg', event.data[1]);
+            }
+        }, false);
+
+        addon.port.emit('ready');
+    }
+
+    addon.port.on('load', function(data){
+        baseUrl = data.url;
+        var tabId = data.id;
+        //document.querySelector('body').innerHTML += '<iframe class="active" id="tab-' + tabId + '" src="' + data.url + '" />';
+        activateTab(tabId);
+    });
+
+    addon.port.on('msg', function(data){
+        document.querySelector('iframe.active').contentWindow.postMessage(data, '*');
+    });
+
+    addon.port.on('activateTab', function(data){
+        var tabId = data.id;
+
+        activateTab(tabId);
+    });
+
+    function activateTab(tabId){
+        if(document.getElementById('tab-' + tabId) == null){
+            var iframe = document.createElement('iframe');
+            iframe.id = 'tab-' + tabId;
+            iframe.setAttribute('src', baseUrl);
+
+            document.body.appendChild(iframe);
+            console.log('Creating tab with id ' + tabId);
+        }
+
+        var current = document.querySelector('iframe.active');
+        if(current != null){
+            current.classList.remove('active');
+            current.contentWindow.postMessage({
+                action: 'deactivate'
+            }, '*');
+        }
+
+        var next = document.getElementById('tab-' + tabId);
+        if(next != null){
+            next.classList.add('active');
+            next.contentWindow.postMessage({
+                action: 'activate'
+            }, '*');
+        }else console.log('Missing tab with id ' + tabId);
+    }
+</script>
+<body style="margin:0px; padding: 0px; background-color: #555555" onload="initialize()">
+
 </body>
 </html>

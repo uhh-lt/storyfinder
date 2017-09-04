@@ -34,7 +34,7 @@ chrome.runtime.onMessage.addListener(function(msg, sender){
 // früher on 'activate'
 chrome.tabs.onActivated.addListener(function(activeInfo) {
 
-    alert("New Tab activated!");
+   // alert("New Tab activated!");
 
     chrome.storage.sync.get({
         server: "",
@@ -54,7 +54,7 @@ chrome.tabs.onActivated.addListener(function(activeInfo) {
 // früher on 'open'
 chrome.tabs.onCreated.addListener(function(tab) {
 
-    alert("New Tab created!");
+    //alert("New Tab created!");
 
     chrome.storage.sync.get({
         server: "",

@@ -26,7 +26,6 @@
       "matches": ["<all_urls>"],
       "css": ["content_scripts/contentstyle.css"],
       "js": [
-        "thirdParty/jquery-3.2.1.min.js",
         "content_scripts/sidebar-contentscript.js",
         "content_scripts/contentscript.js"
       ]
