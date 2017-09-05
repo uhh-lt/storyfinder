@@ -43,7 +43,8 @@
   "background": {
     "scripts": [
       "background_scripts/sidebar-background.js",
-      "background_scripts/contextmenu.js"
+      "background_scripts/contextmenu.js",
+      "background_scripts/pageworker.js"
     ]
   },
 

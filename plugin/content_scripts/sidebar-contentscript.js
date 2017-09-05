@@ -1,22 +1,21 @@
 var baseUrl = '';
-var iframe;
+var iframe = null;
 
 chrome.runtime.onMessage.addListener(function(msg, sender){
     switch (msg.type) {
         case "toggle-sidebar":
-            toggle();
+            toggleSidebar();
             break;
         case "show-sidebar":
-            iframe.style.display = "block";
-            //iframe.style.width = "400px";
+            showSidebar();
             break;
         case "hide-sidebar":
-            iframe.style.display = "none";
-            //iframe.style.width = "0px";
+            hideSidebar();
             break;
         case "load":
             baseUrl = msg.data.url;
             activateTab(msg.data.id);
+            chrome.runtime.sendMessage({type: 'onAttach'});
             break;
         case "msg":
             document.querySelector('iframe.active').contentWindow.postMessage(msg.data, '*');
@@ -27,27 +26,16 @@ chrome.runtime.onMessage.addListener(function(msg, sender){
     }
 });
 
-// zeige den iFrame indem die Breite auf 400px gesetzt wird
-function toggle(){
-    if(iframe.style.display === "none"){
-        iframe.style.display = "block";
-        //iframe.style.width = "400px";
-    }
-    else{
-        iframe.style.display = "none";
-        //iframe.style.width = "0px";
-    }
-}
-
 function initialize(){
+
+    alert("sidebar-contentscript: initialize");
+
     window.addEventListener("message", function(event){
         var origin = event.origin || event.originalEvent.origin;
-        if(baseUrl.substr(0, origin.length) !== origin){
+        if(baseUrl !== '' && baseUrl.substr(0, origin.length) !== origin){
             alert('Wrong origin: ' + baseUrl.substr(0, origin.length) + ' !== ' + origin);
             return;
         }
-
-        //if(typeof event.data !== 'object' || typeof event.data[0] === 'undefined' || typeof event.data[1] === 'undefined')return;
 
         if(event.data[0] === 'msg'){
             chrome.runtime.sendMessage({type: 'msg', data: event.data[1]});
@@ -57,32 +45,20 @@ function initialize(){
     chrome.runtime.sendMessage({type: 'ready', data: {}});
 }
 
+/*
+erstellt eine neue Sidebar und toggelt sie aktiv
+ */
 function activateTab(tabId){
-    createNewSidebar();
+    alert("sidebar-contentscript: activateTab " + baseUrl);
 
-    var current = document.querySelector('iframe.active');
-    if(current !== null){
-        current.classList.remove('active');
-        current.contentWindow.postMessage({
-            action: 'deactivate'
-        }, '*');
-    }
-
-    var next = document.getElementById('tab-' + tabId);
-    if(next !== null){
-        next.classList.add('active');
-        next.contentWindow.postMessage({
-            action: 'activate'
-        }, '*');
-    }else console.log('Missing tab with id ' + tabId);
+    createNewSidebar(tabId);
+    toggleSidebar();
 }
 
-function createNewSidebar() {
-    var tabId;
-    chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
-        tabId = tabs[0].id;
-    });
-
+/*
+Erstellt eine neue Sidebar, falls in diesem Tab noch keine existiert
+ */
+function createNewSidebar(tabId) {
     if(document.getElementById('tab-' + tabId) === null){
         iframe = document.createElement('iframe');
 
@@ -92,6 +68,53 @@ function createNewSidebar() {
 
         document.body.appendChild(iframe);
         console.log('Creating tab with id ' + tabId);
+    }
+}
+
+/*
+schaltet Sidebar ein, wenn eine Sidebar für diesen Tab existiert
+ */
+function showSidebar() {
+    if(iframe !== null){
+        if(!iframe.classList.contains('active')) {
+            iframe.classList.add('active');
+            iframe.contentWindow.postMessage({
+                action: 'activate'
+            }, '*');
+        }
+    }
+}
+
+/*
+schaltet Sidebar aus, wenn eine Sidebar für diesen Tab existiert
+ */
+function hideSidebar() {
+    if(iframe !== null){
+        if(iframe.classList.contains('active')) {
+            iframe.classList.remove('active');
+            iframe.contentWindow.postMessage({
+                action: 'deactivate'
+            }, '*');
+        }
+    }
+}
+
+/*
+schaltet Sidebar ein oder aus, wenn eine Sidebar für diesen Tab existiert
+ */
+function toggleSidebar() {
+    if(iframe !== null){
+        if(iframe.classList.contains('active')) {
+            iframe.classList.remove('active');
+            iframe.contentWindow.postMessage({
+                action: 'deactivate'
+            }, '*');
+        } else {
+            iframe.classList.add('active');
+            iframe.contentWindow.postMessage({
+                action: 'activate'
+            }, '*');
+        }
     }
 }
 

@@ -24,7 +24,7 @@ chrome.runtime.onMessage.addListener(function(msg, sender){
                     pageworker.addToHighlighting(msg.data.data);
                     break;
                 default:
-                    console.log('Received unknown message from iframe', data);
+                    console.log('Received unknown message from iframe', msg.data);
                     break;
             }
             break;
@@ -65,6 +65,7 @@ chrome.tabs.onCreated.addListener(function(tab) {
     });
 });
 
+
 function initialize() {
     chrome.storage.sync.get({
         showSidebar: null
@@ -78,6 +79,9 @@ function initialize() {
 }
 
 function initializeSidebar(worker){
+
+    alert("sidebar-background: initializeSidebar")
+
     chrome.storage.sync.get({
         server: "",
         username: ''
