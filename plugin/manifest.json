@@ -24,7 +24,10 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "css": ["content_scripts/contentstyle.css"],
+      "css": [
+        "content_scripts/contentstyle.css",
+        "content_scripts/sidebarstyle.css"
+      ],
       "js": [
         "content_scripts/sidebar-contentscript.js",
         "content_scripts/contentscript.js"
