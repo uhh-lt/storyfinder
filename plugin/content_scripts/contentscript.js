@@ -46,8 +46,6 @@ function Storyfinder() {
 
         function onGetArticle(data) {
 
-            alert("contentscript: onGetArticle")
-
             if (_.isNull(article)) {
                 if (!getArticle()) {
                     article = {

@@ -73,8 +73,6 @@ function initialize() {
 
 function initializeSidebar(worker){
 
-    alert("sidebar-background: initializeSidebar")
-
     chrome.storage.sync.get({
         server: "",
         username: ''
