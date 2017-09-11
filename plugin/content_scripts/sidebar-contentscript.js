@@ -16,6 +16,7 @@ chrome.runtime.onMessage.addListener(function(msg, sender){
             baseUrl = msg.data.url;
             activateTab(msg.data.id);
             chrome.runtime.sendMessage({type: 'onAttach'});
+            alert("sidebar-contentscript: onAttach sended");
             break;
         case "msg":
             document.querySelector('iframe.active').contentWindow.postMessage(msg.data, '*');

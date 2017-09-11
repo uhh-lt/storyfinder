@@ -16,13 +16,6 @@ chrome.runtime.onMessage.addListener(function(msg, sender){
                 case 'userRegistered':
                     storeCredentials(msg.data.username, msg.data.password);
                     break;
-                case 'parseSite':
-                    pageworker.parseSite(msg.data.url);
-                    break;
-                case 'newEntity':
-                    console.log('Received new entity');
-                    pageworker.addToHighlighting(msg.data.data);
-                    break;
                 default:
                     console.log('Received unknown message from iframe', msg.data);
                     break;

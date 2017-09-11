@@ -30,7 +30,8 @@
       ],
       "js": [
         "content_scripts/sidebar-contentscript.js",
-        "content_scripts/contentscript.js"
+        "content_scripts/contentscript.js",
+        "content_scripts/screenshot.js"
       ]
     }
   ],
