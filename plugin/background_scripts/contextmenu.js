@@ -25,7 +25,33 @@ chrome.contextMenus.create({
     title: "Test some functions",
     contexts: ["all"],
     onclick: function(info, tab) {
+        chrome.storage.sync.get({
+            server: ''
+        }, function (items) {
+            if (items.server === '') alert("Server is not defined!");
 
+            chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+                chrome.webNavigation.getAllFrames({tabId: tabs[0].id}, function(details) {
+                    details.forEach(function(detail) {
+                        if (detail.url.replace(/\/$/g, '').substr(0, items.server.replace(/\/$/g, '').length) === items.server.replace(/\/$/g, '')) {
+
+                            alert("JOOO!");
+                            //chrome.tabs.sendMessage(tabs[0].id, {msg: "TEST"}, {frameId: detail.frameId});
+
+                        }
+                    });
+                });
+            });
+        });
+
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
+            chrome.webNavigation.getAllFrames({tabId: tabs[0].id}, function(details) {
+                details.forEach(function(detail) {
+                   alert(detail.url);
+                });
+            });
+        });
+        /*
         function reqListener () {
             var responseStatus = this.status;
             var responseStatusText = this.statusText;
@@ -48,45 +74,14 @@ chrome.contextMenus.create({
             chrome.tabs.sendMessage(tabs[0].id,{type: "toggle-sidebar"});
         });
 
-        takeScreenshot();
+
+        chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+            chrome.windows.getCurrent(function (win) {
+                chrome.tabs.captureVisibleTab(win.id,{"format":"png"}, function(imgUrl) {
+                    chrome.tabs.sendMessage(tabs[0].id, {type: 'take-screenshot', data: imgUrl});
+                });
+            });
+        });
+        */
     }
 });
-
-var id = 100;
-function takeScreenshot() {
-    chrome.tabs.captureVisibleTab(function(screenshotUrl) {
-        var viewTabUrl = chrome.extension.getURL("screenshot.html?id=" + id++)
-        var targetId = null;
-
-        chrome.tabs.onUpdated.addListener(function listener(tabId, changedProps) {
-            // We are waiting for the tab we opened to finish loading.
-            // Check that the tab's id matches the tab we opened,
-            // and that the tab is done loading.
-            if (tabId != targetId || changedProps.status != "complete")
-                return;
-
-            // Passing the above test means this is the event we were waiting for.
-            // There is nothing we need to do for future onUpdated events, so we
-            // use removeListner to stop getting called when onUpdated events fire.
-            chrome.tabs.onUpdated.removeListener(listener);
-
-            // Look through all views to find the window which will display
-            // the screenshot.  The url of the tab which will display the
-            // screenshot includes a query parameter with a unique id, which
-            // ensures that exactly one view will have the matching URL.
-            var views = chrome.extension.getViews();
-            for (var i = 0; i < views.length; i++) {
-                var view = views[i];
-                if (view.location.href == viewTabUrl) {
-                    view.setScreenshotUrl(screenshotUrl);
-                    view.setDownloadUrl(screenshotUrl, id - 1);
-                    break;
-                }
-            }
-        });
-
-        chrome.tabs.create({url: viewTabUrl}, function(tab) {
-            targetId = tab.id;
-        });
-    });
-}

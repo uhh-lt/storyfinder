@@ -15,7 +15,8 @@
     "storage",
     "webRequest",
     "<all_urls>",
-    "contextMenus"
+    "contextMenus",
+    "webNavigation"
   ],
 
   "browser_action": {

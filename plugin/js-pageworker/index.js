@@ -75,8 +75,6 @@ function saveRemote(url, data, callback) {
 
 function setArticle(article) {
 
-    alert("pageworker: setArticle!");
-
     chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
         var tab = tabs[0];
         var url = new URL(tab.url);
@@ -103,7 +101,6 @@ function setArticle(article) {
 
             async.series([
                 function(next){
-                    alert("async 1");
                     data.Site.favicon = "https://www.google.com/s2/favicons?domain="+url.host;
                     next();
                     /*
@@ -115,7 +112,6 @@ function setArticle(article) {
                     */
                 },
                 function(next){
-                    alert("async 2");
                     saveRemote(items.server.replace(/\/$/,'') + '/Sites', data, function(err, response){
                         console.log(err, response);
                         if(err){
@@ -147,29 +143,29 @@ function setArticle(article) {
                     });
                 },
                 function(next){
-                    alert("async 3");
                     if(!bIsRelevant || !bIsNew){
                         next();
                         return;
                     }
 
-                    chrome.tabs.captureVisibleTab(function(screenshotUrl) {
-                        saveRemote(
-                            items.server.replace(/\/$/,'') + '/Sites/' + siteId + '/image',
-                            {image: screenshotUrl},
-                            function(err){
-                                next(err);
-                            }
-                        );
+                    chrome.windows.getCurrent(function (win) {
+                        chrome.tabs.captureVisibleTab(win.id,{"format":"png"}, function(imgUrl) {
+                            saveRemote(
+                                items.server.replace(/\/$/,'') + '/Sites/' + siteId + '/image',
+                                {image: imgUrl},
+                                function(err){
+                                    next(err);
+                                }
+                            );
+                        });
                     });
-
                 },
                 function(next){
-                    alert("async 4");
                     if(!bIsNew){
                         next();
                         return;
                     }
+                    /*
 
                     captureTab(article.bounds, function(image){
                         saveRemote(
@@ -180,6 +176,8 @@ function setArticle(article) {
                             }
                         );
                     });
+
+                    */
                 }
             ], function(err){
                 if(err){
@@ -222,7 +220,7 @@ function addToHighlighting(entities){
 }
 
 var currentCallback = null;
-function captureTab(p, callback) {
+function captureTab2(p, callback) {
     currentCallback = callback;
 
     var rectangle = {
@@ -240,6 +238,22 @@ function captureTab(p, callback) {
 
     chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
         chrome.tabs.sendMessage(tabs[0].id, {type: 'take-screenshot', data: rectangle});
+    });
+}
+
+function captureTab(p, callback) {
+    currentCallback = callback;
+
+    chrome.runtime.onMessage.addListener(function(msg, sender){
+        if(msg.type === "got-screenshot") {
+            callbackHandler(msg.data);
+        }
+    });
+
+    chrome.tabs.captureVisibleTab(function(screenshotUrl) {
+        chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+            chrome.tabs.sendMessage(tabs[0].id, {type: 'take-screenshot', data: screenshotUrl});
+        });
     });
 }
 

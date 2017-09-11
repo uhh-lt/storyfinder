@@ -4,7 +4,23 @@ chrome.runtime.onMessage.addListener(function(msg, sender){
     }
 });
 
-function makeScreenshot(rectangle) {
+function makeScreenshot(imageurl) {
+    var canvas = document.createElement("canvas");
+    var context = canvas.getContext('2d');
+
+    var canvas_image = new Image();
+    canvas_image.src = imageurl;
+
+    context.drawImage(canvas_image, 0, 0);
+
+    //var jpegUrl = canvas.toDataURL("image/jpeg");
+    var pngUrl = canvas.toDataURL("image/png"); // PNG is the default
+    console.log("ScreenshotURL:"+imageurl);
+    console.log("pngUrl:"+pngUrl);
+    //chrome.runtime.sendMessage({type: 'got-screenshot', data: pngUrl});
+}
+
+function makeScreenshot2(rectangle) {
     var startX = rectangle.startX || 0;
     var startY = rectangle.startY || 0;
     var width = rectangle.width || window.innerWidth;
@@ -19,5 +35,6 @@ function makeScreenshot(rectangle) {
     // Save context as png
     var image = canvas.toDataURL('image/png');
 
-    chrome.runtime.sendMessage({type: 'got-screenshot', data: image});
+    console.log("Image:"+ image);
+    //chrome.runtime.sendMessage({type: 'got-screenshot', data: image});
 }

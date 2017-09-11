@@ -16,7 +16,6 @@ chrome.runtime.onMessage.addListener(function(msg, sender){
             baseUrl = msg.data.url;
             activateTab(msg.data.id);
             chrome.runtime.sendMessage({type: 'onAttach'});
-            alert("sidebar-contentscript: onAttach sended");
             break;
         case "msg":
             document.querySelector('iframe.active').contentWindow.postMessage(msg.data, '*');
@@ -28,9 +27,6 @@ chrome.runtime.onMessage.addListener(function(msg, sender){
 });
 
 function initialize(){
-
-    alert("sidebar-contentscript: initialize");
-
     window.addEventListener("message", function(event){
         var origin = event.origin || event.originalEvent.origin;
         if(baseUrl !== '' && baseUrl.substr(0, origin.length) !== origin){
@@ -50,7 +46,6 @@ function initialize(){
 erstellt eine neue Sidebar und toggelt sie aktiv
  */
 function activateTab(tabId){
-    alert("sidebar-contentscript: activateTab " + baseUrl);
 
     createNewSidebar(tabId);
     toggleSidebar();
