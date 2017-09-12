@@ -1,0 +1,33 @@
+<div class="container-fluid">
+{{#each Sites}}
+	<div class="col-md-4">
+		<div class="site{{#unless primary_color}} is-light{{/unless}}{{#if isLight}} is-light{{/if}}" style="{{#if primary_color}}background-color: #{{primary_color}}{{/if}}">
+			<div class="thumbnail" style="background-image: url('/images/{{../Collection.id}}/sites/{{id}}.png');"></div>
+			<div class="last-visited">{{last_visited}}</div>
+			<h4>{{#if title}}
+					{{title}}
+					<small>{{url}}</small>
+				{{else}}
+					{{shortHost}}
+					<small>{{shortUrl}}</small>
+				{{/if}}			
+			</h4>
+			<div class="sentences">
+				{{#each Article.sentences}}
+				<div class="sentence">»{{{html}}}</div>
+				{{/each}}
+				{{#if sentencesMore}}
+				<div class="sentences-more">
+					<div class="action-show">View {{sentencesMore}} more sentences<i class="fa fa-chevron-down pull-right"></i></div>
+					<div class="action-hide">Hide {{sentencesMore}} sentences<i class="fa fa-chevron-up pull-right"></i></div>
+				</div>
+				{{/if}}
+			</div>
+			<ul>
+				<li><a href="{{url}}" target="_blank">Open site</a></li>
+				<li><a href="/Articles/{{Article.id}}" target="_blank">Open archived article</a></li>
+			</ul>
+		</div>
+	</div>
+{{/each}}
+</div>

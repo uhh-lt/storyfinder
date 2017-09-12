@@ -1,0 +1,55 @@
+<div class="details-title type-OTH">
+	<a class="btn-back"><i class="material-icons">close</i></a>
+	<a class="btn-save">save</a>
+	<div class="caption">New element</div>
+</div>
+<div class="content-body">
+	<form>
+	<div class="form-group">
+		<label>Name:</label>
+		<input type="text" class="form-control" placeholder="Please enter the name of the new element." value="{{caption}}" name="data[entity][name]" />
+	</div>
+	<strong>Please select a type:</strong>
+	<div class="radio">
+		<label>
+			<input type="radio" name="data[entity][type]" value="PER" />
+			Person
+		</label>
+	</div>
+	<div class="radio">
+		<label>
+			<input type="radio" name="data[entity][type]" value="ORG" />
+			Organisation
+		</label>
+	</div>
+	<div class="radio">
+		<label>
+			<input type="radio" name="data[entity][type]" value="LOC" />
+			Location
+		</label>
+	</div>
+	<div class="radio">
+		<label>
+			<input type="radio" name="data[entity][type]" value="OTH" checked />
+			Other
+		</label>
+	</div>
+	<input type="hidden" name="data[article][id]" value="{{article_id}}"/>
+	<!--<div class="form-group">
+		<label>Source (optional):</label>
+		<input type="text" class="form-control" name="data[site][url]" placeholder="Please enter the source of the element." value="{{url}}" />
+	</div>-->
+	<div class="checkbox">
+		<label>
+			<input type="checkbox" name="data[entity][show_always]" value="1" checked />
+			Element is always visible
+		</label>
+	</div>
+	<div class="checkbox">
+		<label>
+			<input type="checkbox" name="data[options][find_relations]" value="1" checked />
+			Autodetect relations
+		</label>
+	</div>
+	</form>
+</div>

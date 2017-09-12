@@ -1,0 +1,36 @@
+<!--<div class="relations container-fluid">
+	{{#each relations}}
+	<div class="relation">
+		<div class="direction"><i class="material-icons">repeat</i></div>
+		<div class="self type-{{../node.type}}">{{../node.caption}}</div>
+		<div class="relationtype">{{relationtype.label}}</div>
+		<div class="neighbour type-{{neighbour.type}}">{{neighbour.caption}}</div>
+	</div>
+	{{/each}}
+</div>-->
+
+<table class="relations table table-hover">
+	<thead>
+		<tr>
+			<th></th>
+			<th>Label</th>
+			<th>Neighbor</th>
+		</tr>
+	</thead>
+	<tbody>
+		{{#each Relations}}
+		<tr class="relation type-{{neighbour.type}}" data-id="{{neighbour.id}}">
+			<td class="score"><div class="score"><div class="value" style="height:{{score}}%"/></div></td>
+			<td class="relation-label">
+			{{#if Relationtype.label}}
+				{{Relationtype.label}}
+			{{else}}
+				—
+			{{/if}}
+			</td>
+			<td class="neighbour">{{neighbour.caption}}</td>
+		</tr>
+		{{/each}}
+	</tbody>
+</table>
+

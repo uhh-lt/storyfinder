@@ -1,0 +1,52 @@
+<div class="container-fluid">
+{{#if Entities}}
+<h3>Entities</h3>
+	<div class="row">
+	{{#each Entities}}
+		<div class="entity type-{{type}}" data-id="{{id}}">{{caption}}</div>
+	{{/each}}
+	</div>
+	<div class="clearfix"></div>
+{{/if}}
+{{#if Sites}}
+<h3>Sites</h3>
+	<div class="row">
+	{{#each Sites}}
+		<div class="col-md-4">
+			<div class="site{{#unless primary_color}} is-light{{/unless}}{{#if isLight}} is-light{{/if}}" style="{{#if primary_color}}background-color: #{{primary_color}}{{/if}}">
+				<div class="thumbnail" style="background-image: url('/images/1/sites/{{id}}.png');"></div>
+				<div class="last-visited">{{last_visited}}</div>
+				<h4>{{#if title}}
+						{{title}}
+						<small>{{url}}</small>
+					{{else}}
+						{{shortHost}}
+						<small>{{shortUrl}}</small>
+					{{/if}}			
+				</h4>
+				<div class="sentences">
+					{{#each Article.Sentences}}
+					<div class="sentence">»{{{this}}}</div>
+					{{/each}}
+					{{#if sentencesMore}}
+					<div class="sentences-more">
+						<div class="action-show">+ {{sentencesMore}} more sentences</div>
+					</div>
+					{{/if}}
+				</div>
+				<ul>
+					<li><a class="show-graph" href="#" data-id="{{#if master_id}}{{master_id}}{{else}}{{id}}{{/if}}">Open network</a></li>
+					<li><a href="{{url}}" target="_blank">Open site</a></li>
+					<li><a href="/Articles/{{Article.id}}" target="_blank">Open archived article</a></li>
+				</ul>
+			</div>
+		</div>
+	{{/each}}
+	</div>
+</div>
+{{/if}}
+{{#unless Entities}}
+	{{#unless Sites}}
+		No results found!
+	{{/unless}}
+{{/unless}}

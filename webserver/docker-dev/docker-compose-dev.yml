@@ -1,0 +1,77 @@
+#
+# docker-compose -p storyfinder-dev -f docker-compose-dev.yml up
+#
+# or
+# docker-compose -p storyfinder-dev -f docker-compose-dev.yml up --build
+# docker-compose -p storyfinder-dev -f docker-compose-dev.yml up -d
+#
+# docker-compose -p storyfinder-dev -f docker-compose-dev.yml down
+#
+version: '2.1'
+
+networks:
+  sf-net:
+
+services:
+  mysqlserver:
+    image: "mysql:5.5"
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_DATABASE=storyfinder
+      - MYSQL_USER=storyfinder
+      - MYSQL_PORT=3306
+      - MYSQL_PASSWORD=storyfinder
+    #volumes:
+    #  - ${PWD}/mysql-data:/var/lib/mysql
+    command: ["--character-set-server=utf8", "--collation-server=utf8_bin"]
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-pstoryfinder", "-ustoryfinder"]
+      interval: 20s
+      timeout: 10s
+      retries: 3
+    networks:
+      sf-net:
+        aliases:
+          - mysql
+
+  corenlpserver:
+    image: "kisad/corenlp-german:latest"
+    healthcheck:
+      #test: ["CMD", "echo", "hello world!"]
+      test: wget --post-data 'The quick brown fox jumped over the lazy dog.' 'localhost:9000/?properties={"annotators":"tokenize,ssplit,pos,ner","outputFormat":"json"}' -O -
+      interval: 20s
+      timeout: 10s
+      retries: 3
+    mem_limit: 4g
+    memswap_limit: 5g
+    networks:
+      sf-net:
+        aliases:
+          - corenlp
+
+  webserver-dev:
+    depends_on:
+      mysqlserver:
+        condition: service_healthy
+      corenlpserver:
+        condition: service_healthy
+    build:
+      context: ./
+      dockerfile: Dockerfile-dev
+    ports:
+      - "3056:3055"
+    volumes:
+      - ../:/usr/src/app
+    stdin_open: true
+    tty: true
+    working_dir: /usr/src/app
+    entrypoint: bash
+    environment:
+      - NODE_ENV=development
+      - COOKIE_SECRET=YOUR_COOKIE_SECRET
+      - NER=corenlp
+      - NO_KEYWORDS=true
+    mem_limit: 4g
+    memswap_limit: 5g
+    networks:
+      sf-net:

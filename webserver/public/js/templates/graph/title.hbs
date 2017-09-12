@@ -1,0 +1,45 @@
+{{#if loading}}
+	<div class="caption"><i class="fa fa-gear fa-spin"></i> Parsing...</div>
+{{else}}
+	{{#if site_ids}}
+		{{#if groupsize}}
+			<a class="btn-back"><i class="material-icons">arrow_back</i></a>
+			<div class="caption">Group of {{groupsize}} sites
+				{{log sites}}
+				<small>{{#each sites}}
+					{{#if @index}}
+						 ,
+					{{/if}}
+					<span style="display: inline-block; max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">
+					{{#if title}}
+						{{title}}
+					{{else}}
+						{{url}}
+					{{/if}}
+					</span>
+				{{/each}}
+				</small>
+			</div>
+		{{else}}
+			<div class="caption"><i class="fa fa-spinner fa-spin"></i></div>
+		{{/if}}
+	{{else}}
+		{{#if site_id}}
+			{{#if site}}
+				<a class="btn-back"><i class="material-icons">arrow_back</i></a>
+				{{#if site.title}}
+					<div class="caption">{{site.title}}<small>{{site.url}}</small></div>
+				{{else}}
+					<div class="caption">{{site.host}}<small>{{site.url}}</small></div>
+				{{/if}}
+			{{else}}
+				<div class="caption"><i class="fa fa-spinner fa-spin"></i></div>
+			{{/if}}
+		{{else}}
+				<a class="btn-menu"><i class="material-icons">menu</i></a>
+				<div class="caption">Global network</div>
+		{{/if}}
+	{{/if}}
+	
+		<a class="btn-search"><input /><i class="icon-search material-icons">search</i><i class="icon-close material-icons">close</i></a>
+{{/if}}
