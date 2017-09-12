@@ -56,7 +56,7 @@ services:
       corenlpserver:
         condition: service_healthy
     build:
-      context: ./
+      context: ../
       dockerfile: Dockerfile
     ports:
       - "3055:3055"
