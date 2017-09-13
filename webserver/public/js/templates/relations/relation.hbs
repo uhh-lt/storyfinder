@@ -1,0 +1,57 @@
+<div class="details-title type-{{Entities.[0].type}}">
+	<a class="btn-back"><i class="material-icons">arrow_back</i></a>
+	<div class="caption entity1">{{Entities.[0].caption}}</div>
+</div>
+<div class="content-body">
+	{{#if Relation}}
+		<div class="arrow">
+			<div class="arrow-up"><i class="material-icons">keyboard_arrow_up</i></div>
+			<div class="line"></div>
+			<div class="arrow-down"><i class="material-icons">keyboard_arrow_down</i></div>
+		</div>
+		<ul>
+			<li>
+				<div class="input-group">
+					<input type="text" class="form-control" placeholder="Please enter the primary label for the relation..." value="{{Relation.Relationtype.label}}" />
+					<div class="input-group-btn">
+						<a class="btn btn-default disabled" data-entity1-id="{{Entities.[0].id}}" data-entity2-id="{{Entities.[1].id}}"><i class="fa fa-check"></i></a>
+					</div>
+				</div>
+			</li>
+		{{#if Sentences}}
+			{{#each Sentences}}
+				<li>
+					<div class="sentence">»{{{html}}}&nbsp;«</div>
+					<div class="source">– Source <a href="/Articles/{{Article.id}}" target="_blank">{{Article.Site.title}}</a> visited on {{Article.Site.last_visited}} –</div>
+					<div class="input-group">
+						<input type="text" class="form-control" placeholder="Please enter a label for the relation..." value="{{Relationtype.label}}" />
+						<div class="input-group-btn">
+							<a class="btn btn-default disabled" data-sentence-id="{{id}}" data-entity1-id="{{../Entities.[0].id}}" data-entity2-id="{{../Entities.[1].id}}"><i class="fa fa-check"></i></a>
+						</div>
+					</div>
+				</li>
+			{{/each}}
+		{{else}}
+			<li>
+				<div class="text-center">There is currently no source for this relation.</div>
+			</li>
+		{{/if}}
+		</ul>
+	{{else}}
+		<div class="new-relation">
+			There is currently no relation between »{{Entities.[0].caption}}« and »{{Entities.[1].caption}}«.<br />Do you want to create a new relation?
+			<p />
+			<div class="form-group">
+				<input type="text" class="form-control" placeholder="Please enter a label for the new relation..." value="" />
+			</div>
+			
+			<div class="ctrls">
+				<a class="btn-create" data-entity1="{{Entities.[0].id}}" data-entity2="{{Entities.[1].id}}">Yes, create relation</a>
+				<a class="btn-cancel">No</a>
+			</div>
+		</div>
+	{{/if}}
+</div>
+<div class="details-footer type-{{Entities.[1].type}}">
+	<div class="caption entity2">{{Entities.[1].caption}}</div>
+</div>

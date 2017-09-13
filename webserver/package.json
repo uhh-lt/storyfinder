@@ -1,0 +1,39 @@
+{
+  "name": "storyfinder-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^1.5.2",
+    "bcrypt": "^0.8.7",
+    "body-parser": "^1.15.1",
+    "color-thief": "^2.2.2",
+    "compute-cosine-distance": "^1.0.0",
+    "connect-ensure-login": "^0.1.1",
+    "cookie-session": "^2.0.0-alpha.1",
+    "cookies": "^0.6.1",
+    "couchbase": "^2.1.6",
+    "escape-string-regexp": "^1.0.5",
+    "express": "^4.13.4",
+    "express-handlebars": "^3.0.0",
+    "hiredis": "^0.4.1",
+    "lodash": "^4.12.0",
+    "method-override": "^2.3.5",
+    "mysql": "^2.10.2",
+    "node-kmeans": "^1.1.0",
+    "node-stanford-postagger": "0.0.1",
+    "pagerank-js": "^0.3.0",
+    "passport": "^0.3.2",
+    "passport-http": "^0.3.0",
+    "passport-local": "^1.0.0",
+    "redis": "^2.5.3",
+    "request": "^2.72.0",
+    "serve-static": "^1.10.2",
+    "socket.io": "^1.4.6"
+  }
+}

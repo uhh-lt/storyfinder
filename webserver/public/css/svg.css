@@ -1,0 +1,64 @@
+		 .background rect {
+			 transition: fill 1s ease;
+			 fill: #FFFFFF;
+		 }
+		
+		.link {
+			stroke: #999;
+			stroke-width: 1px;
+			stroke-opacity: 1;
+			fill: none;
+		}
+		
+		.node {
+			/*fill: #03A9FA;*/
+			fill: none;
+		}
+		
+		.link.is-hidden {
+			stroke-width: 0;
+		}
+				
+		.label text {
+			transition: fill 1s ease;
+			fill: #FFFFFF;
+			text-anchor: middle;
+			font-size: 10px;
+			font-family: Verdana;
+		}
+		
+		.label rect {
+			transition: fill 1s ease;
+			stroke: none;
+			fill: #8BC34A;
+		}
+		
+		.label.topNode rect {
+			transition: fill 1s ease;
+			fill: #0288D1;
+		}
+		
+		.label.focused rect {
+			fill: #8BC34A !important;
+			filter:url(#dropshadow);
+		}
+		
+		.label.focused text {
+			fill: #FFFFFF !important;
+		}
+		
+		svg.grayscale .background rect {
+			/*fill: #d7d7d7;*/
+		}
+		
+		svg.grayscale .label text {
+			fill: #d7d7d7;
+		}
+		
+		svg.grayscale .label rect {
+			fill: #999999;
+		}
+		
+		svg.grayscale .label.topNode rect {
+			fill: #999999;
+		}

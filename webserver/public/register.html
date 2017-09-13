@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Storyfinder</title>
+		<style>
+			{{style}}
+		</style>
+	</head>
+	<body>		
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-12 register">
+					<div class="text-center avatar">
+						<div class="text-center logo">
+							<span>
+								<i class="fa fa-share-alt fa-4x"></i>
+								<i class="fa fa-share-alt fa-4x fa-rotate-90"></i>
+							</span>
+						</div>
+						<div class="text-center loading-indicator">
+							<span>
+								<i class="fa fa-5x fa-spinner fa-pulse fa-fw"></i>
+							</span>
+						</div>
+						<h1 class="text-center">StoryFinder</h1>
+					</div>
+					<form method="post" id="frm-register" class="form">
+						<div class="form-group form-group-username text-center">
+							<label>Email</label>
+							<input class="form-control" name="username" type="text" value="" placeholder="Please enter your Email address" />
+							<span class="help-block"></span>
+						</div>
+						<div class="form-group text-center form-group-password">
+							<label>Password</label>
+							<input class="form-control" name="password" type="password" value="" placeholder="Please choose a password" />
+							<span class="help-block"></span>
+						</div>
+						<div class="form-group form-group-verify text-center">
+							<label>Confirm password</label>
+							<input class="form-control" name="password-verify" type="password" class="input-control" value="" placeholder="Please retype your password" />
+							<span class="help-block"></span>
+						</div>
+						
+						<button type="submit" class="btn btn-block btn-info">Create account</button>
+						<hr />
+						<p class="text-right">
+						Already have an account?<br /><a href="javascript:document.location.href='/login';">Click here to login with your username and password.</a>
+						</p>
+					</form>
+				</div>
+			</div>
+		</div>
+		<script src="./js/register.js"></script>
+	</body>
+</html>

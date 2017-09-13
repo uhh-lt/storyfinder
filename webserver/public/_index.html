@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Storyfinder</title>
+		<style>
+			{{style}}
+			/*
+			HTML
+			*/
+			
+			/*body {
+				margin: 0;
+				padding: 0;
+				font-family: "Helvetica Neue";
+				background-color: #EFEFEF;
+			}*/
+		</style>
+	</head>
+	<body>		
+		<div class="container-fluid">
+			<!--<div class="row">
+				<div class="col-md-12 header">
+				</div>
+			</div>-->
+			<div class="row">
+				<div class="col-sm-3 websites">
+					<div class="menu-title">
+						<a class="btn-menu"><i class="material-icons">menu</i></a>
+						<div class="btns">
+							<!--<a class="btn-search"><i class="material-icons">search</i></a>
+							<a class="btn-more"><i class="material-icons">more_vert</i></a>-->
+							<a class="btn-photo"><i class="material-icons">photo_camera</i></a>
+							<a class="btn-open-global" href="/" target="_blank"><i class="material-icons">fullscreen</i></a>
+						</div>
+						<div class="caption">Sites</div>
+					</div>
+					<!--<h1>
+						
+						<div class="pull-right">
+							<i class="fa fa-fw fa-search"></i>
+							<i class="fa fa-fw fa-ellipsis-v"></i>
+						</div>
+						All websites <i class="fa fa-caret-down"></i>
+					</h1>-->
+					<div class="site-list">
+						<ul>
+							<li>
+								
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div class="col-sm-9 graph-container">
+					<div class="graph-title" id="graph-title">
+						<a class="btn-menu"><i class="material-icons">menu</i></a>
+						<div class="caption">Global network</div>
+						<a class="btn-search"><input /><i class="icon-search material-icons">search</i><i class="icon-close material-icons">close</i></a>
+					</div>
+					<svg>
+						<filter id="dropshadow" height="130%" width="130%">
+							<feGaussianBlur in="SourceAlpha" stdDeviation="3"/> <!-- stdDeviation is how much to blur -->
+							<feOffset dx="2" dy="2" result="offsetblur"/> <!-- how much to offset -->
+							<feMerge> 
+								<feMergeNode/> <!-- this contains the offset blurred image -->
+								<feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
+							</feMerge>
+						</filter>
+					</svg>
+					
+					<div class="node-details">
+						<div class="details-title">
+							<a class="btn-back"><i class="material-icons">arrow_back</i></a>
+							<div class="caption">Global network</div>
+							<small>Subtitle</small>
+							<ul class="tabs">
+								<li class="tab-item selected" data-toggle="show-sources">
+									Sources
+								</li>
+								<li class="tab-item" data-toggle="show-relations">
+									Relations
+								</li>
+							</ul>
+						</div>
+						<div class="content-body"></div>
+					</div>
+					<div class="relation-details">
+						
+					</div>
+					<div class="node-create">
+						
+					</div>
+					<div class="search-results" id="search-results">
+						
+					</div>
+				</div>
+			</div>
+			<div id="site-not-relevant">
+				<div class="dialog-overlay">
+					<div class="dialog">
+						<h4>Add current website to Storyfinder?</h4>
+						
+						The current website may not contain any suitable content. Do you want to add it to Storyfinder anyway?
+						
+						<div class="actions">
+							<a href="#" data-action="dismiss">Cancel</a><a href="#" data-action="add">Add</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+				
+		<!--<div id="siteid"></div>
+		<button id="btn"> + </button>
+		<button id="btn-gray"> Grayscale </button>
+		<button id="btn-current"> Current </button>
+		<button id="btn-focus"> Focus </button>
+		<button id="btn-save">Save</button>
+		<a href="" id="link">Download</a>-->
+		
+		<script src="./js/storyfinder.js"></script>
+	</body>
+</html>

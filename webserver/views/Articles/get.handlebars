@@ -1,0 +1,31 @@
+<div class="container" style="background-color: #FFFFFF; box-shadow: 5px 5px 5px #999999; padding: 15px;margin-bottom: 15px">	
+	<div class="well well-small">
+		This page contains the cached version of the article »{{Site.title}}« on »{{Site.host}}«, created on {{Article.created}}.
+		<p />
+		<dl class="dl-horizontal">
+			<dt>Host</dt>
+			<dd><a href="{{Site.url}}">{{#if Site.favicon}}<img src="{{Site.favicon}}" class="img-responsive img-circle"/> {{/if}}{{Site.host}}</a></dd>
+			
+			<dt>Source</dt>
+			<dd><a href="{{Site.url}}">{{Site.url}}</a></dd>
+			
+			<dt>First visit</dt>
+			<dd>{{Site.created}}</dd>
+			
+			<dt>Last visit</dt>
+			<dd>{{Site.last_visited}}</dd>
+			
+			<dt>Abstract</dt>
+			<dd>{{Article.excerpt}}</dd>
+			
+			<dt>Screenshot</dt>
+			<dd><a href="/images/{{Site.collection_id}}/sites/{{Site.id}}.png"><img style="max-width: 150px; max-height: 150px" class="thumbnail" src="/images/{{Site.collection_id}}/sites/{{Site.id}}.png" /></a></dd>
+			
+			<dt>Article screenshot</dt>
+			<dd><a href="/images/{{Site.collection_id}}/articles/{{Article.id}}.png"><img style="max-width: 150px; max-height: 150px" class="thumbnail" src="/images/{{Site.collection_id}}/articles/{{Article.id}}.png" /></a></dd>
+		</dl>
+	</div>
+	
+	<h1>{{#if Article.title}}{{Article.title}}{{else}}{{Site.title}}{{/if}}</h1>
+	{{{Article.raw}}}
+</div>
