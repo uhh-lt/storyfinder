@@ -51,6 +51,6 @@
 
   "web_accessible_resources":
     [
-      "sidebar/sidebar.html",
+      "sidebar/sidebar.html"
     ]
 }
