@@ -47,7 +47,7 @@ function saveRemote(url, data, callback) {
         var responseText = this.responseText;
 
         if (responseStatus === 401) {
-            alert("sidebar.showLogin()");
+            console.log("sidebar.showLogin()");
             callback(null, null);
         } else if (responseStatus !== 200) {
             console.log('Error', responseStatusText, responseText);
