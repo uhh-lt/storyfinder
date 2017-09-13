@@ -30,7 +30,7 @@ function initialize(){
     window.addEventListener("message", function(event){
         var origin = event.origin || event.originalEvent.origin;
         if(baseUrl !== '' && baseUrl.substr(0, origin.length) !== origin){
-            alert('Wrong origin: ' + baseUrl.substr(0, origin.length) + ' !== ' + origin);
+            // alert('Wrong origin: ' + baseUrl.substr(0, origin.length) + ' !== ' + origin);
             return;
         }
 
