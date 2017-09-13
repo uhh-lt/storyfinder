@@ -28,12 +28,11 @@ chrome.runtime.onMessage.addListener(function(msg, sender){
 chrome.tabs.onActivated.addListener(function(activeInfo) {
     chrome.storage.sync.get({
         server: "",
-        showSidebar: null
     }, function (items) {
         chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
             if(tabs[0].url.replace(/\/$/g,'') === items.server.replace(/\/$/g,''))
                 chrome.tabs.sendMessage(tabs[0].id, {type: "hide-sidebar"});
-            else if(items.showSidebar !== null && items.showSidebar)
+            else
                 chrome.tabs.sendMessage(tabs[0].id, {type: "show-sidebar"});
 
             //showGraphForTab(tabs[0].id);
@@ -45,13 +44,12 @@ chrome.tabs.onActivated.addListener(function(activeInfo) {
 chrome.tabs.onCreated.addListener(function(tab) {
     chrome.storage.sync.get({
         server: "",
-        showSidebar: null
     }, function (items) {
         if(tab.url.replace(/\/$/g,'') === items.server.replace(/\/$/g,''))
             chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
                 chrome.tabs.sendMessage(tabs[0].id, {type: "hide-sidebar"});
             });
-        else if(items.showSidebar !== null && items.showSidebar)
+        else
             chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
                 chrome.tabs.sendMessage(tabs[0].id, {type: "show-sidebar"});
             });
@@ -60,14 +58,8 @@ chrome.tabs.onCreated.addListener(function(tab) {
 
 
 function initialize() {
-    chrome.storage.sync.get({
-        showSidebar: null
-    }, function (items) {
-        if (items.showSidebar !== null && items.showSidebar) {
-            chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
-                chrome.tabs.sendMessage(tabs[0].id, {type: "show-sidebar"});
-            });
-        }
+    chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {type: "show-sidebar"});
     });
 }
 

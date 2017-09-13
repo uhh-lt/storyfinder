@@ -102,13 +102,6 @@ function setArticle(article) {
             async.series([function (next) {
                 data.Site.favicon = "https://www.google.com/s2/favicons?domain=" + url.host;
                 next();
-                /*
-                https://www.google.com/s2/favicons?domain=www.tagesschau.de
-                getFavicon(data.Site.host, function(favicon){
-                    data.Site.favicon = favicon;
-                    next();
-                });
-                */
             }, function (next) {
                 saveRemote(items.server.replace(/\/$/, '') + '/Sites', data, function (err, response) {
                     console.log(err, response);

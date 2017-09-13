@@ -38,8 +38,7 @@
   ],
 
   "options_ui": {
-    "page": "options/options.html",
-    "chrome_style": true
+    "page": "options/options.html"
   },
 
   "background": {
@@ -52,6 +51,6 @@
 
   "web_accessible_resources":
     [
-      "sidebar/sidebar.html"
+      "sidebar/sidebar.html",
     ]
 }
