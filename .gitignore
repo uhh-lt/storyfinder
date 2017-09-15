@@ -1,6 +1,7 @@
 ####
 # created by steffen
 webserver/public/images/
+webserver/**/*-data
 
 ####
 # Created by https://www.gitignore.io/api/node,bower,eclipse,webstorm+all,intellij+all
