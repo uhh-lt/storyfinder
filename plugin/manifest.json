@@ -1,10 +1,9 @@
 {
   "manifest_version": 2,
   "name": "Storyfinder",
-  "version": "0.0.4",
-  "author": "Manuel Kaufmann",
-
-  "description": "Using graphs to improve the understanding of text on websites",
+  "version": "0.0.6",
+  "author": "Language Technology Group - University of Hamburg",
+  "description": "Graph based information and knowledge management of websites and entities.",
   "homepage_url": "https://github.com/uhh-lt/storyfinder",
   "icons": {
     "48": "icon-48.png"
@@ -48,4 +47,5 @@
   [
     "popup.html"
   ]
+
 }
