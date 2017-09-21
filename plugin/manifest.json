@@ -7,7 +7,7 @@
   "description": "Using graphs to improve the understanding of text on websites",
   "homepage_url": "https://github.com/uhh-lt/storyfinder",
   "icons": {
-    "48": "icons/icon-48.png"
+    "48": "icon.png"
   },
 
   "permissions": [
@@ -26,31 +26,26 @@
     {
       "matches": ["<all_urls>"],
       "css": [
-        "content_scripts/contentstyle.css",
-        "content_scripts/sidebarstyle.css"
+        "contentstyle.css"
       ],
       "js": [
-        "content_scripts/sidebar-contentscript.js",
-        "content_scripts/contentscript.js",
-        "content_scripts/screenshot.js"
+        "contentscript.js"
       ]
     }
   ],
 
   "options_ui": {
-    "page": "options/options.html"
+    "page": "options.html"
   },
 
   "background": {
     "scripts": [
-      "background_scripts/sidebar-background.js",
-      "background_scripts/contextmenu.js",
-      "background_scripts/pageworker.js"
+      "backgroundscript.js"
     ]
   },
 
   "web_accessible_resources":
-    [
-      "sidebar/sidebar.html"
-    ]
+  [
+    "popup.html"
+  ]
 }

@@ -4,6 +4,8 @@ var Readability = require('readability-node').Readability,
 	escapeStringRegexp = require('escape-string-regexp'),
 	Delegate = require('dom-delegate');
 
+chrome.runtime.sendMessage({type: 'onAttach'});
+
 function Storyfinder() {
     var cssNamespace = 'de-tu-darmstadt-lt-storyfinder',
         article = null,
@@ -18,7 +20,7 @@ function Storyfinder() {
         function communication(message) {
             switch (message.type) {
                 case 'getArticle':
-                    onGetArticle(message.data);
+                    onGetArticle(message.data, message.tab);
                     break;
                 case 'setEntities':
                     setEntities(message.data.Site.Entities);
@@ -43,7 +45,7 @@ function Storyfinder() {
             }
         }
 
-        function onGetArticle(data) {
+        function onGetArticle(data, tab) {
             if (_.isNull(article)) {
                 if (!getArticle()) {
                     article = {
@@ -57,7 +59,7 @@ function Storyfinder() {
                 article.isRelevant = data.isRelevant;
             }
 
-            chrome.runtime.sendMessage({type: 'setArticle', data: article});
+            chrome.runtime.sendMessage({type: 'setArticle', tab: tab, data: article});
         }
     }
 

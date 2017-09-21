@@ -3,13 +3,13 @@
 ```
 $ cd /js-contentscript
 $ npm install
-$ browserify index.js -t babelify -t [hbsfy -t] -o ../background_scripts/contentscript.js
+$ browserify index.js -t babelify -t [hbsfy -t] -o ../contentscript.js
 ```
 
 ## Build the pageworker
 
 ```
-$ cd /js-pageworker
+$ cd /js-backgroundscript
 $ npm install
-$ browserify index.js -t babelify -t [hbsfy -t] -o ../background_scripts/pageworker.js
+$ browserify index.js -t babelify -t [hbsfy -t] -o ../backgroundscript.js
 ```
