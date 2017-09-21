@@ -8,13 +8,16 @@ function saveChanges() {
     }, function() {
         // Update status to let user know options were saved.
     });
+
+    window.close()
 }
 
 function restoreOptions() {
-    // Use default value color = 'red' and word = 'the'.
+    // Get a value from the Chrome extension storage API.
     chrome.storage.sync.get({
         server: "http://localhost:3055"
     }, function(items) {
+        // Set a value in a form.
         document.getElementById('server').value = items.server;
     });
 }
