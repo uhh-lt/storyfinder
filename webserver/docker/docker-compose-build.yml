@@ -15,8 +15,8 @@ services:
       - MYSQL_USER=storyfinder
       - MYSQL_PORT=3306
       - MYSQL_PASSWORD=storyfinder
-    volumes:
-      - ${PWD}/mysql-data:/var/lib/mysql
+    #volumes:
+    #  - ${PWD}/../mysql-data:/var/lib/mysql
     command: ["--character-set-server=utf8", "--collation-server=utf8_bin"]
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-pstoryfinder", "-ustoryfinder"]
@@ -31,6 +31,7 @@ services:
   corenlpserver:
     image: "kisad/corenlp-german:latest"
     healthcheck:
+      #test: ["CMD", "echo", "hello world!"]
       test: wget --post-data 'The quick brown fox jumped over the lazy dog.' 'localhost:9000/?properties={"annotators":"tokenize,ssplit,pos,ner","outputFormat":"json"}' -O -
       interval: 90s
       timeout: 10s
@@ -43,9 +44,14 @@ services:
           - corenlp
 
   webserver:
-    image: "remstef/storyfinder:latest"
-    volumes:
-      - ${PWD}/image-data:/usr/src/app/public/images
+    depends_on:
+      mysqlserver:
+        condition: service_healthy
+      corenlpserver:
+        condition: service_healthy
+    build:
+      context: ../
+      dockerfile: Dockerfile
     ports:
       - "3055:3055"
     environment:
@@ -53,13 +59,8 @@ services:
       - COOKIE_SECRET=92bls37gfc
       - NER=corenlp
       - NO_KEYWORDS=T
-    depends_on:
-      mysqlserver:
-        condition: service_healthy
-      corenlpserver:
-        condition: service_healthy
     restart: unless-stopped
     mem_limit: 4g
-    memswap_limit: 4g
+    memswap_limit: 5g
     networks:
       sf-net:
