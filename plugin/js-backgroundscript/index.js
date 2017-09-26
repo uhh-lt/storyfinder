@@ -3,7 +3,8 @@ var async = require('async');
 
 // GLOBALS
 var popupWindowId = null;
-var mainWindowId = null;
+var mainWindowId = chrome.windows.WINDOW_ID_CURRENT;
+var mainURL = "";
 
 var popupPercentage = 0.4;
 var windowPercentage = 0.6;
@@ -17,14 +18,13 @@ var windowRectangle = {
 
 // LISTENER
 chrome.browserAction.onClicked.addListener(function() {
-    // es wurde bereits einmal ein Popup erzeugt
+// es wurde bereits einmal ein Popup erzeugt
     if(popupWindowId !== undefined && popupWindowId !== null) {
-        chrome.windows.remove(popupWindowId);
-        popupWindowId = null;
-
-        chrome.windows.update(mainWindowId, {height: windowRectangle.height, width: windowRectangle.width, top: windowRectangle.top, left: windowRectangle.left});
+        closePopup();
         // es wurde das erste mal auf den Button geklickt
     } else {
+        mainURL = "";
+
         chrome.windows.getCurrent(function(window) {
 
             // save mainwindow dimensions
@@ -92,6 +92,34 @@ chrome.windows.onRemoved.addListener(function(windowID) {
     }
 });
 
+chrome.windows.onFocusChanged.addListener(function(windowId) {
+    chrome.windows.get(windowId, {populate: true, windowTypes: ['normal']}, function(window) {
+        if(window !== null && window !== undefined) {
+            mainWindowId = window.id;
+            chrome.tabs.query({windowId: window.id, active:true}, function(tabs) {
+                if(tabs[0].url !== mainURL) {
+                    mainURL = tabs[0].url;
+                    onAttach();
+                }
+            });
+        }
+    });
+});
+
+chrome.tabs.onActivated.addListener(function(activeInfo) {
+    chrome.windows.get(activeInfo.windowId, {populate: true, windowTypes: ['normal']}, function(window) {
+        if(window !== null && window !== undefined) {
+            mainWindowId = window.id;
+            chrome.tabs.get(activeInfo.tabId, function(tab) {
+               if(tab.url !== mainURL) {
+                   mainURL = tab.url;
+                   onAttach();
+               }
+            });
+        }
+    });
+});
+
 
 // FUNCTIONS
 function saveRemote(url, data, callback) {
@@ -135,7 +163,7 @@ function setArticle(article, thetab) {
             setArticleHelper(article, tab);
         });
     } else {
-        chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+        chrome.tabs.query({active: true, windowId:mainWindowId}, function (tabs) {
             setArticleHelper(article, tabs[0]);
         });
     }
@@ -166,17 +194,13 @@ function setArticleHelper(article, tab) {
 
         async.series([
             function(next){
+                // favicon holen
                 data.Site.favicon = "https://www.google.com/s2/favicons?domain="+url.host;
                 next();
-                /*
-                https://www.google.com/s2/favicons?domain=www.tagesschau.de
-                getFavicon(data.Site.host, function(favicon){
-                    data.Site.favicon = favicon;
-                    next();
-                });
-                */
             },
             function(next){
+                // seite prüfen: relevant oder nicht relevant
+                // seite parsen
                 saveRemote(items.server.replace(/\/$/,'') + '/Sites', data, function(err, response){
                     console.log(err, response);
                     if(err){
@@ -211,16 +235,15 @@ function setArticleHelper(article, tab) {
                     return;
                 }
 
-                chrome.windows.getCurrent(function (win) {
-                    chrome.tabs.captureVisibleTab(win.id,{"format":"png"}, function(imgUrl) {
-                        saveRemote(
-                            items.server.replace(/\/$/,'') + '/Sites/' + siteId + '/image',
-                            {image: imgUrl},
-                            function(err){
-                                next(err);
-                            }
-                        );
-                    });
+                // ausschnitt screenshot machen
+                chrome.tabs.captureVisibleTab(mainWindowId,{"format":"png"}, function(imgUrl) {
+                    saveRemote(
+                        items.server.replace(/\/$/,'') + '/Sites/' + siteId + '/image',
+                        {image: imgUrl},
+                        function(err){
+                            next(err);
+                        }
+                    );
                 });
             },
             function(next){
@@ -228,19 +251,8 @@ function setArticleHelper(article, tab) {
                     next();
                     return;
                 }
-                /*
 
-                captureTab(article.bounds, function(image){
-                    saveRemote(
-                        items.server.replace(/\/$/,'') + '/Articles/' + articleId + '/image',
-                        {image: image},
-                        function(err){
-                            next(err);
-                        }
-                    );
-                });
-
-                */
+                // volltext screenshot machen
             }
         ], function(err){
             if(err){
@@ -257,10 +269,12 @@ function onAttach() {
         if(items.server === '')
             alert("Server is not defined!");
 
-        chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+        chrome.tabs.query({active: true, windowId: mainWindowId}, function (tabs) {
+            mainURL = tabs[0].url;
             if(tabs[0].url.replace(/\/$/g,'').substr(0, items.server.replace(/\/$/g,'').length) === items.server.replace(/\/$/g,'')) {
-                chrome.tabs.sendMessage(tabs[0].id, {type: "hide-sidebar"});
+                closePopup();
             } else {
+                console.log("TAB:"+tabs[0].url);
                 chrome.tabs.sendMessage(tabs[0].id, {type: "getArticle", data: {}});
             }
         });
@@ -270,13 +284,13 @@ function onAttach() {
 function parseSite(url){
     console.log('Parsing site...', url);
 
-    chrome.tabs.query({active: true, currentWindow: false}, function (tabs) {
+    chrome.tabs.query({active: true, windowId: mainWindowId}, function (tabs) {
         chrome.tabs.sendMessage(tabs[0].id, {type: "getArticle", tab: tabs[0].id, data: {isRelevant: true}});
     });
 }
 
 function addToHighlighting(entities){
-    chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+    chrome.tabs.query({active: true, windowId: mainWindowId}, function (tabs) {
         chrome.tabs.sendMessage(tabs[0].id, {type: "addEntities", data: entities});
     });
 }
@@ -298,7 +312,7 @@ function captureTab2(p, callback) {
         }
     });
 
-    chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+    chrome.tabs.query({active: true, windowId: mainWindowId}, function (tabs) {
         chrome.tabs.sendMessage(tabs[0].id, {type: 'take-screenshot', data: rectangle});
     });
 }
@@ -313,7 +327,7 @@ function captureTab(p, callback) {
     });
 
     chrome.tabs.captureVisibleTab(function(screenshotUrl) {
-        chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+        chrome.tabs.query({active: true, windowId: mainWindowId}, function (tabs) {
             chrome.tabs.sendMessage(tabs[0].id, {type: 'take-screenshot', data: screenshotUrl});
         });
     });
@@ -350,6 +364,18 @@ Creates a new Popup and saves the ID in popupWindowId
 function createPopup(left, top, width, height) {
     chrome.windows.create({url: chrome.runtime.getURL("popup.html"), left: left, top: top, width: width, height: height, focused: true, type: "popup"}, function(window) {
         popupWindowId = window.id;
+    });
+}
+
+function closePopup() {
+    chrome.windows.remove(popupWindowId);
+    popupWindowId = null;
+
+    chrome.windows.update(mainWindowId, {
+        height: windowRectangle.height,
+        width: windowRectangle.width,
+        top: windowRectangle.top,
+        left: windowRectangle.left
     });
 }
 
