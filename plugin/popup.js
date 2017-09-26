@@ -21,7 +21,12 @@ chrome.storage.sync.get({
     iframe.classList.add("active");
     iframe.frameBorder = "none";
 
+
     document.body.appendChild(iframe);
+
+    iframe.onload = function() {
+        chrome.runtime.sendMessage({type: 'onAttach'});
+    }
 
     window.addEventListener("message", function(event){
         var origin = event.origin || event.originalEvent.origin;
@@ -34,4 +39,9 @@ chrome.storage.sync.get({
             chrome.runtime.sendMessage({type: 'msg', data: event.data[1]});
         }
     }, false);
+
+    //var message = document.getElementById("message");
+    //message.innerHTML = "Test!";
 });
+
+
