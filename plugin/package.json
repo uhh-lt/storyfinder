@@ -1,0 +1,9 @@
+{
+  "name": "myproject",
+  "devDependencies": {
+    "copyfiles": "latest"
+  },
+  "scripts": {
+    "copy": "copyfiles -f src/* dist"
+  }
+}

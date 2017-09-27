@@ -26,10 +26,13 @@ chrome.runtime.setUninstallURL("http://example.org", function() {
 });
 
 chrome.browserAction.onClicked.addListener(function() {
-// es wurde bereits einmal ein Popup erzeugt
+    // es wurde bereits einmal ein Popup erzeugt
     if(popupWindowId !== undefined && popupWindowId !== null) {
         closePopup();
-        // es wurde das erste mal auf den Button geklickt
+        chrome.contextMenus.update("add-storyfinder", {title: "Add to Storyfinder - Activate Sidebar to use this", enabled: false}, function() {
+        });
+
+    // es wurde das erste mal auf den Button geklickt
     } else {
         mainURL = "";
 
@@ -51,6 +54,8 @@ chrome.browserAction.onClicked.addListener(function() {
             chrome.windows.update(mainWindowId, {width: windowWidth});
 
             createPopup(windowRectangle.left + windowWidth, windowRectangle.top, popupWidth, windowRectangle.height);
+            chrome.contextMenus.update("add-storyfinder", {title: "Add to Storyfinder", enabled: true}, function() {
+            });
         });
     }
 });
@@ -128,6 +133,27 @@ chrome.tabs.onActivated.addListener(function(activeInfo) {
     });
 });
 
+/*
+Create all the context menu items.
+*/
+chrome.contextMenus.create({
+    id: "add-storyfinder",
+    title: "Add to Storyfinder - Activate Sidebar to use this",
+    contexts: ["selection"],
+    onclick: function (info, tab) {
+        var data = {
+            caption: info.selectionText.substr(0, 64),
+            url: tab.url,
+            host: tab.url,
+            title: tab.title
+        };
+
+        chrome.windows.get(popupWindowId, { populate: true }, function (popup) {
+            chrome.tabs.sendMessage(popup.tabs[0].id, { type: "msg", data: { action: "create", data: data } });
+        });
+    },
+    enabled: false
+});
 
 // FUNCTIONS
 function saveRemote(url, data, callback) {
@@ -402,4 +428,8 @@ function storeCredentials(username, password){
         password: password,
         userInitialized: true
     });
+}
+
+function isPopupOpen() {
+    return popupWindowId !== null;
 }
