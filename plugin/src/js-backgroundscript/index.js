@@ -1,6 +1,10 @@
 // DEPENDENCIES
 var async = require('async');
 
+// URLS
+var installURL = "https://uhh-lt.github.io/storyfinder/"; // this will be opend on install
+var uninstallURL = "https://uhh-lt.github.io/storyfinder/"; // this will be opened on uninstall
+
 // GLOBALS
 var popupWindowId = null;
 var mainWindowId = chrome.windows.WINDOW_ID_CURRENT;
@@ -19,11 +23,11 @@ var windowRectangle = {
 
 // LISTENER
 chrome.runtime.onInstalled.addListener(function (){
-    chrome.tabs.create({url:"http://example.org"},function(){
+    chrome.tabs.create({url:installURL},function(){
     });
 });
 
-chrome.runtime.setUninstallURL("http://example.org", function() {
+chrome.runtime.setUninstallURL(uninstallURL, function() {
 });
 
 function toggleSidebar() {
