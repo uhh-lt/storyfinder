@@ -9,7 +9,7 @@ var uninstallURL = "https://uhh-lt.github.io/storyfinder/"; // this will be open
 var popupWindowId = null;
 var mainWindowId = chrome.windows.WINDOW_ID_CURRENT;
 var mainURL = "";
-var lastParsedURL = "";
+var current_parsing_job_urls = new Set();
 
 var popupPercentage = 0.4;
 var windowPercentage = 0.6;
@@ -89,8 +89,8 @@ chrome.runtime.onMessage.addListener(function(msg, sender){
             break;
         case "force-parse-site":
             chrome.tabs.query({active: true, windowId:mainWindowId}, function (tabs) {
-                if(tabs[0].url === lastParsedURL)
-                    alert("This Site was just parsed!");
+                if(current_parsing_job_urls.has(tabs[0].url))
+                    alert("This Site is beeing parsed!");
                 else
                     parseSite(tabs[0].url);
             });
@@ -222,7 +222,7 @@ function setArticle(article, thetab) {
 }
 
 function setArticleHelper(article, tab) {
-    lastParsedURL = tab.url;
+
     var url = new URL(tab.url);
 
     var data = {
@@ -249,6 +249,9 @@ function setArticleHelper(article, tab) {
         if(items.server === "")
             return;
 
+        var current_url = tab.url;
+        current_parsing_job_urls.add(current_url);
+
         async.series([
             function(next){
                 // favicon holen
@@ -262,6 +265,7 @@ function setArticleHelper(article, tab) {
                     console.log(err, response);
                     if(err){
                         next(err);
+                        current_parsing_job_urls.delete(current_url);
                         return;
                     }
 
@@ -282,7 +286,7 @@ function setArticleHelper(article, tab) {
                     }
 
                     console.log(response);
-
+                    current_parsing_job_urls.delete(current_url);
                     next();
                 });
             },
