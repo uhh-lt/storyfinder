@@ -5,6 +5,7 @@ var async = require('async');
 var popupWindowId = null;
 var mainWindowId = chrome.windows.WINDOW_ID_CURRENT;
 var mainURL = "";
+var lastParsedURL = "";
 
 var popupPercentage = 0.4;
 var windowPercentage = 0.6;
@@ -25,18 +26,21 @@ chrome.runtime.onInstalled.addListener(function (){
 chrome.runtime.setUninstallURL("http://example.org", function() {
 });
 
-chrome.browserAction.onClicked.addListener(function() {
+function toggleSidebar() {
     // es wurde bereits einmal ein Popup erzeugt
-    if(popupWindowId !== undefined && popupWindowId !== null) {
+    if (popupWindowId !== undefined && popupWindowId !== null) {
         closePopup();
-        chrome.contextMenus.update("add-storyfinder", {title: "Add to Storyfinder - Activate Sidebar to use this", enabled: false}, function() {
+        chrome.contextMenus.update("add-storyfinder", {
+            title: "Add to Storyfinder - Activate Sidebar to use this",
+            enabled: false
+        }, function () {
         });
 
-    // es wurde das erste mal auf den Button geklickt
+        // es wurde das erste mal auf den Button geklickt
     } else {
         mainURL = "";
 
-        chrome.windows.getCurrent(function(window) {
+        chrome.windows.getCurrent(function (window) {
 
             // save mainwindow dimensions
             windowRectangle = {
@@ -54,11 +58,11 @@ chrome.browserAction.onClicked.addListener(function() {
             chrome.windows.update(mainWindowId, {width: windowWidth});
 
             createPopup(windowRectangle.left + windowWidth, windowRectangle.top, popupWidth, windowRectangle.height);
-            chrome.contextMenus.update("add-storyfinder", {title: "Add to Storyfinder", enabled: true}, function() {
+            chrome.contextMenus.update("add-storyfinder", {title: "Add to Storyfinder", enabled: true}, function () {
             });
         });
     }
-});
+}
 
 chrome.runtime.onMessage.addListener(function(msg, sender){
     switch (msg.type) {
@@ -75,6 +79,17 @@ chrome.runtime.onMessage.addListener(function(msg, sender){
             break;
         case "test":
             alert(msg.data);
+            break;
+        case "toggle-sidebar":
+            toggleSidebar();
+            break;
+        case "force-parse-site":
+            chrome.tabs.query({active: true, windowId:mainWindowId}, function (tabs) {
+                if(tabs[0].url === lastParsedURL)
+                    alert("This Site was just parsed!");
+                else
+                    parseSite(tabs[0].url);
+            });
             break;
         case "msg":
             switch (msg.data.action) {
@@ -133,9 +148,7 @@ chrome.tabs.onActivated.addListener(function(activeInfo) {
     });
 });
 
-/*
-Create all the context menu items.
-*/
+// CONTEXTMENUS
 chrome.contextMenus.create({
     id: "add-storyfinder",
     title: "Add to Storyfinder - Activate Sidebar to use this",
@@ -205,6 +218,7 @@ function setArticle(article, thetab) {
 }
 
 function setArticleHelper(article, tab) {
+    lastParsedURL = tab.url;
     var url = new URL(tab.url);
 
     var data = {
@@ -250,7 +264,7 @@ function setArticleHelper(article, tab) {
                     bIsRelevant = response.is_relevant;
                     bIsNew = response.is_new;
 
-                    if(!isUndefined(response.Site)){
+                    if(response.Site !== undefined){
                         siteId = response.Site.id;
                         articleId = response.Site.Article.id;
 
@@ -302,6 +316,9 @@ function setArticleHelper(article, tab) {
 }
 
 function onAttach() {
+    if(!isPopupOpen())
+        return;
+
     chrome.storage.sync.get({
         server: '',
         serverInitialized: false
@@ -378,27 +395,6 @@ function captureTab(p, callback) {
 
 function callbackHandler(data){
     currentCallback(data);
-}
-
-/**
- * Checks if `value` is `undefined`.
- *
- * @static
- * @since 0.1.0
- * @memberOf _
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is `undefined`, else `false`.
- * @example
- *
- * _.isUndefined(void 0);
- * // => true
- *
- * _.isUndefined(null);
- * // => false
- */
-function isUndefined(value) {
-    return value === undefined;
 }
 
 /*
