@@ -19,3 +19,14 @@ buttonSidebar.addEventListener("click", function() {
     chrome.runtime.sendMessage({type:"toggle-sidebar"});
     window.close();
 });
+
+/*
+chrome.storage.sync.get({
+    userInitialized: false,
+    serverInitialized: false
+}, function (items) {
+    if (!items.serverInitialized && !items.userInitialized)  {
+        buttonParse.setAttribute("disabled", "disabled");
+    }
+});
+*/
