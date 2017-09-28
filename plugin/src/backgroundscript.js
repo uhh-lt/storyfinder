@@ -10,7 +10,7 @@ var uninstallURL = "https://uhh-lt.github.io/storyfinder/"; // this will be open
 var popupWindowId = null;
 var mainWindowId = chrome.windows.WINDOW_ID_CURRENT;
 var mainURL = "";
-var lastParsedURL = new Set();
+var current_parsing_job_urls = new Set();
 
 var popupPercentage = 0.4;
 var windowPercentage = 0.6;
@@ -86,7 +86,7 @@ chrome.runtime.onMessage.addListener(function (msg, sender) {
             break;
         case "force-parse-site":
             chrome.tabs.query({ active: true, windowId: mainWindowId }, function (tabs) {
-                if (lastParsedURL.has(tabs[0].url)) alert("This Site is beeing parsed!");else parseSite(tabs[0].url);
+                if (current_parsing_job_urls.has(tabs[0].url)) alert("This Site is beeing parsed!");else parseSite(tabs[0].url);
             });
             break;
         case "msg":
@@ -241,8 +241,8 @@ function setArticleHelper(article, tab) {
 
         if (items.server === "") return;
 
-        var current_url = tab.url;
-        lastParsedURL.add(current_url);
+        current_parsing_job_urls.add(tab.url);
+        chrome.browserAction.setIcon({ path: "icon2.png", tabId: tab.id });
 
         async.series([function (next) {
             // favicon holen
@@ -255,7 +255,8 @@ function setArticleHelper(article, tab) {
                 console.log(err, response);
                 if (err) {
                     next(err);
-                    lastParsedURL.delete(current_url);
+                    current_parsing_job_urls.delete(tab.url);
+                    chrome.browserAction.setIcon({ path: "icon-48.png", tabId: tab.id });
                     return;
                 }
 
@@ -276,7 +277,8 @@ function setArticleHelper(article, tab) {
                 }
 
                 console.log(response);
-                lastParsedURL.delete(current_url);
+                current_parsing_job_urls.delete(tab.url);
+                chrome.browserAction.setIcon({ path: "icon-48.png", tabId: tab.id });
                 next();
             });
         }, function (next) {

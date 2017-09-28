@@ -249,8 +249,8 @@ function setArticleHelper(article, tab) {
         if(items.server === "")
             return;
 
-        var current_url = tab.url;
-        current_parsing_job_urls.add(current_url);
+        current_parsing_job_urls.add(tab.url);
+        chrome.browserAction.setIcon({path: "icon2.png",tabId: tab.id});
 
         async.series([
             function(next){
@@ -265,7 +265,8 @@ function setArticleHelper(article, tab) {
                     console.log(err, response);
                     if(err){
                         next(err);
-                        current_parsing_job_urls.delete(current_url);
+                        current_parsing_job_urls.delete(tab.url);
+                        chrome.browserAction.setIcon({path: "icon-48.png",tabId: tab.id});
                         return;
                     }
 
@@ -286,7 +287,8 @@ function setArticleHelper(article, tab) {
                     }
 
                     console.log(response);
-                    current_parsing_job_urls.delete(current_url);
+                    current_parsing_job_urls.delete(tab.url);
+                    chrome.browserAction.setIcon({path: "icon-48.png",tabId: tab.id});
                     next();
                 });
             },
