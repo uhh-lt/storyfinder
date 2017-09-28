@@ -1,5 +1,6 @@
 var buttonParse = document.getElementById("button-parse");
 var buttonSidebar = document.getElementById("button-sidebar");
+var buttonReadability = document.getElementById("button-readability");
 
 buttonParse.addEventListener("click", function() {
     chrome.storage.sync.get({
@@ -17,6 +18,11 @@ buttonParse.addEventListener("click", function() {
 
 buttonSidebar.addEventListener("click", function() {
     chrome.runtime.sendMessage({type:"toggle-sidebar"});
+    window.close();
+});
+
+buttonReadability.addEventListener("click", function() {
+    chrome.runtime.sendMessage({type:"do-readability"});
     window.close();
 });
 

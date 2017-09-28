@@ -43,6 +43,9 @@ function Storyfinder() {
                 case 'test':
                     alert(message.data);
                     break;
+                case 'read-readability':
+                    readReadability();
+                    break;
             }
         }
 
@@ -62,6 +65,24 @@ function Storyfinder() {
 
             chrome.runtime.sendMessage({ type: 'setArticle', tab: tab, data: article });
         }
+    }
+
+    function readReadability() {
+        var loc = document.location;
+        var uri = {
+            spec: loc.href,
+            host: loc.host,
+            prePath: loc.protocol + "//" + loc.host,
+            scheme: loc.protocol.substr(0, loc.protocol.indexOf(":")),
+            pathBase: loc.protocol + "//" + loc.host + loc.pathname.substr(0, loc.pathname.lastIndexOf("/") + 1)
+        };
+
+        var documentClone = document.cloneNode(true);
+        article = new Readability(uri, documentClone).parse();
+
+        var html = '<html><head><meta charset="utf-8"><title>' + article.title + '</title></head><body><h1>' + article.title + '</h1><h4>' + article.byline + '</h4><p>Length:' + article.length + '</p><h5>Excerpt</h5><p>' + article.excerpt + '</p>' + article.content + '</body></html>';
+
+        chrome.runtime.sendMessage({ type: 'create-readability-tab', html: html });
     }
 
     /*

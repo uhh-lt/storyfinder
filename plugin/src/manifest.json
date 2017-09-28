@@ -4,7 +4,7 @@
   "version": "0.0.8",
   "author": "Language Technology Group - University of Hamburg",
   "description": "Graph based information and knowledge management of websites and entities.",
-  "homepage_url": "https://github.com/uhh-lt/storyfinder",
+  "homepage_url": "https://uhh-lt.github.io/storyfinder/",
   "icons": {
     "48": "icon-48.png"
   },

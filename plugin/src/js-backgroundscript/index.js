@@ -22,10 +22,12 @@ var windowRectangle = {
 };
 
 // LISTENER
+/*
 chrome.runtime.onInstalled.addListener(function (){
     chrome.tabs.create({url:installURL},function(){
     });
 });
+*/
 
 chrome.runtime.setUninstallURL(uninstallURL, function() {
 });
@@ -94,6 +96,14 @@ chrome.runtime.onMessage.addListener(function(msg, sender){
                 else
                     parseSite(tabs[0].url);
             });
+            break;
+        case "do-readability":
+            chrome.tabs.query({active: true, windowId:mainWindowId}, function (tabs) {
+                chrome.tabs.sendMessage(tabs[0].id , { type: 'read-readability'});
+            });
+            break;
+        case "create-readability-tab":
+            createReadabilityTab(msg.html);
             break;
         case "msg":
             switch (msg.data.action) {
@@ -438,4 +448,12 @@ function storeCredentials(username, password){
 
 function isPopupOpen() {
     return popupWindowId !== null;
+}
+
+function createReadabilityTab(html) {
+    var blob = new Blob([html], {type: 'text/html'});
+    var url = window.URL.createObjectURL(blob);
+
+    chrome.tabs.create({url:url, active:true}, function(tab) {
+    });
 }
