@@ -250,7 +250,7 @@ function setArticleHelper(article, tab) {
             return;
 
         current_parsing_job_urls.add(tab.url);
-        chrome.browserAction.setIcon({path: "icon2.png",tabId: tab.id});
+        chrome.browserAction.setIcon({path: "icon-red-48.png",tabId: tab.id});
 
         async.series([
             function(next){
