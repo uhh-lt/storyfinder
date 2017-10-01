@@ -78,9 +78,9 @@ function Storyfinder() {
         };
 
         var documentClone = document.cloneNode(true);
-        article = new Readability(uri, documentClone).parse();
+        var article2 = new Readability(uri, documentClone).parse();
 
-        var html = '<html><head><meta charset="utf-8"><title>' + article.title + '</title></head><body><h1>' + article.title + '</h1><h4>' + article.byline + '</h4><p>Length:' + article.length + '</p><h5>Excerpt</h5><p>' + article.excerpt + '</p>' + article.content + '</body></html>';
+        var html = '<html><head><meta charset="utf-8"><title>' + article2.title + '</title></head><body><h1>' + article2.title + '</h1><h4>' + article2.byline + '</h4><p>Length:' + article2.length + '</p><h5>Excerpt</h5><p>' + article2.excerpt + '</p>' + article2.content + '</body></html>';
 
         chrome.runtime.sendMessage({ type: 'create-readability-tab', html: html });
     }

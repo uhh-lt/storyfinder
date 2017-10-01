@@ -192,7 +192,7 @@ function saveRemote(url, data, callback) {
 
         if(responseStatus === 401){
             console.log("sidebar.showLogin()");
-            callback(null, null);
+            callback(new Error('Unable to log in'));
         }else if(responseStatus !== 200){
             console.log('Error', responseStatusText, responseText);
             callback(new Error('Unable to save data'));
@@ -206,16 +206,15 @@ function saveRemote(url, data, callback) {
         password: '',
         userInitialized: false
     }, function(items) {
-        if(items.userInitialized && (items.username === '' || items.password === '')) {
+        if(items.userInitialized && (items.username === '' || items.password === ''))
             alert("Username or Password have not been set!");
-        } else {
-            var oReq = new XMLHttpRequest();
-            oReq.addEventListener("load", reqListener);
-            oReq.open("PUT", url);
-            oReq.setRequestHeader("Content-type", "application/json");
-            oReq.setRequestHeader("Authorization", "Basic " + window.btoa(items.username + ":" + items.password));
-            oReq.send(JSON.stringify(data));
-        }
+
+        var oReq = new XMLHttpRequest();
+        oReq.addEventListener("load", reqListener);
+        oReq.open("PUT", url);
+        oReq.setRequestHeader("Content-type", "application/json");
+        oReq.setRequestHeader("Authorization", "Basic " + window.btoa(items.username + ":" + items.password));
+        oReq.send(JSON.stringify(data));
     });
 }
 
@@ -453,6 +452,11 @@ function isPopupOpen() {
 function createReadabilityTab(html) {
     var blob = new Blob([html], {type: 'text/html'});
     var url = window.URL.createObjectURL(blob);
+
+    /*
+    chrome.windows.create({url: url, focused: true, type: "popup"}, function(window) {
+    });
+    */
 
     chrome.tabs.create({url:url, active:true}, function(tab) {
     });

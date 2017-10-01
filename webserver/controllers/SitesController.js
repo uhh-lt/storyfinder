@@ -341,7 +341,7 @@ module.exports = function(connection, app, passport, io){
 
 					memo.Collection = collection;
 
-					setImmediate(() => next(null, memo))
+					setImmediate(() => next(null, memo));
 				}
 			);
 		}
