@@ -196,6 +196,7 @@ function Storyfinder() {
             return b.caption.length - a.caption.length;
         });
 
+        //entities.forEach(entity => {
         articleNodes.forEach(articleNode => {
             let textNodes = getTextNodesIn(articleNode.el);
 
@@ -224,6 +225,7 @@ function Storyfinder() {
                 });
             });
         });
+        //});
     }
 
     function activateHighlighting() {
