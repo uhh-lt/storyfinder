@@ -53427,7 +53427,8 @@ module.exports = HandlebarsCompiler.template({"1":function(container,depth0,help
     var stack1;
 
   return ((stack1 = helpers["if"].call(depth0 != null ? depth0 : {},(depth0 != null ? depth0.site_ids : depth0),{"name":"if","hash":{},"fn":container.program(4, data, 0),"inverse":container.program(15, data, 0),"data":data})) != null ? stack1 : "")
-    + "	\n		<a class=\"btn-search\"><input /><i class=\"icon-search material-icons\">search</i><i class=\"icon-close material-icons\">close</i></a>\n";
+    + "	\n		<a class=\"btn-search\"><input /><i class=\"icon-search material-icons\">search</i><i class=\"icon-close material-icons\">close</i></a>\n"
+      + "\n     <a class=\"btn-search\" href=\"/logout\"><i class=\"fa fa-sign-out\" aria-hidden=\"true\"></i></a>\n";
 },"4":function(container,depth0,helpers,partials,data) {
     var stack1;
 
