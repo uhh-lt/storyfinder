@@ -34,7 +34,8 @@ module.exports = function(connection, app, passport){
 						message: 'An account for the given Email address exists already!'
 					});
 				});
-			
+			console.log(exists);		
+	
 			User.create(req.body, (err, user) => {
 				if(err){
 					console.log(err);
