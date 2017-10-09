@@ -1086,10 +1086,10 @@ module.exports = function (store) {
     console.log(event);
 
     // TODO FIXME: check if origin is available somehow
-		// if (origin !== "resource://storyfinder-at-lt-dot-informatik-dot-tu-darmstadt-dot-de" && origin !== "resource://storyfinder") {
-		// 	console.log('Origin mismatch:', origin);
-		// 	return;
-		// }
+		if (origin !== "chrome-extension://mhgfcmndpjapfadjkcfnhpfkdiekgimd") {
+			console.log('Origin mismatch:', origin);
+			return;
+		}
 
 		switch (event.data.action) {
 			case 'open':

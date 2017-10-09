@@ -4,6 +4,8 @@ var Readability = require('readability-node').Readability,
 	escapeStringRegexp = require('escape-string-regexp'),
 	Delegate = require('dom-delegate');
 
+chrome.runtime.sendMessage({type: 'onAttach'});
+
 function Storyfinder() {
     var cssNamespace = 'de-tu-darmstadt-lt-storyfinder',
         article = null,
@@ -18,7 +20,7 @@ function Storyfinder() {
         function communication(message) {
             switch (message.type) {
                 case 'getArticle':
-                    onGetArticle(message.data);
+                    onGetArticle(message.data, message.tab);
                     break;
                 case 'setEntities':
                     setEntities(message.data.Site.Entities);
@@ -40,10 +42,13 @@ function Storyfinder() {
                 case 'test':
                     alert(message.data);
                     break;
+                case 'read-readability':
+                    readReadability();
+                    break;
             }
         }
 
-        function onGetArticle(data) {
+        function onGetArticle(data, tab) {
             if (_.isNull(article)) {
                 if (!getArticle()) {
                     article = {
@@ -57,8 +62,26 @@ function Storyfinder() {
                 article.isRelevant = data.isRelevant;
             }
 
-            chrome.runtime.sendMessage({type: 'setArticle', data: article});
+            chrome.runtime.sendMessage({type: 'setArticle', tab: tab, data: article});
         }
+    }
+
+    function readReadability() {
+        var loc = document.location;
+        var uri = {
+            spec: loc.href,
+            host: loc.host,
+            prePath: loc.protocol + "//" + loc.host,
+            scheme: loc.protocol.substr(0, loc.protocol.indexOf(":")),
+            pathBase: loc.protocol + "//" + loc.host + loc.pathname.substr(0, loc.pathname.lastIndexOf("/") + 1)
+        };
+
+        var documentClone = document.cloneNode(true);
+        var article2 = new Readability(uri, documentClone).parse();
+
+        var html = '<html><head><meta charset="utf-8"><title>'+article2.title+'</title></head><body><h1>'+article2.title+'</h1><h4>'+article2.byline+'</h4><p>Length:'+article2.length+'</p><h5>Excerpt</h5><p>'+article2.excerpt+'</p>'+article2.content+'</body></html>';
+
+        chrome.runtime.sendMessage({type: 'create-readability-tab', html: html});
     }
 
     /*
@@ -180,36 +203,41 @@ function Storyfinder() {
             return b.caption.length - a.caption.length;
         });
 
-        entities.forEach(function(entity){
-            articleNodes.forEach(articleNode => {
-                let textNodes = getTextNodesIn(articleNode.el);
+        let ms = window.performance.now();
+        console.log("Benchmark - before Loop: "+ms);
 
-                if(textNodes.length === 0) {
-                    return;
-                }
+        entities.forEach(entity => {
+          articleNodes.forEach(articleNode => {
+              let textNodes = getTextNodesIn(articleNode.el);
 
-                entities.forEach(entity => {
-                    let val = entity.caption;
+              if(textNodes.length === 0) {
+                  return;
+              }
 
-                    textNodes.forEach((textNode) => {
-                        let txt = textNode.textContent;
+              let val = entity.caption;
 
-                        if(!_.isUndefined(txt.split)){
-                            let split = new RegExp('([^A-Za-z0-9\-])(' + escapeStringRegexp(val) + ')([^\-A-Za-z0-9])', 'g');
-                            let replaced = txt.replace(split, '$1<sf-entity class="entity type-' + entity.type + '" data-entity-id="' + entity.id + '">$2</sf-entity>$3');
-                            if(txt !== replaced){
-                                let newTextNode = document.createElement('sf-text-node');
-                                newTextNode.innerHTML = replaced;
+              textNodes.forEach((textNode) => {
+                  let txt = textNode.textContent;
 
-                                if(!_.isNull(textNode.parentElement)) {
-                                    textNode.parentElement.replaceChild(newTextNode, textNode);
-                                }
-                            }
-                        }
-                    });
-                });
-            });
+                  if(!_.isUndefined(txt.split)){
+                      let split = new RegExp('([^A-Za-z0-9\-])(' + escapeStringRegexp(val) + ')([^\-A-Za-z0-9])', 'g');
+                      let replaced = txt.replace(split, '$1<sf-entity class="entity type-' + entity.type + '" data-entity-id="' + entity.id + '">$2</sf-entity>$3');
+                      if(txt !== replaced){
+                          let newTextNode = document.createElement('sf-text-node');
+                          newTextNode.innerHTML = replaced;
+
+                          if(!_.isNull(textNode.parentElement)) {
+                              textNode.parentElement.replaceChild(newTextNode, textNode);
+                          }
+                      }
+                  }
+              });
+          });
         });
+
+        var ms2 = window.performance.now();
+        console.log("Benchmark - after Loop: "+ms2);
+        console.log("Benchmark - total time: "+(ms2 - ms));
     }
 
     function activateHighlighting(){
