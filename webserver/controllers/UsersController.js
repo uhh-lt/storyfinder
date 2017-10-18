@@ -19,7 +19,7 @@ module.exports = function(connection, app, passport){
 			return;
 		}
 		
-		User.exists(req.body.username, (err, exists) => {
+		User.exists(req.body.username, (err, userexists) => {
 			if(err){
 				console.log(err);
 				return setImmediate(() => {
@@ -27,14 +27,14 @@ module.exports = function(connection, app, passport){
 				});
 			}
 						
-			if(exists)
+			if(userexists)
 				return setImmediate(() => {
 					res.send({
 						success: false,
 						message: 'An account for the given Email address exists already!'
 					});
 				});
-			console.log(exists);		
+			console.log("User exists? "+userexists);
 	
 			User.create(req.body, (err, user) => {
 				if(err){
@@ -114,8 +114,10 @@ module.exports = function(connection, app, passport){
 	/*
 	Login	
 	*/
-	app.post('/login', passport.authenticate('local', { successRedirect: (process.env.PATH_PREFIX || '/') + 'Users/status', failureRedirect: (process.env.PATH_PREFIX || '/') + 'login' }));
-	
+
+	app.post('/login',
+		passport.authenticate('local', { successRedirect: (process.env.PATH_PREFIX || '/') + 'Users/status', failureRedirect: (process.env.PATH_PREFIX || '/') + 'asdfghjklöä' }));
+
 	/*
 	Return login status
 	*/

@@ -125,7 +125,7 @@ module.exports = function(connection, app, passport, io){
 			;
 			
 		evallog.log('Merge entities ' + sourceId + ' to ' + targetId);
-
+		console.log('Merge entities ' + sourceId + ' to ' + targetId);
 		Entity.merge(targetId, sourceId, userId, (err, result) => {
 			if(err){
 				console.log(err);

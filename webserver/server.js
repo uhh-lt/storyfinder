@@ -90,10 +90,15 @@ passport.use(new BasicStrategy(
 passport.use(new LocalStrategy(
 	function(username, password, done){
 		User.verify(username, password, function(err, isValid, user){
-			if (err) { return done(err); }
+			if (err) {
+				console.log('Passport ERROR');
+				return done(err);
+			}
 			if (!isValid) {
+				console.log('Passport Incorrect username or password');
 				return done(null, false, { message: 'Incorrect username or password.' });
 			}
+			console.log('Passport success!');
 			return done(null, user);
 		});
 	}

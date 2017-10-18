@@ -35,6 +35,8 @@ exports.receiveCreateRelation = receiveCreateRelation;
 
 var _ActionTypes = require('../constants/ActionTypes');
 
+var CHROME_PLUGIN_ID = "pebdjeaapfkjiceloeecpoedbliefnap";
+
 var types = _interopRequireWildcard(_ActionTypes);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
@@ -298,7 +300,7 @@ function receiveCreateRelation(data) {
 }
 
 /*export function selectLayer(path, layerId) {
-	return function(dispatch){
+	return function(dispatch){asdf
 		path = path.push(layerId);
 
 		dispatch(requestLayers(path));
@@ -1086,7 +1088,7 @@ module.exports = function (store) {
     console.log(event);
 
     // TODO FIXME: check if origin is available somehow
-		if (origin !== "chrome-extension://mhgfcmndpjapfadjkcfnhpfkdiekgimd") {
+		if (origin !== "chrome-extension://"+CHROME_PLUGIN_ID) {
 			console.log('Origin mismatch:', origin);
 			return;
 		}
@@ -1591,6 +1593,9 @@ module.exports = function (store) {
   Nur die #topNodes Top Knoten und davon jeweils die #leafs wichtigsten Nachbarn werden gerendert
   */
 		var pageRankByNode = _.map(nodes, function (node) {
+		    if(_.isUndefined(node))
+		        return 0;
+
 			if (addFocus) {
 				if (!_.isUndefined(node.focused) && node.focused) {
 					//console.log('calc', node.tfidf);
@@ -54155,6 +54160,8 @@ module.exports = function Vis(store) {
 			if (!bKeepInViewport) return d.x;
 
 			/*if(d.x > width - 100 && d.y > height - 100)
+			/*if(d.x > width - 100 && d.y > height - 100)
+   	d.x = width - 100;
    	d.x = width - 100;
 
    if(d.x < 100 && d.y < 100)
@@ -54287,7 +54294,7 @@ module.exports = function Vis(store) {
 		//closeNode(el);
 
 		//var id = d3.select(el).datum().id;
-		//console.log('Merging ' + src + ' -> ' + tgt);
+		console.log('Merging ' + src + ' -> ' + tgt);
 		gG.mergeNodes(tgt, src);
 
 		fetch('/Entities/' + tgt + '/' + src, {
@@ -54303,7 +54310,7 @@ module.exports = function Vis(store) {
 		});
 
 		//Knoten nicht neu Ranken, ansonsten werden ggf. weitere Knoten ausgeblendet!
-		gG.rankNodes();
+		//gG.rankNodes();
 		gG.buildRenderGraph(maxFocus, maxNeighbours, null);
 		renderGraph = gG.getRenderGraph();
 
@@ -54681,12 +54688,16 @@ module.exports = function Vis(store) {
 		});
 
 		drag.on('dragend', function (d, e) {
+		    console.log('dragend');
+
 			d3.select(this).attr('class', d3.select(this).attr('class').replace(/\sdragging/g, '').replace(/^dragging/, ''));
+
+            hideDelete();
 
 			if (!_.isNull(labelDragged) && !_.isNull(dragOverDelete)) {
 				deleteNode(this, function () {});
 			} else if (!_.isNull(labelHover) && !_.isNull(labelDragged) && labelHover != labelDragged.id) {
-				//console.log('Merging ' + labelHover + ' / ' + labelDragged.id);
+				console.log('Merging ' + labelHover + ' / ' + labelDragged.id);
 				merge(labelHover, labelDragged.id);
 				labelDragged = null;
 			}
@@ -54694,7 +54705,7 @@ module.exports = function Vis(store) {
 			labelDragged = null;
 			labelHover = null;
 
-			hideDelete();
+
 		});
 	}
 

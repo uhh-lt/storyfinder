@@ -485,6 +485,7 @@ module.exports = function Vis(store){
 	this.toggleLinkMode = toggleLinkMode;
 		
 	function merge(tgt, src, callback){
+		console.log("Merge!");
 		setData();
 		
 		removeSelection();
@@ -527,7 +528,8 @@ module.exports = function Vis(store){
 				return ret;
 			});
 			
-			d3cola = cola.d3adaptor()				
+			d3cola = cola.d3adaptor();
+			console.log("d3cola merge");
 			elNew = { nodes: null, nodeIds: {}, labels: null, links: null, linkIds: {}};
 			elExisting = { nodes: null, nodeIds: {}, labels: null, links: null, linkIds: {}};
 			
@@ -606,7 +608,7 @@ module.exports = function Vis(store){
 				return ret;
 			});
 			
-			d3cola = cola.d3adaptor()				
+			d3cola = cola.d3adaptor();
 			elNew = { nodes: null, nodeIds: {}, labels: null, links: null, linkIds: {}};
 			elExisting = { nodes: null, nodeIds: {}, labels: null, links: null, linkIds: {}};
 			
@@ -1045,13 +1047,13 @@ module.exports = function Vis(store){
 		
 		drag.on('dragend', function(d, e){
 			d3.select(this).attr('class', d3.select(this).attr('class').replace(/\sdragging/g, '').replace(/^dragging/,''));
-			
+
 			if(!_.isNull(labelDragged) && !_.isNull(dragOverDelete)){
 				deleteNode(this, function(){
 					
 				});
 			}else if(!_.isNull(labelHover) && !_.isNull(labelDragged) && labelHover != labelDragged.id){
-				//console.log('Merging ' + labelHover + ' / ' + labelDragged.id);
+				console.log('Merging ' + labelHover + ' / ' + labelDragged.id);
 				merge(labelHover, labelDragged.id);
 				labelDragged = null;
 			}

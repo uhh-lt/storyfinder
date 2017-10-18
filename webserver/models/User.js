@@ -38,16 +38,18 @@ module.exports = function(db){
 	this.create = create;
 	
 	function exists(username, callback){
-		db.query('SELECT count(*) `cnt` FROM `users` WHERE username="?" LIMIT 1', [
+		db.query('SELECT count(*) `cnt` FROM `users` WHERE username=? LIMIT 1', [
 			username
-		], function(err, res){
+		], function(err, res2){
 			if(err)
 				return setImmediate(() => {
 					callback(err);
 				});
+
+			console.log('User exists?' + res2[0]['cnt']);
 						
 			setImmediate(() => {
-				callback(null, res[0]['cnt']?true:false);
+				callback(null, res2[0]['cnt']?true:false);
 			});
 		});
 	}
