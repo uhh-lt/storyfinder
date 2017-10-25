@@ -35,8 +35,6 @@ exports.receiveCreateRelation = receiveCreateRelation;
 
 var _ActionTypes = require('../constants/ActionTypes');
 
-var CHROME_PLUGIN_ID = "pebdjeaapfkjiceloeecpoedbliefnap";
-
 var types = _interopRequireWildcard(_ActionTypes);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
@@ -345,6 +343,8 @@ module.exports = function (store) {
 	    isActive = true,
 	    vis = new Vis(store),
 	    search = new Search(store, vis);
+
+    const CHROME_PLUGIN_ID = "pebdjeaapfkjiceloeecpoedbliefnap";
 
 	store.subscribe(function () {
 		var state = store.getState().storyfinder;
