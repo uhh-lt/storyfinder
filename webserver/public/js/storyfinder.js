@@ -54309,6 +54309,13 @@ module.exports = function Vis(store) {
 			//console.log(json);
 		});
 
+        console.log('postmessage: refreshHighlighting');
+        if(typeof parent !== null) {
+            parent.postMessage(["msg", {
+                action: 'refreshHighlighting'
+            }], "*");
+        }
+
 		//Knoten nicht neu Ranken, ansonsten werden ggf. weitere Knoten ausgeblendet!
 		//gG.rankNodes();
 		gG.buildRenderGraph(maxFocus, maxNeighbours, null);
@@ -54375,6 +54382,14 @@ module.exports = function Vis(store) {
 
 		console.log('Deleting ' + id);
 		gG.deleteNode(id);
+
+        console.log('postmessage: refreshHighlighting');
+        if(typeof parent !== null) {
+            parent.postMessage(["msg", {
+                action: 'refreshHighlighting'
+            }], "*");
+        }
+
 		//Knoten nicht neu Ranken, ansonsten werden ggf. weitere Knoten ausgeblendet!
 		//gG.rankNodes();
 		gG.buildRenderGraph(maxFocus, maxNeighbours, null);
@@ -54689,13 +54704,6 @@ module.exports = function Vis(store) {
 
 		drag.on('dragend', function (d, e) {
 		    console.log('dragend');
-
-            if(typeof parent != null)
-                parent.postMessage(["msg", {
-                    action: 'userRegistered',
-                    username: data['username'],
-                    password: data['password']
-                }], "*");
 
 			d3.select(this).attr('class', d3.select(this).attr('class').replace(/\sdragging/g, '').replace(/^dragging/, ''));
 
