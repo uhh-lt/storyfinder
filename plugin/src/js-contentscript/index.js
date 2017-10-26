@@ -12,6 +12,7 @@ function Storyfinder() {
         articleNodes = [],
         nodeToOpen = null,
         timeoutForOpening = null,
+        hightlighting_activated = false,
         openDelay = 150;
 
     function initializePlugin(){
@@ -23,6 +24,7 @@ function Storyfinder() {
                     onGetArticle(message.data, message.tab);
                     break;
                 case 'setEntities':
+                    console.log("setEntities");
                     setEntities(message.data.Site.Entities);
                     activateHighlighting();
                     break;
@@ -241,18 +243,24 @@ function Storyfinder() {
     }
 
     function activateHighlighting(){
+        if(hightlighting_activated)
+            return;
+
+        hightlighting_activated = true;
+
         articleNodes.forEach(articleNode => {
             let delegate = new Delegate(articleNode.el);
 
             delegate.on('mouseover', 'sf-entity', function(event){
+                console.log('mouseover');
                 let nodeId = this.getAttribute('data-entity-id');
                 setHighlight(nodeId, true);
             });
 
             delegate.on('mouseout', 'sf-entity', function(event){
+                console.log('mouseout');
                 let nodeId = this.getAttribute('data-entity-id');
                 setHighlight(nodeId, false);
-                console.log('clear timeout');
                 if(timeoutForOpening !== null)
                     clearTimeout(timeoutForOpening);
             });

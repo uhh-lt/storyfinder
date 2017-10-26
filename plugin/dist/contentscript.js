@@ -13,7 +13,6 @@ function Storyfinder() {
         articleNodes = [],
         nodeToOpen = null,
         timeoutForOpening = null,
-        hightlighting_activated = false,
         openDelay = 150;
 
     function initializePlugin() {
@@ -25,7 +24,6 @@ function Storyfinder() {
                     onGetArticle(message.data, message.tab);
                     break;
                 case 'setEntities':
-                    console.log("setEntities");
                     setEntities(message.data.Site.Entities);
                     activateHighlighting();
                     break;
@@ -44,9 +42,6 @@ function Storyfinder() {
                     break;
                 case 'test':
                     alert(message.data);
-                    break;
-                case 'read-readability':
-                    readReadability();
                     break;
             }
         }
@@ -67,24 +62,6 @@ function Storyfinder() {
 
             chrome.runtime.sendMessage({ type: 'setArticle', tab: tab, data: article });
         }
-    }
-
-    function readReadability() {
-        var loc = document.location;
-        var uri = {
-            spec: loc.href,
-            host: loc.host,
-            prePath: loc.protocol + "//" + loc.host,
-            scheme: loc.protocol.substr(0, loc.protocol.indexOf(":")),
-            pathBase: loc.protocol + "//" + loc.host + loc.pathname.substr(0, loc.pathname.lastIndexOf("/") + 1)
-        };
-
-        var documentClone = document.cloneNode(true);
-        var article2 = new Readability(uri, documentClone).parse();
-
-        var html = '<html><head><meta charset="utf-8"><title>' + article2.title + '</title></head><body><h1>' + article2.title + '</h1><h4>' + article2.byline + '</h4><p>Length:' + article2.length + '</p><h5>Excerpt</h5><p>' + article2.excerpt + '</p>' + article2.content + '</body></html>';
-
-        chrome.runtime.sendMessage({ type: 'create-readability-tab', html: html });
     }
 
     /*
@@ -198,17 +175,14 @@ function Storyfinder() {
             return b.caption.length - a.caption.length;
         });
 
-        let ms = window.performance.now();
-        console.log("Benchmark - before Loop: " + ms);
+        articleNodes.forEach(articleNode => {
+            let textNodes = getTextNodesIn(articleNode.el);
 
-        entities.forEach(entity => {
-            articleNodes.forEach(articleNode => {
-                let textNodes = getTextNodesIn(articleNode.el);
+            if (textNodes.length === 0) {
+                return;
+            }
 
-                if (textNodes.length === 0) {
-                    return;
-                }
-
+            entities.forEach(entity => {
                 let val = entity.caption;
 
                 textNodes.forEach(textNode => {
@@ -229,30 +203,21 @@ function Storyfinder() {
                 });
             });
         });
-
-        var ms2 = window.performance.now();
-        console.log("Benchmark - after Loop: " + ms2);
-        console.log("Benchmark - total time: " + (ms2 - ms));
     }
 
     function activateHighlighting() {
-        if (hightlighting_activated) return;
-
-        hightlighting_activated = true;
-
         articleNodes.forEach(articleNode => {
             let delegate = new Delegate(articleNode.el);
 
             delegate.on('mouseover', 'sf-entity', function (event) {
-                console.log('mouseover');
                 let nodeId = this.getAttribute('data-entity-id');
                 setHighlight(nodeId, true);
             });
 
             delegate.on('mouseout', 'sf-entity', function (event) {
-                console.log('mouseout');
                 let nodeId = this.getAttribute('data-entity-id');
                 setHighlight(nodeId, false);
+                console.log('clear timeout');
                 if (timeoutForOpening !== null) clearTimeout(timeoutForOpening);
             });
 
