@@ -112,6 +112,10 @@ chrome.runtime.onMessage.addListener(function (msg, sender) {
                     console.log('Received new entity');
                     addToHighlighting(msg.data.data);
                     break;
+                case 'refreshHighlighting':
+                    console.log('Refresh Highlighting:', msg.data);
+                    onAttach();
+                    break;
                 default:
                     console.log('Received unknown message from iframe', msg.data);
                     break;

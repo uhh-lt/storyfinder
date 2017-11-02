@@ -4,6 +4,8 @@ webserver/public/images/
 webserver/**/*-data
 release
 
+plugin/dist/
+
 ####
 # Created by https://www.gitignore.io/api/node,bower,eclipse,webstorm+all,intellij+all
 
