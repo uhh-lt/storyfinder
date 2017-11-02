@@ -130,7 +130,7 @@ function loggedInHTTP(req, res, next){
 app.use(bodyParser.json({limit: '50mb'}))
 app.use(bodyParser.urlencoded({ extended: false }))
 
-app.use(cookieSession({secret: process.env.COOKIE_SECRET}));
+app.use(cookieSession({secret: process.env.COOKIE_SECRET, maxAge: 24 * 60 * 60 * 1000 * 365}));
 
 //MethodOverride
 app.use(methodOverride('X-HTTP-Method-Override'))
