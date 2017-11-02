@@ -54392,7 +54392,8 @@ module.exports = function Vis(store) {
         console.log('postmessage: refreshHighlighting');
         if(typeof parent !== null) {
             parent.postMessage(["msg", {
-                action: 'refreshHighlighting'
+                action: 'refreshHighlighting',
+                id: id
             }], "*");
         }
 
