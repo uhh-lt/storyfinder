@@ -1555,6 +1555,12 @@ module.exports = function (store) {
 
 	this.show = show;
 
+    function nodeExists(nodeId) {
+        return !_.isUndefined(indexMap[nodeId]) && !_.isUndefined(nodes[indexMap[nodeId]]);
+    }
+
+    this.nodeExists = nodeExists;
+
 	function hide(nodeId, isTemporarily) {
 		if (!_.isUndefined(nodes[indexMap[nodeId]][isTemporarily ? 'showTemporarily' : 'show'])) delete nodes[indexMap[nodeId]][isTemporarily ? 'showTemporarily' : 'show'];
 	}
@@ -55267,42 +55273,44 @@ module.exports = function Vis(store) {
 	this.update = update;
 
 	function showNode() {
+	    if(!gG.nodeExists(arguments[0])) // you cant show a node that doesn't exist!
+	        return;
+
 		q.push({
 			context: this,
 			callback: arguments[arguments.length - 1],
 			args: arguments,
 			f: function f(id, isTemporarily, callback) {
-				setData();
-				//console.log('Showing node ' + id);
-				gG.rankNodes();
-				gG.show(id, isTemporarily);
-				gG.buildRenderGraph(maxFocus, maxNeighbours, null);
-				renderGraph = gG.getRenderGraph();
+                setData();
+                gG.rankNodes();
+                gG.show(id, isTemporarily);
+                gG.buildRenderGraph(maxFocus, maxNeighbours, null);
+                renderGraph = gG.getRenderGraph();
 
-				if (!_.isNull(renderGraph.nodes) && renderGraph.nodes.length > 0) {
-					renderNodes = _.map(renderGraph.nodes, function (n) {
-						var ret = {};
-						nodeAttr.forEach(function (attr) {
-							if (!_.isUndefined(n[attr])) ret[attr] = n[attr];
-						});
+                if (!_.isNull(renderGraph.nodes) && renderGraph.nodes.length > 0) {
+                    renderNodes = _.map(renderGraph.nodes, function (n) {
+                        var ret = {};
+                        nodeAttr.forEach(function (attr) {
+                            if (!_.isUndefined(n[attr])) ret[attr] = n[attr];
+                        });
 
-						if (!_.isUndefined(n.focused)) ret.focused = n.focused;
+                        if (!_.isUndefined(n.focused)) ret.focused = n.focused;
 
-						return ret;
-					});
+                        return ret;
+                    });
 
-					d3cola = cola.d3adaptor();
-					elNew = { nodes: null, nodeIds: {}, labels: null, links: null, linkIds: {} };
-					elExisting = { nodes: null, nodeIds: {}, labels: null, links: null, linkIds: {} };
+                    d3cola = cola.d3adaptor();
+                    elNew = { nodes: null, nodeIds: {}, labels: null, links: null, linkIds: {} };
+                    elExisting = { nodes: null, nodeIds: {}, labels: null, links: null, linkIds: {} };
 
-					async.series([removeDeleted, calculateNewLayout, applyNewData, function (done) {
-						async.parallel([moveExisting, showNew], done);
-					}], function () {
-						d3cola.on('tick', tick);
-						d3cola.resume();
-						if (_.isFunction(callback)) setTimeout(callback, 0);
-					});
-				}
+                    async.series([removeDeleted, calculateNewLayout, applyNewData, function (done) {
+                        async.parallel([moveExisting, showNew], done);
+                    }], function () {
+                        d3cola.on('tick', tick);
+                        d3cola.resume();
+                        if (_.isFunction(callback)) setTimeout(callback(true), 0);
+                    });
+                }
 			}
 		});
 	}
@@ -55377,8 +55385,8 @@ module.exports = function Vis(store) {
 				setTimeout(callback, 0);
 			}
 		} else {
-			showNode(nodeId, true, function () {
-				console.log('highlight');
+			showNode(nodeId, true, function ( nodeExists ) {
+				console.log('highlight'+nodeExists);
 				highlight(nodeId, callback);
 			});
 		}

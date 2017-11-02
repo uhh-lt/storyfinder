@@ -508,9 +508,16 @@ module.exports = function Vis(store){
 	    .then(function(json) {
 	        //console.log(json);
 	    });
+
+        console.log('postmessage: refreshHighlighting');
+        if(typeof parent !== null) {
+            parent.postMessage(["msg", {
+                action: 'refreshHighlighting'
+            }], "*");
+        }
 		
 		//Knoten nicht neu Ranken, ansonsten werden ggf. weitere Knoten ausgeblendet!
-		gG.rankNodes();
+		//gG.rankNodes();
 		gG.buildRenderGraph(maxFocus, maxNeighbours, null);
 		renderGraph = gG.getRenderGraph();
 		
@@ -589,6 +596,14 @@ module.exports = function Vis(store){
 		
 		console.log('Deleting ' + id);
 		gG.deleteNode(id);
+
+        console.log('postmessage: refreshHighlighting');
+        if(typeof parent !== null) {
+            parent.postMessage(["msg", {
+                action: 'refreshHighlighting'
+            }], "*");
+        }
+
 		//Knoten nicht neu Ranken, ansonsten werden ggf. weitere Knoten ausgeblendet!
 		//gG.rankNodes();
 		gG.buildRenderGraph(maxFocus, maxNeighbours, null);
@@ -1740,6 +1755,11 @@ module.exports = function Vis(store){
 			callback: arguments[arguments.length - 1],
 			args: arguments,
 			f: (id, isTemporarily, callback) => {
+				if(!gG.nodeExists(id)) {
+					console.log("can't show node "+id+"! The node doesn't exist.");
+					return;
+				}
+
 				setData();
 				//console.log('Showing node ' + id);
 				gG.rankNodes();

@@ -426,6 +426,12 @@ module.exports = function(store){
 	
 	this.show = show;
 
+	function nodeExists(nodeId) {
+		return !_.isUndefined(indexMap[nodeId]) && !_.isUndefined(nodes[indexMap[nodeId]]);
+	}
+
+	this.nodeExists = nodeExists;
+
 	function hide(nodeId, isTemporarily){
 		if(!_.isUndefined(nodes[indexMap[nodeId]][isTemporarily?'showTemporarily':'show']))
 			delete nodes[indexMap[nodeId]][isTemporarily?'showTemporarily':'show'];
