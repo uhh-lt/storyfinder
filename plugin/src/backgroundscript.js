@@ -100,6 +100,11 @@ chrome.runtime.onMessage.addListener(function (msg, sender) {
         case "create-readability-tab":
             createReadabilityTab(msg.html);
             break;
+        case "highlight-changed":
+            chrome.tabs.query({ active: true, windowId: mainWindowId }, function (tabs) {
+                chrome.tabs.sendMessage(tabs[0].id, { type: 'toggle-highlight', checked: msg.checked });
+            });
+            break;
         case "msg":
             switch (msg.data.action) {
                 case 'userRegistered':
@@ -114,6 +119,7 @@ chrome.runtime.onMessage.addListener(function (msg, sender) {
                     break;
                 case 'refreshHighlighting':
                     console.log('Refresh Highlighting:', msg.data);
+                    // der Message das gelöschte oder gemergte objekt hinzufügen!
                     onAttach();
                     break;
                 default:
