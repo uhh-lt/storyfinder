@@ -206,7 +206,7 @@ function Storyfinder() {
             highlightEntities: false
         }, function (items) {
             if (!items.highlightEntities) {
-                return;
+                console.log("NO HIGHLIGHTING!");
             } else {
                 entities = entities.sort(function (a, b) {
                     return b.caption.length - a.caption.length;
