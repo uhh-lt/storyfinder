@@ -6,6 +6,13 @@ var Readability = require('readability-node').Readability,
     Delegate = require('dom-delegate');
 
 chrome.runtime.sendMessage({ type: 'onAttach' });
+chrome.storage.sync.get({
+    highlightEntities: false
+}, function (items) {
+    if (items.highlightEntities) {
+        document.body.classList.add("storyfinder-main");
+    }
+});
 
 function Storyfinder() {
     var cssNamespace = 'de-tu-darmstadt-lt-storyfinder',
@@ -52,9 +59,12 @@ function Storyfinder() {
                     readReadability();
                     break;
                 case 'toggle-highlight':
+                    if (document.body.classList.contains("storyfinder-main") && !message.checked) document.body.classList.remove("storyfinder-main");else if (!document.body.classList.contains("storyfinder-main") && message.checked) document.body.classList.add("storyfinder-main");
+
+                    // TODO: check alternative solution to toggle highlighting
                     console.log("Highlight Checkbox " + (message.checked ? "checked" : "unchecked"));
-                    setEntities();
-                    activateHighlighting();
+                    //setEntities();
+                    //activateHighlighting();
                     break;
             }
         }
@@ -205,49 +215,50 @@ function Storyfinder() {
         chrome.storage.sync.get({
             highlightEntities: false
         }, function (items) {
-            if (!items.highlightEntities) {
-                console.log("NO HIGHLIGHTING!");
-            } else {
-                entities = entities.sort(function (a, b) {
-                    return b.caption.length - a.caption.length;
-                });
+            // TODO: check alternative solution to toggle highlighting
+            // if(!items.highlightEntities) {
+            //    console.log("NO HIGHLIGHTING!");
+            // } else {
+            entities = entities.sort(function (a, b) {
+                return b.caption.length - a.caption.length;
+            });
 
-                let ms = window.performance.now();
-                console.log("Benchmark - before Loop: " + ms);
+            let ms = window.performance.now();
+            console.log("Benchmark - before Loop: " + ms);
 
-                entities.forEach(entity => {
-                    articleNodes.forEach(articleNode => {
-                        let textNodes = getTextNodesIn(articleNode.el);
+            entities.forEach(entity => {
+                articleNodes.forEach(articleNode => {
+                    let textNodes = getTextNodesIn(articleNode.el);
 
-                        if (textNodes.length === 0) {
-                            return;
-                        }
+                    if (textNodes.length === 0) {
+                        return;
+                    }
 
-                        let val = entity.caption;
+                    let val = entity.caption;
 
-                        textNodes.forEach(textNode => {
-                            let txt = textNode.textContent;
+                    textNodes.forEach(textNode => {
+                        let txt = textNode.textContent;
 
-                            if (!_.isUndefined(txt.split)) {
-                                let split = new RegExp('([^A-Za-z0-9\-])(' + escapeStringRegexp(val) + ')([^\-A-Za-z0-9])', 'g');
-                                let replaced = txt.replace(split, '$1<sf-entity class="entity type-' + entity.type + '" data-entity-id="' + entity.id + '">$2</sf-entity>$3');
-                                if (txt !== replaced) {
-                                    let newTextNode = document.createElement('sf-text-node');
-                                    newTextNode.innerHTML = replaced;
+                        if (!_.isUndefined(txt.split)) {
+                            let split = new RegExp('([^A-Za-z0-9\-])(' + escapeStringRegexp(val) + ')([^\-A-Za-z0-9])', 'g');
+                            let replaced = txt.replace(split, '$1<sf-entity class="entity type-' + entity.type + '" data-entity-id="' + entity.id + '">$2</sf-entity>$3');
+                            if (txt !== replaced) {
+                                let newTextNode = document.createElement('sf-text-node');
+                                newTextNode.innerHTML = replaced;
 
-                                    if (!_.isNull(textNode.parentElement)) {
-                                        textNode.parentElement.replaceChild(newTextNode, textNode);
-                                    }
+                                if (!_.isNull(textNode.parentElement)) {
+                                    textNode.parentElement.replaceChild(newTextNode, textNode);
                                 }
                             }
-                        });
+                        }
                     });
                 });
+            });
 
-                var ms2 = window.performance.now();
-                console.log("Benchmark - after Loop: " + ms2);
-                console.log("Benchmark - total time: " + (ms2 - ms));
-            }
+            var ms2 = window.performance.now();
+            console.log("Benchmark - after Loop: " + ms2);
+            console.log("Benchmark - total time: " + (ms2 - ms));
+            //}
         });
     }
 

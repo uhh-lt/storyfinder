@@ -5,6 +5,13 @@ var Readability = require('readability-node').Readability,
 	Delegate = require('dom-delegate');
 
 chrome.runtime.sendMessage({type: 'onAttach'});
+chrome.storage.sync.get({
+    highlightEntities: false
+}, function(items) {
+    if(items.highlightEntities) {
+        document.body.classList.add("storyfinder-main");
+    }
+});
 
 function Storyfinder() {
     var cssNamespace = 'de-tu-darmstadt-lt-storyfinder',
@@ -51,9 +58,15 @@ function Storyfinder() {
                     readReadability();
                     break;
                 case 'toggle-highlight':
+                    if(document.body.classList.contains("storyfinder-main") && !message.checked)
+                        document.body.classList.remove("storyfinder-main");
+                    else if (!document.body.classList.contains("storyfinder-main") && message.checked)
+                        document.body.classList.add("storyfinder-main");
+
+                    // TODO: check alternative solution to toggle highlighting
                     console.log("Highlight Checkbox " + (message.checked ? "checked" : "unchecked"));
-                    setEntities();
-                    activateHighlighting();
+                    //setEntities();
+                    //activateHighlighting();
                     break;
             }
         }
@@ -212,9 +225,10 @@ function Storyfinder() {
         chrome.storage.sync.get({
             highlightEntities: false
         }, function(items) {
-            if(!items.highlightEntities) {
-               console.log("NO HIGHLIGHTING!");
-            } else {
+            // TODO: check alternative solution to toggle highlighting
+            // if(!items.highlightEntities) {
+            //    console.log("NO HIGHLIGHTING!");
+            // } else {
                 entities = entities.sort(function(a, b){
                     return b.caption.length - a.caption.length;
                 });
@@ -254,7 +268,7 @@ function Storyfinder() {
                 var ms2 = window.performance.now();
                 console.log("Benchmark - after Loop: "+ms2);
                 console.log("Benchmark - total time: "+(ms2 - ms));
-            }
+            //}
         });
     }
 
