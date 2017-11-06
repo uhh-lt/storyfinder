@@ -10,8 +10,20 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <style>
     /* STYLES */
+    * {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+
+    ::before, ::after {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+
     body, h1, h2, h3, h4, h5, h6 {
-      font-family: "Lato", sans-serif
+      font-family: "Lato", sans-serif;
     }
     .w3-bar, h1, button {
       font-family: "Montserrat", sans-serif
@@ -19,6 +31,43 @@
     .fa-anchor, .fa-coffee {
       font-size:200px
     }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .avatar .logo > span {
+      line-height: 1.42857143;
+      font-size: 14px;
+      display: inline-block;
+      background: #0288d1;
+      width: 100px;
+      height: 100px;
+      overflow: hidden;
+      border-radius: 50px;
+      border: 4px solid #FFFFFF;
+      box-shadow: 5px 5px 5px #999999;
+    }
+
+    .avatar .logo > span > i:last-child {
+      position: relative;
+      margin-left: -36px;
+      top: 28px;
+      color: #b3e5fc;
+    }
+
+    .avatar .logo > span > i:first-child {
+      color: #b3e5fc;
+    }
+
+    .bluebg {
+      background: #0288d1;
+    }
+
+    .redbg {
+      background: #ff751a;
+    }
+
   </style>
 </header>
 <body>
@@ -26,28 +75,29 @@
 
 <!-- Navbar -->
 <div class="w3-top">
-  <div class="w3-bar w3-red w3-card-2 w3-left-align w3-large">
-    <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-red" href="javascript:void(0);" onclick="toggleMenu()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
+  <div class="w3-bar w3-card-2 w3-left-align w3-large bluebg">
+    <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large bluebg w3-text-white" href="javascript:void(0);" onclick="toggleMenu()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
     <a href="#" class="w3-bar-item w3-button w3-padding-large w3-white">Home</a>
-    <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Link 1</a>
-    <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Link 2</a>
-    <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Link 3</a>
-    <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Link 4</a>
+    <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white w3-text-white">Plugin</a>
+    <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white w3-text-white">Server</a>
+    <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white w3-text-white">Cite</a>
+    <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white w3-text-white">Contribute</a>
   </div>
 
   <!-- Navbar on small screens -->
-  <div id="navDemo" class="w3-bar-block w3-white w3-hide w3-hide-large w3-hide-medium w3-large">
-    <a href="#" class="w3-bar-item w3-button w3-padding-large">Link 1</a>
-    <a href="#" class="w3-bar-item w3-button w3-padding-large">Link 2</a>
-    <a href="#" class="w3-bar-item w3-button w3-padding-large">Link 3</a>
-    <a href="#" class="w3-bar-item w3-button w3-padding-large">Link 4</a>
+  <div id="smallnav" class="w3-bar-block bluebg w3-text-white w3-hide w3-hide-large w3-hide-medium w3-large">
+    <a href="#about" class="w3-bar-item w3-button w3-padding-large">About</a>
+    <a href="#plugin" class="w3-bar-item w3-button w3-padding-large">Install Plugin</a>
+    <a href="#server" class="w3-bar-item w3-button w3-padding-large">Install Server</a>
+    <a href="#contribute" class="w3-bar-item w3-button w3-padding-large">Contribute</a>
+    <a href="#cite" class="w3-bar-item w3-button w3-padding-large">Cite</a>
   </div>
 </div>
 
 <!-- Header -->
-<header class="w3-container w3-red w3-center" style="padding:128px 16px">
-  <h1 class="w3-margin w3-jumbo">START PAGE</h1>
-  <p class="w3-xlarge">Storyfinder is going to be appear here soon</p>
+<header class="w3-container w3-center w3-light-gray" style="padding:128px 16px">
+  <h1 class="w3-margin w3-jumbo">Storyfinder</h1>
+  <p class="w3-xlarge">... is going to be appear here soon</p>
   <button class="w3-button w3-black w3-padding-large w3-large w3-margin-top">Get Started</button>
 </header>
 
@@ -55,16 +105,20 @@
 <div class="w3-row-padding w3-padding-64 w3-container">
   <div class="w3-content">
     <div class="w3-twothird">
-      <h1>Lorem Ipsum</h1>
-      <h5 class="w3-padding-32">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</h5>
-
-      <p class="w3-text-grey">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Excepteur sint
-        occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-        laboris nisi ut aliquip ex ea commodo consequat.</p>
+      <h1>Install plugin for Chrome</h1>
+      <h5 class="w3-padding-32">Guide to install plugin</h5>
+      <p class="w3-text-grey">Download latest plugin here: ...</p>
     </div>
-
     <div class="w3-third w3-center">
-      <i class="fa fa-anchor w3-padding-64 w3-text-red"></i>
+      <!-- storyfinder logo -->
+      <div class="avatar text-center w3-padding-64">
+        <div class="logo text-center">
+          <span style="box-shadow: 5px 5px 5px #999999;">
+            <i class="fa fa-share-alt fa-4x"></i>
+            <i class="fa fa-share-alt fa-4x fa-rotate-90"></i>
+          </span>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -73,22 +127,55 @@
 <div class="w3-row-padding w3-light-grey w3-padding-64 w3-container">
   <div class="w3-content">
     <div class="w3-third w3-center">
-      <i class="fa fa-coffee w3-padding-64 w3-text-red w3-margin-right"></i>
+      <!-- storyfinder logo -->
+      <div class="avatar text-center w3-padding-64">
+        <div class="logo text-center">
+          <span style="box-shadow: 5px 5px 5px #999999; background: #ff751a;">
+            <i style="color: #ffe0cc;" class="fa fa-share-alt fa-4x"></i>
+            <i style="color: #ffe0cc;" class="fa fa-share-alt fa-4x fa-rotate-90"></i>
+          </span>
+        </div>
+      </div>
+      <!-- i class="fa fa-coffee w3-padding-64 w3-text-red w3-margin-right"></i -->
     </div>
 
     <div class="w3-twothird">
-      <h1>Lorem Ipsum</h1>
-      <h5 class="w3-padding-32">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</h5>
-
-      <p class="w3-text-grey">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Excepteur sint
-        occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-        laboris nisi ut aliquip ex ea commodo consequat.</p>
+      <h1>Set up your own Server</h1>
+      <h5 class="w3-padding-32">Guide to install the Server</h5>
+      <p class="w3-text-grey">Download the latest docker-compose file here: ....</p>
     </div>
   </div>
 </div>
 
+<!-- Third Grid -->
+<div class="w3-row-padding w3-padding-64 w3-container">
+  <div class="w3-content">
+    <div class="w3-twothird">
+      <h1>Contribute</h1>
+      <h5 class="w3-padding-32">Guide to develop server</h5>
+      <p class="w3-text-grey">Checkout repository here: ...</p>
+    </div>
+    <div class="w3-third w3-center">
+      <i class="fa fa-anchor w3-padding-64 w3-text-red"></i>
+    </div>
+  </div>
+</div>
+
+
 <div class="w3-container w3-black w3-center w3-opacity w3-padding-64">
-    <h1 class="w3-margin w3-xlarge">Quote of the day: live life</h1>
+    <div class="w3-content">
+      <h1 class="w3-margin w3-xlarge">How to cite:</h1>
+      <p class="w3-text-grey">Remus et al. ... (<a href="...">pre-print pdf</a>)</p>
+      <h5 class="w3-padding-32">Bibtex</h5>
+      <verbatim>...</verbatim>
+
+      <h1 class="w3-margin w3-xlarge">based on:</h1>
+      <p class="w3-text-grey">Kaufmann thesis ... (<a href="...">pdf</a>)</p>
+      <h5 class="w3-padding-32">Bibtex</h5>
+      <verbatim>...</verbatim>
+
+    </div>
+
 </div>
 
 <!-- Footer -->
@@ -107,7 +194,7 @@
 <script>
 // Used to toggle the menu on small screens when clicking on the menu button
 function toggleMenu() {
-    var x = document.getElementById("navDemo");
+    var x = document.getElementById("smallnav");
     if (x.className.indexOf("w3-show") == -1) {
         x.className += " w3-show";
     } else {
