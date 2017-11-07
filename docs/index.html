@@ -107,8 +107,18 @@
       <h1>About Storyfinder</h1>
       <h5 class="w3-padding-32">Personalized Knowledge Base Construction and <br /> Management by Browsing the Web</h5>
       <div class="w3-container w3-content w3-text-grey">
-        <p>The web with its sheer unmeasurable speed of broadcasting new data and its vast quantity of available knowledge is the first choice for information seekers. It is a user’s privilege to read or skim a webpage or bookmark it for later reference. Considering that the human memory can be deceptive, it also is a user's obligation to keep information ordered and easily accessible for later reference.</p>
-        <p>Storyfinder is an application that includes a browser plugin and a server backend in order to highlight named entities and keywords in a currently visited webpage and it provides an additional </p>
+        <p>The web with its sheer unmeasurable speed of broadcasting new data and its vast quantity of available knowledge is the first choice for information seekers. It is a user’s privilege to read or skim a webpage or bookmark it for later reference. Considering that the human memory can be deceptive, it also is a user's obligation to keep information ordered and easily accessible for later reference.
+        </p>
+        <p>Storyfinder is an application that includes a <strong>browser plugin</strong> and a <strong>server backend</strong> in order to identify and manage the information found in a web page. It highlights named entities and keywords in a currently visited webpage and provides an additional graph view of them. You can edit the nodes and edges, combine web page grpah views and search for entities and relations.
+        </p>
+        <p>Stroryfinder keeps the information you extracted found in webpages managed and provides alternative views of data for easy access. 
+        </p>
+        <div class="w3-center" >
+          <img style="max-width: 400px;" src="assets/screen1.png"></img>
+          &nbsp;
+          <!-- img style="max-width: 300px;" src="assets/screen1.png"></img-->
+        </div>
+
       </div>
     </div>
     <div class="w3-third w3-center">
@@ -121,18 +131,17 @@
           </span>
         </div>
       </div>
+      <!-- div class="w3-content text-center w3-padding-64">
+        <img style="max-width: 300px;" src="assets/screen1.png"></img>
+      </div-->
     </div>
   </div>
+
 </div>
 
 <!-- Install Plugin -->
 <div id="plugin" class="w3-row-padding w3-light-grey w3-padding-64 w3-container">
   <div class="w3-content">
-    <div class="w3-twothird">
-      <h1>Install plugin for Chrome</h1>
-      <h5 class="w3-padding-32">Guide to install plugin</h5>
-      <p class="w3-text-grey">Download latest plugin here: ...</p>
-    </div>
     <div class="w3-third w3-center">
       <!-- storyfinder logo -->
       <div class="avatar text-center w3-padding-64">
@@ -144,6 +153,46 @@
         </div>
       </div>
     </div>
+
+    <div class="w3-twothird">
+      <h1>Install plugin for Chrome</h1>
+      <!-- h5 class="w3-padding-32">Guide to install plugin</h5 -->
+      <ul class="w3-text-grey">
+        <li>
+          Download and install the latest <a href="https://www.google.com/chrome/">Google Chrome Browser</a> Application
+        </li>
+        <li>
+          Download the latest <a href="https://github.com/uhh-lt/storyfinder/releases">Storyfinder plugin</a> (.crx file)
+        </li>
+        <li>
+          Open the Extensions menu in the Google Chrome Browser
+        </li>
+        <li>
+          Drop the downloaded .crx file into the extensions window
+        </li>
+        <li>
+          Enter a valid Storyfinder server address in the Storyfinder options menu and save it
+        </li>
+        <li>
+          Create a user and log in to the Storyfinder server
+        </li>
+        <li>
+          Click the Storyfinder icon in the top right corner in order to use the Storyfinder plugin
+          <ul>
+            <li>
+              activate and deactivate entity highlighting in web pages
+            </li>
+            <li>
+              switch to a readability view of the current article
+            </li>
+            <li>
+              toggle the graph view of the current article in a side pane
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
   </div>
 </div>
 
@@ -165,12 +214,33 @@
 
     <div class="w3-twothird">
       <h1>Set up your own Server</h1>
-      <h5 class="w3-padding-32">Guide to run the server stack</h5>
-      <p class="w3-text-grey">
-Download the latest docker-compose file here: ....
-and run <br /><br />
-<code>docker-compose -f &lt;filename&gt; -p storyfinder up</code> <br /><br />
-      </p>
+      <h5>Requirements:</h5>
+      <ul class="w3-text-grey">
+        <li>
+          Docker (>= Version 17.09.0)
+        </li>
+        <li>
+          Docker Compose (>= Version 1.16.1)
+        </li>
+      </ul>
+
+      <div class="w3-text-grey">
+        <h5>Run server stack with Docker and Docker-Compose:</h5>
+        <ul>
+          <li>
+            Download the latest <code>docker-compose.yml</code> file <a href="https://github.com/uhh-lt/storyfinder/releases">here</a>.
+          </li>
+          <li>
+            run <code>docker-compose -f &lt;filename&gt; -p storyfinder up</code> and wait until the server stack is started
+          </li>
+          <li>
+            you can now access the Storyfinder web page at <a href="http://localhost:3055">http://localhost:3055</a>
+          </li>
+          <li>
+            type <code>docker-compose -f &lt;filename&gt; -p storyfinder down</code> to stop the server stack
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </div>
@@ -180,8 +250,8 @@ and run <br /><br />
   <div class="w3-content">
     <div class="w3-twothird">
       <h1>Contribute</h1>
-      <h5 class="w3-padding-32">Guide to develop server</h5>
-      <p class="w3-text-grey">Checkout repository here: ...</p>
+      <h5 class="w3-padding-32">Guidelines are under construction</h5>
+      <!-- p class="w3-text-grey">Checkout repository here: ...</p-->
     </div>
     <div class="w3-third w3-center">
       <i class="fa fa-anchor w3-padding-64 w3-text-red"></i>
@@ -190,18 +260,12 @@ and run <br /><br />
 </div>
 
 <!-- Cite -->
-<div id="cite" class="w3-container w3-black w3-center w3-opacity w3-padding-64">
+<div id="cite" class="w3-container w3-black w3-opacity w3-padding-64">
     <div class="w3-content">
       <h1 class="w3-margin w3-xlarge">How to cite:</h1>
-      <p class="w3-text-grey">Remus et al. ... (<a href="...">pre-print pdf</a>)</p>
-      <h5 class="w3-padding-32">Bibtex</h5>
-      <verbatim>...</verbatim>
-
-      <h1 class="w3-margin w3-xlarge">based on:</h1>
-      <p class="w3-text-grey">Kaufmann thesis ... (<a href="...">pdf</a>)</p>
-      <h5 class="w3-padding-32">Bibtex</h5>
-      <verbatim>...</verbatim>
-
+      <p class="w3-text-white">Steffen Remus, Manuel Kaufmann, Kathrin Ballweg, Tatiana von Landesberger, and Chris Biemann. 2017. <strong>Storyfinder: Personalized Knowledge Base Construction and Management by Browsing the Web</strong>. In Proceedings of the 26th ACM International Conference on Information and Knowledge Management. Singapore, Singapore. To appear. (<a href="...">pre-print pdf</a>, <a href="...">bibtex</a>)</p>
+      <h1 class="w3-margin w3-xlarge">Based on:</h1>
+      <p class="w3-text-white">Manuel Kaufmann. 2016. Storyfinder: Graphen zur Verbesserung des Textverstandnisses auf Webseiten. Master’s thesis, Technische Universit&auml;t, Darmstadt, Darmstadt, Germany. (<a href="...">pdf</a>)</p>
     </div>
 
 </div>
@@ -209,14 +273,8 @@ and run <br /><br />
 <!-- Footer -->
 <footer class="w3-container w3-padding-64 w3-center w3-opacity">
   <div class="w3-xlarge w3-padding-32">
-    <i class="fa fa-facebook-official w3-hover-opacity"></i>
-    <i class="fa fa-instagram w3-hover-opacity"></i>
-    <i class="fa fa-snapchat w3-hover-opacity"></i>
-    <i class="fa fa-pinterest-p w3-hover-opacity"></i>
-    <i class="fa fa-twitter w3-hover-opacity"></i>
-    <i class="fa fa-linkedin w3-hover-opacity"></i>
- </div>
- <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a></p>
+    <i class="fa fa-copyright"></i> 2017
+  </div>
 </footer>
 
 <script>
