@@ -1,5 +1,5 @@
 {
-  "name": "myproject",
+  "name": "storyfinder-prepare-dist",
   "devDependencies": {
     "copyfiles": "latest"
   },

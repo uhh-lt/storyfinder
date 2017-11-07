@@ -101,6 +101,7 @@ chrome.runtime.onMessage.addListener(function (msg, sender) {
             createReadabilityTab(msg.html);
             break;
         case "highlight-changed":
+            // delegate message from menu to contentscript to change highlighting!
             chrome.tabs.query({ active: true, windowId: mainWindowId }, function (tabs) {
                 chrome.tabs.sendMessage(tabs[0].id, { type: 'toggle-highlight', checked: msg.checked });
             });

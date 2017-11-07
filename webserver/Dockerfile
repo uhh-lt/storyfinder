@@ -19,13 +19,19 @@ WORKDIR /usr/src/app
 
 ENV NODE_ENV "development"
 
-COPY package.json /usr/src/app/
+ENV COOKIE_SECRET "s3cr31"
 
-RUN npm install
+COPY package.json /usr/src/app/
 
 COPY . /usr/src/app
 
 RUN mkdir -p /usr/src/app/public/images
+
+RUN [ -e /usr/src/app/node_modules ] && rm -f /usr/src/app/node_modules || echo "nothing to do"
+
+RUN [ -e /usr/src/app/public/js/node_modules ] && rm -f /usr/src/app/public/js/node_modules || echo "nothing to do"
+
+RUN npm install
 
 RUN cd /usr/src/app/public/js && npm install
 

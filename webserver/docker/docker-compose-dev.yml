@@ -21,8 +21,8 @@ services:
       - MYSQL_USER=storyfinder
       - MYSQL_PORT=3306
       - MYSQL_PASSWORD=storyfinder
-    #volumes:
-    #  - ${PWD}/mysql-data:/var/lib/mysql
+    volumes:
+      - ${PWD}/mysql-data-dev:/var/lib/mysql
     command: ["--character-set-server=utf8", "--collation-server=utf8_bin"]
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-pstoryfinder", "-ustoryfinder"]
@@ -37,7 +37,6 @@ services:
   corenlpserver:
     image: "kisad/corenlp-german:latest"
     healthcheck:
-      #test: ["CMD", "echo", "hello world!"]
       test: wget --post-data 'The quick brown fox jumped over the lazy dog.' 'localhost:9000/?properties={"annotators":"tokenize,ssplit,pos,ner","outputFormat":"json"}' -O -
       interval: 20s
       timeout: 10s
@@ -70,7 +69,7 @@ services:
       - NODE_ENV=development
       - COOKIE_SECRET=YOUR_COOKIE_SECRET
       - NER=corenlp
-      - NO_KEYWORDS=true
+      - NO_KEYWORDS=T
     mem_limit: 4g
     memswap_limit: 5g
     networks:

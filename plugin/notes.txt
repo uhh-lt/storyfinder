@@ -1,0 +1,15 @@
+
+# run node in docker
+
+docker run --rm -ti --name sf-plugin-build -v $(pwd):/usr/local/app -w /usr/local/ap
+p node:6 bash
+
+ $> npm install -g browserify grunt
+ $> cd /usr/local/app/src
+
+# follow instructions in src/README.md
+
+# prepare release
+
+ $> cd /usr/local/app
+ $> npm install && npm run-script copy
