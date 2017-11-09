@@ -36,24 +36,39 @@ services:
 
   corenlpserver:
     image: "kisad/corenlp-german:latest"
-    healthcheck:
-      test: wget --post-data 'The quick brown fox jumped over the lazy dog.' 'localhost:9000/?properties={"annotators":"tokenize,ssplit,pos,ner","outputFormat":"json"}' -O -
-      interval: 20s
-      timeout: 10s
-      retries: 3
-    mem_limit: 4g
-    memswap_limit: 5g
+    # healthcheck:
+    #   test: wget --post-data 'The quick brown fox jumped over the lazy dog.' 'localhost:9000/?properties={"annotators":"tokenize,ssplit,pos,ner","outputFormat":"json"}' -O -
+    #   interval: 20s
+    #   timeout: 10s
+    #   retries: 3
+    # mem_limit: 4g
+    # memswap_limit: 5g
     networks:
       sf-net:
         aliases:
           - corenlp
 
+  germanerserver:
+    image: "kisad/storyfinder-germaner:latest"
+    #image: "kisad/storyfinder-germaner-git:latest"
+    #healthcheck:
+    #  test: curl -X POST -H 'Content-Type: text/plain' -d 'Angela^MMerkel^Mbesucht^MFrankreich^M.' 'localhost:8080/germaner'
+    #  interval: 20s
+    #  timeout: 10s
+    #  retries: 3
+    #mem_limit: 4g
+    #memswap_limit: 5g
+    networks:
+      sf-net:
+        aliases:
+          - germaner
+
   webserver-dev:
     depends_on:
       mysqlserver:
         condition: service_healthy
-      corenlpserver:
-        condition: service_healthy
+      # corenlpserver:
+      #   condition: service_healthy
     build:
       context: ./
       dockerfile: Dockerfile-dev
@@ -69,7 +84,8 @@ services:
       - NODE_ENV=development
       - COOKIE_SECRET=YOUR_COOKIE_SECRET
       - NER=corenlp
-      - NO_KEYWORDS=T
+#      - NER=germaner
+      - NO_KEYWORDS=true
     mem_limit: 4g
     memswap_limit: 5g
     networks:
