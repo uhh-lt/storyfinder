@@ -2,23 +2,23 @@ var _ = require('lodash')
 	, async = require('async')
 	, fs = require('fs')
 	;
-	
+
 module.exports = function(connection, app, passport){
 	var User = new (require('../models/User.js'))(connection)
 		;
-		
+
 	/*
-	Register	
-	*/	
+	Register
+	*/
 	app.put('/Users', function(req, res){
 		if(_.isEmpty(req.body) || _.isEmpty(req.body.username) || _.isEmpty(req.body.password)){
 			return setImmediate(() => {
 				res.sendStatus(400);
 			});
-			
+
 			return;
 		}
-		
+
 		User.exists(req.body.username, (err, userexists) => {
 			if(err){
 				console.log(err);
@@ -26,7 +26,7 @@ module.exports = function(connection, app, passport){
 					res.sendStatus(500);
 				});
 			}
-						
+
 			if(userexists)
 				return setImmediate(() => {
 					res.send({
@@ -35,7 +35,7 @@ module.exports = function(connection, app, passport){
 					});
 				});
 			console.log("User exists? "+userexists);
-	
+
 			User.create(req.body, (err, user) => {
 				if(err){
 					console.log(err);
@@ -43,9 +43,9 @@ module.exports = function(connection, app, passport){
 						res.sendStatus(500);
 					});
 				}
-				
+
 				var userId = user.id;
-				
+
 				User.findById(userId, (err, user) => {
 					if(err){
 						console.log(err);
@@ -53,8 +53,8 @@ module.exports = function(connection, app, passport){
 							res.sendStatus(500);
 						});
 					}
-					
-					
+
+
 					req.login(user, function(err) {
 						if(err){
 							console.log(err);
@@ -62,7 +62,7 @@ module.exports = function(connection, app, passport){
 								res.sendStatus(500);
 							});
 						}
-						
+
 						res.send({
 							success: true,
 							id: userId
@@ -72,9 +72,9 @@ module.exports = function(connection, app, passport){
 			});
 		});
 	});
-	
+
 	/*
-	Show registration form	
+	Show registration form
 	*/
 	app.get('/register', function (req, res) {
 		fs.readFile(__dirname + '/../public/css/bootstrap.css', function(err, style){
@@ -91,9 +91,9 @@ module.exports = function(connection, app, passport){
 			});
 		});
 	});
-	
+
 	/*
-	Show login form	
+	Show login form
 	*/
 	app.get('/login', function (req, res) {
 		fs.readFile(__dirname + '/../public/css/bootstrap.css', function(err, style){
@@ -110,13 +110,13 @@ module.exports = function(connection, app, passport){
 			});
 		});
 	});
-	
+
 	/*
-	Login	
+	Login
 	*/
 
 	app.post('/login',
-		passport.authenticate('local', { successRedirect: (process.env.PATH_PREFIX || '/') + 'Users/status', failureRedirect: (process.env.PATH_PREFIX || '/') + 'asdfghjklöä' }));
+		passport.authenticate('local', { successRedirect: (process.env.PATH_PREFIX || '/') + 'Users/status', failureRedirect: (process.env.PATH_PREFIX || '/') + 'error404' }));
 
 	/*
 	Return login status
@@ -133,7 +133,7 @@ module.exports = function(connection, app, passport){
 			success: true
 		});
 	});
-	
+
 	/*
 	Logout
 	*/
