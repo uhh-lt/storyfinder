@@ -146,17 +146,19 @@ chrome.windows.onRemoved.addListener(function(windowID) {
 });
 
 chrome.windows.onFocusChanged.addListener(function(windowId) {
-    chrome.windows.get(windowId, {populate: true, windowTypes: ['normal']}, function(window) {
-        if(window !== null && window !== undefined) {
-            mainWindowId = window.id;
-            chrome.tabs.query({windowId: window.id, active:true}, function(tabs) {
-                if(tabs[0].url !== mainURL) {
-                    mainURL = tabs[0].url;
-                    onAttach();
-                }
-            });
-        }
-    });
+    if (windowId !== -1) {
+      chrome.windows.get(windowId, {populate: true, windowTypes: ['normal']}, function(window) {
+          if(window !== null && window !== undefined) {
+              mainWindowId = window.id;
+              chrome.tabs.query({windowId: window.id, active:true}, function(tabs) {
+                  if(tabs[0].url !== mainURL) {
+                      mainURL = tabs[0].url;
+                      onAttach();
+                  }
+              });
+          }
+      });
+    }
 });
 
 chrome.tabs.onActivated.addListener(function(activeInfo) {
@@ -293,7 +295,13 @@ function setArticleHelper(article, tab) {
                     bIsRelevant = response.is_relevant;
                     bIsNew = response.is_new;
 
-                    if(response.Site !== undefined){
+                    var bSiteIsDefined = response.Site !== undefined;
+
+                    console.log('site is relevant? - ' + bIsRelevant);
+                    console.log('site is new? - ' + bIsNew);
+                    console.log('site is defined? - ' + bSiteIsDefined);
+
+                    if(bSiteIsDefined){
                         siteId = response.Site.id;
                         articleId = response.Site.Article.id;
 
