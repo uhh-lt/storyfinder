@@ -234,10 +234,18 @@ module.exports = function(connection, app, passport, io){
 
 		function _isSiteRelevant(data, callback){
 			//if the field data.Site.isRelevant is set to true than the site is marked as relevant by the user
-			if(data.Article.isRelevant)return setImmediate(() => callback(null, true));
+			if(data.Article.isRelevant){
+        console.log('Article is relevant.');
+        return setImmediate(function() { callback(null, true); } );
+      }
 
 			var html = data.Article.content;
-			var rows = data.Article.plain.split(/[\.\?\!\n]/g);
+      var rows = data.Article.plain.split(/[\.\?\!\n]/g);
+
+// TODO FIXME: something seems wrong here
+console.log(data.Article.plain);
+console.log(rows);
+
 			var rowsRelevant = [];
 			for(var row of rows)
 				if(_rowIsRelevant(row))
@@ -252,7 +260,7 @@ module.exports = function(connection, app, passport, io){
 				breaks: (html.match(/\<br/g) != null)?html.match(/\<br/g).length:0, //Breaks
 				images: (html.match(/\<img/g) != null)?html.match(/\<img/g).length:0, //Image
 				tr: (html.match(/\<tr/g) != null)?html.match(/\<tr/g).length:0, //Tr
-				textratio: (total == 0)?0:((1 / total) * rowsRelevant.join('').replace(/\s/g).length)
+				textratio: (total == 0) ? 0 : ((1 / total) * rowsRelevant.join('').replace(/\s/g).length)
 			};
 
 			/*
