@@ -243,7 +243,10 @@ module.exports = function(connection, app, passport, io){
       var rows = data.Article.plain.split(/[\.\?\!\n]/g);
 
 // TODO FIXME: something seems wrong here
+console.log('plain article');
 console.log(data.Article.plain);
+
+console.log('split rows');
 console.log(rows);
 
 			var rowsRelevant = [];
@@ -262,6 +265,10 @@ console.log(rows);
 				tr: (html.match(/\<tr/g) != null)?html.match(/\<tr/g).length:0, //Tr
 				textratio: (total == 0) ? 0 : ((1 / total) * rowsRelevant.join('').replace(/\s/g).length)
 			};
+
+// TODO FIXME: something seems wrong here
+console.log('d');
+console.log(d);
 
 			/*
 
