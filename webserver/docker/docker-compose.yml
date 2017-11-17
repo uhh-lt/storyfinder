@@ -9,6 +9,7 @@ networks:
 services:
   mysqlserver:
     image: "mysql:5.5"
+    restart: unless-stopped
     environment:
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
       - MYSQL_DATABASE=storyfinder
@@ -30,6 +31,7 @@ services:
 
   corenlpserver:
     image: "kisad/corenlp-german:latest"
+    restart: unless-stopped
     healthcheck:
       test: wget --post-data 'The quick brown fox jumped over the lazy dog.' 'localhost:9000/?properties={"annotators":"tokenize,ssplit,pos,ner","outputFormat":"json"}' -O -
       interval: 90s
@@ -42,6 +44,14 @@ services:
         aliases:
           - corenlp
 
+  germanerserver:
+    image: "kisad/storyfinder-germaner-git:latest"
+    restart: unless-stopped
+    networks:
+      sf-net:
+        aliases:
+          - germaner
+
   webserver:
     image: "remstef/storyfinder:latest"
     volumes:
@@ -51,7 +61,8 @@ services:
     environment:
       - NODE_ENV=production
       - COOKIE_SECRET=92bls37gfc
-      - NER=corenlp
+      - NER=germaner
+      #- NER=corenlp
       - NO_KEYWORDS=T
     depends_on:
       mysqlserver:
