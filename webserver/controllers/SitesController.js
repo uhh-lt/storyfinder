@@ -231,7 +231,7 @@ module.exports = function(connection, app, passport, io){
 			var tokens = row.split(/\s+/);
 
 			// return ratioAlphanumeric >= 0.90 && tokens.length >= 6 && tokens.length < 25;
-            return ratioAlphanumeric >= 0.90 && tokens.length >= 6 && tokens.length < 200;
+            return ratioAlphanumeric >= 0.90 && tokens.length >= 4 && tokens.length < 200;
 		}
 
 		function _isSiteRelevant(data, callback){
@@ -253,18 +253,18 @@ console.log('split rows');
 console.log(rows);
 
             var rowsRelevant = rows.filter(row => _rowIsRelevant(row));
-			// var total = data.Article.plain.replace(/\s/g, "").length;
+	//		var total = data.Article.plain.replace(/\s/g, "").length;
             var total = rows.length;
 
 			var d = {
 				form: (html.match(/\<form/g) != null)?html.match(/\<form/g).length:0, //Form Elemente
 				input: (html.match(/\<input/g) != null)?html.match(/\<input/g).length:0, //Input Elemente
-				headlines: (html.match(/\<h\d/g) != null)?html.match(/\<h\d/g).length:0 ,//Ueberschriften
+				headlines: 1 + ( (html.match(/\<h\d/g) != null)?html.match(/\<h\d/g).length:0 ),//Ueberschriften
 				paragraphs: (html.match(/\<p/g) != null)?html.match(/\<p/g).length:0, //Paragraphs
-				breaks: (html.match(/\<br/g) != null)?html.match(/\<br/g).length:0, //Breaks
-				images: (html.match(/\<img/g) != null)?html.match(/\<img/g).length:0, //Image
+				breaks: Math.max(0, (html.match(/\<br/g) != null)?html.match(/\<br/g).length-3:0 ), //Breaks
+				images: Math.max(0, (html.match(/\<img/g) != null)?html.match(/\<img/g).length-2:0 ), //Image
 				tr: (html.match(/\<tr/g) != null)?html.match(/\<tr/g).length:0, //Tr
-				//textratio: (total == 0) ? 0 : ((1 / total) * rowsRelevant.join('').replace(/\s/g, "").length)
+				// textratio: (total == 0) ? 0 : ((1 / total) * rowsRelevant.join('').replace(/\s/g, "").length)
                 textratio: (total === 0) ? 0 : (rowsRelevant.length / total)
 			};
 
