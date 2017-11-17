@@ -241,6 +241,7 @@ module.exports = function(connection, app, passport, io){
 
 			var html = data.Article.content;
       var rows = data.Article.plain.split(/[\.\?\!\n]/g);
+      rows = rows.filter(string => string !== "");
 
 // TODO FIXME: something seems wrong here
 console.log('plain article');
@@ -263,7 +264,7 @@ console.log(rows);
 				breaks: (html.match(/\<br/g) != null)?html.match(/\<br/g).length:0, //Breaks
 				images: (html.match(/\<img/g) != null)?html.match(/\<img/g).length:0, //Image
 				tr: (html.match(/\<tr/g) != null)?html.match(/\<tr/g).length:0, //Tr
-				textratio: (total == 0) ? 0 : ((1 / total) * rowsRelevant.join('').replace(/\s/g).length)
+				textratio: (total == 0) ? 0 : ((1 / total) * rowsRelevant.join('').replace(/\s/g, "").length)
 			};
 
 // TODO FIXME: something seems wrong here
