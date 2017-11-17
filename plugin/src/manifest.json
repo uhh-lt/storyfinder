@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Storyfinder",
-  "version": "0.0.9",
+  "version": "0.0.12",
   "author": "Language Technology Group - University of Hamburg",
   "description": "Graph based information and knowledge management of websites and entities.",
   "homepage_url": "https://uhh-lt.github.io/storyfinder/",
