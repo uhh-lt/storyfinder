@@ -223,13 +223,15 @@ module.exports = function(connection, app, passport, io){
 		}
 
 		function _rowIsRelevant(row){
-			row = row.replace(/^\s+/g,'').replace(/\s+$/g,'');
+			row = row.trim();
 			if(row.length == 0)return false;
-			var cntAlphanumeric = row.length - row.replace(/[A-Za-z\-\,\.\?\s]/g,'').length;
-			var ratioAlphanumeric = 1 / row.length * cntAlphanumeric;
+
+			var cntAlphanumeric = row.length - row.replace(/[0-9A-ZÄÖÜa-zäöüß\-\,\.\?\s]/g,'').length;
+			var ratioAlphanumeric = cntAlphanumeric / row.length;
 			var tokens = row.split(/\s+/);
 
-			return ratioAlphanumeric >= 0.90 && tokens.length >= 6 && tokens.length < 25;
+			// return ratioAlphanumeric >= 0.90 && tokens.length >= 6 && tokens.length < 25;
+            return ratioAlphanumeric >= 0.90 && tokens.length >= 6 && tokens.length < 200;
 		}
 
 		function _isSiteRelevant(data, callback){
@@ -241,7 +243,7 @@ module.exports = function(connection, app, passport, io){
 
 			var html = data.Article.content;
       var rows = data.Article.plain.split(/[\.\?\!\n]/g);
-      rows = rows.filter(string => string !== "");
+      rows = rows.filter(string => string.trim() !== "");
 
 // TODO FIXME: something seems wrong here
 console.log('plain article');
@@ -250,11 +252,9 @@ console.log(data.Article.plain);
 console.log('split rows');
 console.log(rows);
 
-			var rowsRelevant = [];
-			for(var row of rows)
-				if(_rowIsRelevant(row))
-					rowsRelevant.push(row);
-			var total = data.Article.plain.replace(/\s/g).length;
+            var rowsRelevant = rows.filter(row => _rowIsRelevant(row));
+			// var total = data.Article.plain.replace(/\s/g, "").length;
+            var total = rows.length;
 
 			var d = {
 				form: (html.match(/\<form/g) != null)?html.match(/\<form/g).length:0, //Form Elemente
@@ -264,7 +264,8 @@ console.log(rows);
 				breaks: (html.match(/\<br/g) != null)?html.match(/\<br/g).length:0, //Breaks
 				images: (html.match(/\<img/g) != null)?html.match(/\<img/g).length:0, //Image
 				tr: (html.match(/\<tr/g) != null)?html.match(/\<tr/g).length:0, //Tr
-				textratio: (total == 0) ? 0 : ((1 / total) * rowsRelevant.join('').replace(/\s/g, "").length)
+				//textratio: (total == 0) ? 0 : ((1 / total) * rowsRelevant.join('').replace(/\s/g, "").length)
+                textratio: (total === 0) ? 0 : (rowsRelevant.length / total)
 			};
 
 // TODO FIXME: something seems wrong here
