@@ -344,7 +344,7 @@ module.exports = function (store) {
 	    vis = new Vis(store),
 	    search = new Search(store, vis);
 
-    const CHROME_PLUGIN_ID = "oeciegkbdcmelkbffhodhelmbmkgfhcm";
+    const CHROME_PLUGIN_ID = "hnndfanecdfnonofigcceaahflgfpgbd";
 
 	store.subscribe(function () {
 		var state = store.getState().storyfinder;

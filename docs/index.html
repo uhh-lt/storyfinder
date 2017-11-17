@@ -184,6 +184,11 @@
         </li>
         <li>
           Enter a valid Storyfinder server address in the Storyfinder options menu and save it
+          <ul>
+            <li>A demo server is running at <a href="http://ltdemos.informatik.uni-hamburg.de:8090">http://ltdemos.informatik.uni-hamburg.de:8090</a></li>
+            <li>Note that the server is not secure and we do not take responsibility for your data, this server is for research and demo purposes only!</li>
+            <li>Please set up your own server for production purposes (see <a href="#server">"Set up your own Server"</a>).</li>
+          </ul>
         </li>
         <li>
           Create a user and log in to the Storyfinder server
@@ -203,6 +208,8 @@
           </ul>
         </li>
       </ul>
+      <h5>License:</h5>
+      <p>The Chrome plugin is licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Version 2 License</a>.</p>
     </div>
 
   </div>
@@ -236,9 +243,9 @@
         </li>
       </ul>
 
-      <div class="w3-text-grey">
+      <div>
         <h5>Run server stack with Docker and Docker-Compose:</h5>
-        <ul>
+        <ul class="w3-text-grey">
           <li>
             Download the latest <code>docker-compose.yml</code> file <a href="https://github.com/uhh-lt/storyfinder/releases">here</a>.
           </li>
@@ -253,6 +260,8 @@
           </li>
         </ul>
       </div>
+      <h5>License:</h5>
+      <p>The webserver is licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Version 2 License</a>.</p>
     </div>
   </div>
 </div>
@@ -262,8 +271,18 @@
   <div class="w3-content">
     <div class="w3-twothird">
       <h1>Contribute</h1>
-      <h5 class="w3-padding-32">Guidelines are under construction</h5>
-      <!-- p class="w3-text-grey">Checkout repository here: ...</p-->
+      <div class="w3-panel w3-padding-32">
+        <h5>Guidelines are under construction</h5>
+        <p class="w3-text-grey">Source Code is available <a href="https://github.com/uhh-lt/storyfinder">here</a>.</p>
+        <h5>People:</h5>
+        <p class="w3-text-grey">Maintainers:
+          <ul>
+            <li><a href="https://www.inf.uni-hamburg.de/en/inst/ab/lt/people/steffen-remus.html">Steffen Remus</a> (<a href="https://github.com/remstef">@remstef</a>)</li>
+            <li>Tim Fischer (<a href="https://github.com/bigabig">@bigabig</a>)</li>
+            <li>Main developer (past): Manuel Kaufmann (<a href="https://github.com/mt-k">@mt-k</a>)</li>
+          </ul>
+        </p>
+      </div>
     </div>
     <div class="w3-third w3-center">
       <i class="fa fa-anchor w3-padding-64 w3-text-red"></i>
@@ -285,7 +304,7 @@
 <!-- Footer -->
 <footer class="w3-container w3-padding-64 w3-center w3-opacity">
   <div class="w3-xlarge w3-padding-32">
-    <i class="fa fa-copyright"></i> 2017
+    <i class="fa fa-copyright"></i> <script>document.write(new Date().getFullYear())</script>
   </div>
 </footer>
 
