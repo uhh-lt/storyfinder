@@ -400,4 +400,12 @@ module.exports = function(db, alias, tbl){
 	}
 	
 	this.insert = insert;
+
+	function deleteById() {
+		var id  = arguments[0];
+		var q = 'DELETE FROM `' + tbl + '` WHERE id='+id;
+		db.query(q);
+	}
+
+	this.deleteById = deleteById;
 };

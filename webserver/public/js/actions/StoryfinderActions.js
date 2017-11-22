@@ -258,6 +258,37 @@ export function receiveCreateRelation(data){
 	}
 }
 
+export function deleteRelation(id) {
+    return function(dispatch){
+        dispatch(requestDeleteRelation());
+
+        return fetch('/Relations/' + id, {
+            method: 'DELETE',
+            credentials: 'same-origin'
+        })
+            .then(response => response.json())
+            .then(json => {
+                dispatch(receiveDeleteRelation(json));
+            }).catch(err => {
+                dispatch(receiveDeleteRelation({}));
+            })
+    }
+}
+
+export function requestDeleteRelation(){
+    return {
+        type: types.REQUEST_DELETE_RELATION
+    };
+}
+
+export function receiveDeleteRelation(data) {
+    return {
+        type: types.RECEIVE_DELETE_RELATION,
+        data: data
+    };
+}
+
+
 /*export function selectLayer(path, layerId) {
 	return function(dispatch){
 		path = path.push(layerId);

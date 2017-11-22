@@ -97,6 +97,14 @@ module.exports = function(connection, app, passport){
 			res.send(result);
 		});
 	});
+
+	app.delete('/Relations/:entityId', ensureLoggedIn((process.env.PATH_PREFIX || '/') + 'login'), function (req, res) {
+        var entityId = parseInt(req.params.entity1Id);
+
+		Relation.deleteById(entityId);
+
+		res.sendStatus(200);
+    });
 	
 	/*
 		Memo functions	

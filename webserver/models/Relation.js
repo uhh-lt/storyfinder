@@ -58,6 +58,14 @@ module.exports = function(db){
 	}
 	
 	this.getByEntities = getByEntities;
+
+	function deleteById() {
+		var id = arguments[0];
+
+		datasource.deleteById(id);
+	}
+
+	this.deleteById = deleteById;
 	
 	function getBetweenEntities(/*entity1Id, entity2Id, [options, ]callback*/){
 		var entity1 = arguments[0]

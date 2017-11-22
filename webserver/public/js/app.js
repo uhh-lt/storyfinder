@@ -15,6 +15,8 @@ var d3 = require('d3')
 	, _ = require('lodash')
 	;
 
+var CHROME_PLUGIN_ID = "pebdjeaapfkjiceloeecpoedbliefnap";
+
 module.exports = function(store){
 	var nodeDetails = document.body.querySelector('.node-details')
 		, relationDetails = document.body.querySelector('.relation-details')
@@ -756,10 +758,14 @@ module.exports = function(store){
 	{
 		var origin = event.origin || event.originalEvent.origin; // For Chrome, the origin property is in the event.originalEvent object.
 
-		if (origin !== "resource://storyfinder-at-lt-dot-informatik-dot-tu-darmstadt-dot-de" && origin !== "resource://storyfinder"){
-			console.log('Origin mismatch:', origin);
-			return;
-		}
+        // show the event for debugging purposes
+        // TODO: deleteme
+        console.log(event);
+
+        if (origin !== "chrome-extension://"+CHROME_PLUGIN_ID) {
+            console.log('Origin mismatch:', origin);
+            return;
+        }
 						
 		switch(event.data.action){
 			case 'open':
