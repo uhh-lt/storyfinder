@@ -15,6 +15,8 @@ var d3 = require('d3')
 	, _ = require('lodash')
 	;
 
+var CHROME_PLUGIN_ID = "pebdjeaapfkjiceloeecpoedbliefnap";
+
 module.exports = function(store){
 	var nodeDetails = document.body.querySelector('.node-details')
 		, relationDetails = document.body.querySelector('.relation-details')
@@ -29,7 +31,7 @@ module.exports = function(store){
 		, vis = new Vis(store)
 		, search = new Search(store, vis)
 		;
-	
+
 	store.subscribe(() => {
 		var state = store.getState().storyfinder;
 		search.clear();
@@ -66,7 +68,7 @@ module.exports = function(store){
 				vis.update();*/
 			break;
 			case 'entity':
-			
+
 			break;
 			case 'localgraph-to-global':
 				unfocusSites();
@@ -88,7 +90,7 @@ module.exports = function(store){
 			break;
 			case 'localgraph-to-localgraph':
 				graphTitle.innerHTML = tplGraphtitle(state.toJSON());
-				
+
 				d3.json('/Graphs/Site/' + state.get('site_id'), function (error, graph) {
 					d3.select('svg').attr('class', 'grayscale');
 					vis.focus(graph, function(){
@@ -99,7 +101,7 @@ module.exports = function(store){
 			case 'graph-to-localgraph':
 				graphTitle.classList.add('site');
 				graphTitle.innerHTML = tplGraphtitle(state.toJSON());
-				
+
 				d3.json('/Graphs/Site/' + state.get('site_id'), function (error, graph) {
 					d3.select('svg').attr('class', 'grayscale');
 					vis.focus(graph, function(){
@@ -113,7 +115,7 @@ module.exports = function(store){
 			case 'graph-to-groupgraph':
 				graphTitle.classList.add('group');
 				graphTitle.innerHTML = tplGraphtitle(state.toJSON());
-				
+
 				d3.json('/Graphs/Group/' + state.get('site_ids').join(';'), function (error, graph) {
 					d3.select('svg').attr('class', 'grayscale');
 					vis.focus(graph, function(){
@@ -124,7 +126,7 @@ module.exports = function(store){
 			case 'localgraph-to-groupgraph':
 				graphTitle.classList.add('group');
 				graphTitle.innerHTML = tplGraphtitle(state.toJSON());
-				
+
 				d3.json('/Graphs/Group/' + state.get('site_ids').join(';'), function (error, graph) {
 					d3.select('svg').attr('class', 'grayscale');
 					vis.focus(graph, function(){
@@ -134,7 +136,7 @@ module.exports = function(store){
 			break;
 			case 'groupgraph-to-groupgraph':
 				graphTitle.innerHTML = tplGraphtitle(state.toJSON());
-				
+
 				d3.json('/Graphs/Group/' + state.get('site_ids').join(';'), function (error, graph) {
 					d3.select('svg').attr('class', 'grayscale');
 					vis.focus(graph, function(){
@@ -146,7 +148,7 @@ module.exports = function(store){
 				graphTitle.classList.remove('group');
 				graphTitle.classList.add('site');
 				graphTitle.innerHTML = tplGraphtitle(state.toJSON());
-				
+
 				d3.json('/Graphs/Site/' + state.get('site_id'), function (error, graph) {
 					d3.select('svg').attr('class', 'grayscale');
 					vis.focus(graph, function(){
@@ -188,7 +190,7 @@ module.exports = function(store){
 			case 'receive-save-node':
 				nodeCreate.classList.remove('active');
 				vis.addNode(state.get('node').toJS(), function(){
-					
+
 				});
 				store.dispatch(actions.showGlobal());
 			break;
@@ -203,7 +205,7 @@ module.exports = function(store){
 						state.getIn(['relation']).toJS()
 					]
 				}, function(){
-					
+
 				});
 				store.dispatch(actions.showGraph());
 			break;
@@ -212,12 +214,12 @@ module.exports = function(store){
 			break;
 		}
 	})
-	
+
 	function unfocusSites(){
 		for (var el of siteList.querySelectorAll('ul > li'))
 			el.classList.remove('focused');
 	}
-	
+
 	/*function nextSite(){
 		d3.json('/' + userId + '/sites/' + siteId + '/graph', function (error, graph) {
 			vis.update(graph, function(){
@@ -225,75 +227,75 @@ module.exports = function(store){
 			});
 		});
 	}*/
-	
+
 	function focusSite(id){
 		store.dispatch(actions.toLocalgraph(id));
 	}
-	
+
 	function focusGroup(ids){
 		store.dispatch(actions.toGroupgraph(ids));
 	}
-	
+
 	function current(){
 		d3.json('/Graphs', function (error, graph) {
 			//sites = graph.sites;
-			
+
 			//ToDo: Seiten laden
 			//redrawSitelist();
-			
+
 			vis.update(graph, function(){
 				d3.select('svg').attr('class', '');
 			});
 		});
 	}
-	
+
 	function showRelations(){
 		var tabs = nodeDetails.querySelector('.tabs');
 		tabs.querySelector('.selected').className = '';
 		tabs.querySelector('[data-toggle="show-relations"]').className = 'selected';
 		var nodeId = nodeDetails.getAttribute('data-id');
-		
+
 		var body = nodeDetails.querySelector('.content-body');
 		body.innerHTML = '<i class="fa fa-spinner fa-spin fa-3x"></i>';
-		
+
 		d3.json('/Relations/Entity/' + nodeId, function(json){
 			body.innerHTML = tplRelations(json);
 		});
 	}
-	
+
 	function showSources(){
 		var tabs = nodeDetails.querySelector('.tabs');
 		tabs.querySelector('.selected').className = '';
 		tabs.querySelector('[data-toggle="show-sources"]').className = 'selected';
 		var nodeId = nodeDetails.getAttribute('data-id');
-		
+
 		var body = nodeDetails.querySelector('.content-body');
 		body.innerHTML = '<i class="fa fa-spinner fa-spin fa-3x"></i>';
-		
+
 		d3.json('/Entities/' + nodeId, function(json){
 			json.Sites.forEach(function(site){
 				if(_.isUndefined(site.Article.sentences))
 					site.Article.sentences = [];
-				
+
 				site.sentencesMore = (site.Article.sentences.length > 3)?(site.Article.sentences.length - 3):false;
 			});
-			
+
 			body.innerHTML = tplSites(json);
-			
+
 			//Scale elements equaly
 			var prevY = null
 				, sitesByY = {}
 				;
-			
+
 			function rescale(y){
 				var row = sitesByY[y];
-				
+
 				var max = 0;
 				row.forEach(function(c){
 					if(c.height > max)
 						max = c.height;
 				});
-				
+
 				row.forEach(function(c){
 					var s = d3.select(c.el).select('.sentences');
 					var h = s.node().getBoundingClientRect().height;
@@ -301,100 +303,100 @@ module.exports = function(store){
 					s.style('min-height', h + ((max - c.height)) + 'px');
 				});
 			}
-			
+
 			d3.select(body).selectAll('.site').each(function(d){
 				var rect = this.getBoundingClientRect();
 				var y = rect.top;
-				
+
 				if(prevY != y && prevY != null){
 					rescale(prevY);
-					
+
 					rect = this.getBoundingClientRect();
 					y = rect.top;
 				}
-				
+
 				if(_.isUndefined(sitesByY[y]))
 					sitesByY[y] = [];
-				
+
 				sitesByY[y].push({
 					el: this,
 					height: rect.height
 				});
-				
-				prevY = y;				
+
+				prevY = y;
 			});
-			
+
 			if(!_.isNull(prevY))
 				rescale(prevY);
 		});
 	}
-	
+
 	/*document.querySelector('#btn').addEventListener('click', nextSite);
 	document.querySelector('#btn-current').addEventListener('click', current);
-	
+
 	document.querySelector('#btn-focus').addEventListener('click', function(){
 		d3.json('/1/sites/' + siteId + '/graph', function (error, graph) {
 			d3.select('svg').attr('class', 'grayscale');
 			siteId++;
 			vis.focus(graph, function(){
-				
+
 			});
 		});
 	});
-	
+
 	document.querySelector('#btn-gray').addEventListener('click', function(){
 		d3.select('svg').attr('class', 'grayscale');
 	});*/
-	
+
 	var svgDelegate = new Delegate(document.querySelector('svg'));
-	
-	svgDelegate.on('mouseover', '.close-card', function(event){	
+
+	svgDelegate.on('mouseover', '.close-card', function(event){
 		this.classList.add('hover');
 	});
-	
-	svgDelegate.on('mouseover', '.close-card', function(event){	
+
+	svgDelegate.on('mouseover', '.close-card', function(event){
 		this.classList.remove('hover');
 	});
-	
-	svgDelegate.on('click', '.close-card', function(event){	
+
+	svgDelegate.on('click', '.close-card', function(event){
 		vis.closeNode(this.parentNode.parentNode, function(){
-			
+
 		});
 		return false;
 	});
-	
+
 	svgDelegate.on('click', '.actions-more', function(event){
-		vis.showDetails(this.parentNode.parentNode.parentNode, function(el, data){		
+		vis.showDetails(this.parentNode.parentNode.parentNode, function(el, data){
 			showSources();
 		});
 		return false;
 	});
-	
+
 	svgDelegate.on('click', '.actions-expand', function(event){
 		//store.dispatch(actions.expandNode(d3.select(this.parentNode.parentNode).datum().id));
 		vis.toggleNode(this.parentNode.parentNode.parentNode, function(){
-			
+
 		});
 		return false;
 	});
-	
+
 	svgDelegate.on('click', '.actions-link', function(event){
 		vis.toggleLinkMode(this.parentNode.parentNode.parentNode);
 		/*vis.toggleNode(this.parentNode.parentNode.parentNode, function(){
-			
+
 		});*/
 		return false;
 	});
-	
+
 	svgDelegate.on('click', '.delete', function(event){
 		if(confirm('Sure?')){
 			vis.deleteNode(this.parentNode.parentNode.parentNode, function(){
-				
+
 			});
 		}
 		return false;
 	});
-	
+
 	svgDelegate.on('click', '.add-target', function(event){
 		/*vis.addNode(
 		{
@@ -409,61 +411,61 @@ module.exports = function(store){
 		store.dispatch(actions.createNode({}));
 		return false;
 	});
-	
+
 	svgDelegate.on('click', '.label', function(event){
 		vis.selectNode(this);
 		return false;
 	});
-	
+
 	svgDelegate.on('click', '.link > path', function(event){
 		store.dispatch(actions.toRelation(this.parentNode.getAttribute('data-sourceId'), this.parentNode.getAttribute('data-targetId')));
 		return false;
 	});
-	
+
 	svgDelegate.on('click', '.background', function(event){
 		vis.closeAll(function(){
-			
+
 		});
 		return false;
 	});
-	
+
 	var detailsDelegate = new Delegate(document.querySelector('.node-details'));
 	detailsDelegate.on('click', '.btn-back', function(event){
 		vis.hideDetails();
 		return false;
 	});
-	
+
 	detailsDelegate.on('click', '[data-toggle="show-relations"]', function(event){
 		showRelations();
 		return false;
 	});
-	
+
 	detailsDelegate.on('click', '[data-toggle="show-sources"]', function(event){
 		showSources();
 		return false;
 	});
-	
+
 	detailsDelegate.on('click', '.relation', function(event){
 		store.dispatch(actions.toRelation(this.parentNode.parentNode.parentNode.parentNode.getAttribute('data-id'), this.getAttribute('data-id')));
 	});
-	
+
 	detailsDelegate.on('click', '.sentences-more', function(event){
 		this.parentNode.classList.toggle('showOverflow');
 		this.blur();
 		return false;
 	});
-	
+
 	var rdetailsDelegate = new Delegate(document.querySelector('.relation-details'));
 	rdetailsDelegate.on('click', '.btn-back, .btn-cancel', function(event){
 		store.dispatch(actions.toGraph());
 		return false;
 	});
-	
+
 	rdetailsDelegate.on('click', '.btn-create', function(event){
 		store.dispatch(actions.createRelation(this.getAttribute('data-entity1'), this.getAttribute('data-entity2'), this.parentNode.parentNode.querySelector('input').value));
 		return false;
 	});
-	
+
 	rdetailsDelegate.on('keyup', 'li input', function(event){
 		if(this.value.length > 0){
 			this.parentNode.querySelector('.btn').classList.remove('disabled');
@@ -472,14 +474,14 @@ module.exports = function(store){
 		}
 		return false;
 	});
-	
+
 	rdetailsDelegate.on('click', 'li .btn', function(event){
 		var sentenceId = this.getAttribute('data-sentence-id')
 			, entity1Id = this.getAttribute('data-entity1-id')
 			, entity2Id = this.getAttribute('data-entity2-id')
 			, label = this.parentNode.parentNode.querySelector('input').value
 			;
-			
+
 		fetch('/Relations/' + entity1Id + '/' + entity2Id, {
 			method: 'PUT',
 			headers: {
@@ -496,7 +498,7 @@ module.exports = function(store){
 	        if (response.status >= 400) {
 	            throw new Error("Bad response from server");
 	        }
-	             
+
 	        return response.json();
 	    }).then(json => {
 	        relationDetails.classList.remove('active');
@@ -506,77 +508,77 @@ module.exports = function(store){
 					json.Relation
 				]
 			}, function(){
-				
+
 			});
 			store.dispatch(actions.showGlobal());
 		});
-			
+
 		return false;
 	});
-		
+
 	var createNodeDelegate = new Delegate(nodeCreate);
 	createNodeDelegate.on('click', '.btn-back', function(event){
 		store.dispatch(actions.toGraph());
 		return false;
 	});
-	
+
 	createNodeDelegate.on('click', '.btn-save', function(event){
-		var form = nodeCreate.querySelector('form');		
+		var form = nodeCreate.querySelector('form');
 		var obj = serialize(form, { hash: true });
 
 		store.dispatch(actions.saveNode(obj));
 		return false;
 	});
-	
+
 	var titleDelegate = new Delegate(graphTitle);
 	titleDelegate.on('click', '.btn-back', function(event){
 		store.dispatch(actions.toGlobal());
 		return false;
 	});
-	
+
 	titleDelegate.on('click', '.btn-menu', function(event){
 		menu.classList.add('active');
 		return false;
 	});
-	
+
 	var menuDelegate = new Delegate(menu);
-	
+
 	menuDelegate.on('click', '.btn-open-site', function(event){
 		window.open(this.getAttribute('href'));
 		return false;
 	});
-	
+
 	menuDelegate.on('click', '[data-toggle="focus-website"]', function(event){
-		if(!event.metaKey){		
-			unfocusSites();	
-			menu.classList.remove('active');	
+		if(!event.metaKey){
+			unfocusSites();
+			menu.classList.remove('active');
 			this.classList.add('focused');
 			var id = this.getAttribute('data-id');
 			focusSite(id);
 			return false;
 		}else{
-			//menu.classList.remove('active');	
+			//menu.classList.remove('active');
 			this.classList.add('focused');
-			
+
 			var ids = [];
-			
+
 			for (var el of siteList.querySelectorAll('ul > li.focused'))
 				ids.push(el.getAttribute('data-id'));
 
 			console.log('Focusing', ids);
 			focusGroup(ids);
-			
+
 			return false;
 		}
 	});
-	
+
 	menuDelegate.on('click', '.btn-menu', function(event){
 		menu.classList.remove('active');
 		return false;
 	});
-	
+
 	var relevantDelegate = new Delegate(document.querySelector('#site-not-relevant'));
-	
+
 	relevantDelegate.on('click', 'a[data-action="dismiss"]', function(event){
 		document.querySelector('#site-not-relevant > .dialog-overlay').classList.remove('active');
 		return false;
@@ -585,33 +587,33 @@ module.exports = function(store){
 	relevantDelegate.on('click', 'a[data-action="add"]', function(event){
 		document.querySelector('#site-not-relevant > .dialog-overlay').classList.remove('active');
 		var url = document.querySelector('#site-not-relevant a[data-action="add"]').getAttribute('data-url');
-		
+
 		//Send message to plugin
 		if(typeof parent != null)
 			parent.postMessage(["msg", {
 				action: 'parseSite',
 				url: url
 			}], "*");
-		
+
 		return false;
 	});
-		
+
 	/*document.querySelector('#btn-save').addEventListener('click', function(){
 		encode_as_img_and_link();
 	});*/
-	
+
 	function encode_as_img_and_link(){
 		//get svg element.
 		var svg = document.querySelector("svg");
 		var style = document.querySelector('style').innerHTML;
-		
+
 		d3.select(svg).append('style').attr({type: 'text/css', media: 'screen'})
 	       .text(style);
-		
+
 		//get svg source.
 		var serializer = new XMLSerializer();
 		var source = serializer.serializeToString(svg);
-		
+
 		//add name spaces.
 		if(!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)){
 		    source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
@@ -619,18 +621,18 @@ module.exports = function(store){
 		if(!source.match(/^<svg[^>]+"http\:\/\/www\.w3\.org\/1999\/xlink"/)){
 		    source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
 		}
-		
+
 		//add xml declaration
 		source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
-		
+
 		//convert svg source to URI data scheme.
 		var url = "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(source);
-		
+
 		//set url value to a element's href attribute.
 		window.open(url);
 		//you can download svg file by right click menu.
 	}
-	
+
 	function loadSites(page){
 		fetch('/Sites', {
 			credentials: 'same-origin'
@@ -639,7 +641,7 @@ module.exports = function(store){
 	        if (response.status >= 400) {
 	            throw new Error("Bad response from server");
 	        }
-	            
+
 	        return response.json();
 	    }).then(json => {
 			  console.log(json.sites);
@@ -647,61 +649,61 @@ module.exports = function(store){
 			redrawSitelist();
 		});
 	}
-	
+
 	function redrawSitelist(){
 		var html = [];
 		var currentSite = null;
 		if(sites.length > 0)
 			sites.forEach(function(site){
 				if(_.isNull(site) || _.isUndefined(site.url) || _.isNull(site.url) || site.url.length == 0)return;
-				
+
 				var isNew = false;
 				if(currentSite != site.host){
 					currentSite = site.host;
 					isNew = true;
 				}
-				
+
 				var shortUrl = site.url.substr(site.host.length);
 				var shortHost = site.host.replace(/^http(s)?\:\/\//,'').replace(/^www\./,'');
-				
+
 				shortUrl = shortUrl.replace(/^\//,'');
-				
+
 				if(!_.isUndefined(site.title) && !_.isNull(site.title) && site.title.length > 0)
 					shortUrl = site.title;
-					
+
 				if(shortUrl.length == 0)
 					shortUrl = site.url;
-				
+
 				html.push('<li class="' + (isNew?'new-site':'') + '" data-id="' + site.id + '" data-toggle="focus-website">' + (_.isNull(site.favicon)?('<div class="favicon-placeholder">' + shortHost.substr(0, 1) + '</div>'):'<img class="favicon" src="' + site.favicon + '" />') + '<div class="host">' + shortHost + '</div><div class="url">' + shortUrl + '</div><a class="btn-open-site" href="' + site.url + '" target="blank"><i class="material-icons">launch</i></a></li>');
 			});
-		
+
 		document.querySelector('.websites > .site-list > ul').innerHTML = html.join('');
 	}
-	
+
 	function showSiteNotRelevant(data){
 		document.querySelector('#site-not-relevant a[data-action="add"]').setAttribute('data-url', data.url);
 		document.querySelector('#site-not-relevant > .dialog-overlay').classList.add('active');
 	}
-	
+
 	function hideSiteNotRelevant(data){
 		document.querySelector('#site-not-relevant > .dialog-overlay').classList.remove('active');
 	}
-	
+
 	function activate(){
 		isActive = true;
 	}
-	
+
 	function deactivate(){
 		isActive = false;
 	}
-	
+
 	var _handleResize = _.debounce(function(){
 		vis.handleResize();
 	}, 300);
-	
+
 	current();
 	loadSites();
-		
+
 	io.on('new_site', function(site){
 		if(!isActive)return false;
 		//alert('Received site');
@@ -716,22 +718,22 @@ module.exports = function(store){
 			graphTitle.innerHTML = tplGraphtitle(store.getState().storyfinder.toJSON());
 		}
 	});
-	
+
 	io.on('parsing_site', function(site){
 		if(!isActive)return false;
 		search.clear();
 		graphTitle.innerHTML = tplGraphtitle({loading: true});
 	});
-	
+
 	io.on('done_parsing_site', function(site){
 		if(!isActive)return false;
 		graphTitle.innerHTML = tplGraphtitle(store.getState().storyfinder.toJSON());
 	});
-	
+
 	io.on('new_entity', function(data){
 		if(!isActive)return false;
 		search.clear();
-		
+
 		if(typeof parent != 'undefined' && parent != null){
 			parent.postMessage(["msg", {
 				action: 'newEntity',
@@ -739,15 +741,15 @@ module.exports = function(store){
 			}], "*");
 		}
 	});
-	
+
 	/*
-	Plugin Events	
+	Plugin Events
 	*/
-	
+
 	document.querySelector('.btn-photo').addEventListener('click', () => {
 		encode_as_img_and_link();
 	});
-	
+
 	window.addEventListener("message", receiveMessage, false);
 
 	window.addEventListener("resize", _handleResize);
@@ -756,14 +758,18 @@ module.exports = function(store){
 	{
 		var origin = event.origin || event.originalEvent.origin; // For Chrome, the origin property is in the event.originalEvent object.
 
-		if (origin !== "resource://storyfinder-at-lt-dot-informatik-dot-tu-darmstadt-dot-de" && origin !== "resource://storyfinder"){
-			console.log('Origin mismatch:', origin);
-			return;
+		// show the event for debugging purposes
+		// TODO: deleteme
+		console.log(event);
+
+		if (origin !== "chrome-extension://"+CHROME_PLUGIN_ID) {
+				console.log('Origin mismatch:', origin);
+				return;
 		}
-						
+
 		switch(event.data.action){
 			case 'open':
-				vis.showDetailsForId(event.data.data, function(el, data){		
+				vis.showDetailsForId(event.data.data, function(el, data){
 					showSources();
 				});
 			break;
@@ -790,6 +796,6 @@ module.exports = function(store){
 			break;
 		}
 	}
-	
+
 	//store.dispatch(actions.initializeGlobal());
 }
