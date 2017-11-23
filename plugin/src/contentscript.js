@@ -137,7 +137,7 @@ function Storyfinder() {
         //1)
         var elementList = document.querySelectorAll('*');
         for (var i = 0; i < elementList.length; i++) {
-            elementList[i].setAttribute('__sf__eid', i++);
+            elementList[i].setAttribute('__sf__eid', i);
         }
 
         //4)

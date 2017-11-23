@@ -119,7 +119,7 @@ chrome.runtime.onMessage.addListener(function (msg, sender) {
                     addToHighlighting(msg.data.data);
                     break;
                 case 'refreshHighlighting':
-                    console.log('Refresh Highlighting:', msg.data);
+                    console.log('Refresh Highlighting from server:', msg.data);
                     // der Message das gelöschte oder gemergte objekt hinzufügen!
                     onAttach();
                     break;
