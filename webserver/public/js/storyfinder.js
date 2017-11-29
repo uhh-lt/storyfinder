@@ -298,11 +298,11 @@ function receiveCreateRelation(data) {
 }
 
 /*export function selectLayer(path, layerId) {
-	return function(dispatch){asdf
+	return function(dispatch){
 		path = path.push(layerId);
-
+		
 		dispatch(requestLayers(path));
-
+	
 		return fetch('http://127.0.0.1:3000/Layers.json?path=' + path.toJS().join('/') + '&fields=data')
 			.then(response => response.json())
 			.then(json => {
@@ -330,6 +330,8 @@ var d3 = require('d3'),
     Search = require('./search.js'),
     _ = require('lodash');
 
+var CHROME_PLUGIN_ID = "pebdjeaapfkjiceloeecpoedbliefnap";
+
 module.exports = function (store) {
 	var nodeDetails = document.body.querySelector('.node-details'),
 	    relationDetails = document.body.querySelector('.relation-details'),
@@ -343,8 +345,6 @@ module.exports = function (store) {
 	    isActive = true,
 	    vis = new Vis(store),
 	    search = new Search(store, vis);
-
-    const CHROME_PLUGIN_ID = "hnndfanecdfnonofigcceaahflgfpgbd";
 
 	store.subscribe(function () {
 		var state = store.getState().storyfinder;
@@ -657,18 +657,15 @@ module.exports = function (store) {
 
 	/*document.querySelector('#btn').addEventListener('click', nextSite);
  document.querySelector('#btn-current').addEventListener('click', current);
-
- document.querySelector('#btn-focus').addEventListener('click', function(){
+ 	document.querySelector('#btn-focus').addEventListener('click', function(){
  	d3.json('/1/sites/' + siteId + '/graph', function (error, graph) {
  		d3.select('svg').attr('class', 'grayscale');
  		siteId++;
  		vis.focus(graph, function(){
-
- 		});
+ 			});
  	});
  });
-
- document.querySelector('#btn-gray').addEventListener('click', function(){
+ 	document.querySelector('#btn-gray').addEventListener('click', function(){
  	d3.select('svg').attr('class', 'grayscale');
  });*/
 
@@ -703,8 +700,7 @@ module.exports = function (store) {
 	svgDelegate.on('click', '.actions-link', function (event) {
 		vis.toggleLinkMode(this.parentNode.parentNode.parentNode);
 		/*vis.toggleNode(this.parentNode.parentNode.parentNode, function(){
-
-  });*/
+  	});*/
 		return false;
 	});
 
@@ -1083,12 +1079,11 @@ module.exports = function (store) {
 	function receiveMessage(event) {
 		var origin = event.origin || event.originalEvent.origin; // For Chrome, the origin property is in the event.originalEvent object.
 
-    // show the event for debugging purposes
-    // TODO: deleteme
-    console.log(event);
+		// show the event for debugging purposes
+		// TODO: deleteme
+		console.log(event);
 
-    // TODO FIXME: check if origin is available somehow
-		if (origin !== "chrome-extension://"+CHROME_PLUGIN_ID) {
+		if (origin !== "chrome-extension://" + CHROME_PLUGIN_ID) {
 			console.log('Origin mismatch:', origin);
 			return;
 		}
@@ -1126,7 +1121,7 @@ module.exports = function (store) {
 	//store.dispatch(actions.initializeGlobal());
 };
 
-},{"./actions/StoryfinderActions.js":1,"./search.js":111,"./templates/graph/title.hbs":113,"./templates/nodes/create.hbs":114,"./templates/relations/relation.hbs":115,"./templates/relations/relations.hbs":116,"./templates/sites/sites.hbs":118,"./vis.js":119,"async":9,"base-64":11,"d3":17,"dom-delegate":21,"form-serialize":35,"lodash":75,"socket.io-client":89}],3:[function(require,module,exports){
+},{"./actions/StoryfinderActions.js":1,"./search.js":114,"./templates/graph/title.hbs":116,"./templates/nodes/create.hbs":117,"./templates/relations/relation.hbs":118,"./templates/relations/relations.hbs":119,"./templates/sites/sites.hbs":121,"./vis.js":122,"async":9,"base-64":11,"d3":17,"dom-delegate":19,"form-serialize":36,"lodash":76,"socket.io-client":89}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1555,11 +1550,11 @@ module.exports = function (store) {
 
 	this.show = show;
 
-    function nodeExists(nodeId) {
-        return !_.isUndefined(indexMap[nodeId]) && !_.isUndefined(nodes[indexMap[nodeId]]);
-    }
+	function nodeExists(nodeId) {
+		return !_.isUndefined(indexMap[nodeId]) && !_.isUndefined(nodes[indexMap[nodeId]]);
+	}
 
-    this.nodeExists = nodeExists;
+	this.nodeExists = nodeExists;
 
 	function hide(nodeId, isTemporarily) {
 		if (!_.isUndefined(nodes[indexMap[nodeId]][isTemporarily ? 'showTemporarily' : 'show'])) delete nodes[indexMap[nodeId]][isTemporarily ? 'showTemporarily' : 'show'];
@@ -1599,8 +1594,7 @@ module.exports = function (store) {
   Nur die #topNodes Top Knoten und davon jeweils die #leafs wichtigsten Nachbarn werden gerendert
   */
 		var pageRankByNode = _.map(nodes, function (node) {
-		    if(_.isUndefined(node))
-		        return 0;
+			if (_.isUndefined(node)) return 0;
 
 			if (addFocus) {
 				if (!_.isUndefined(node.focused) && node.focused) {
@@ -2028,7 +2022,7 @@ module.exports = function (store) {
 	this.datum = datum;
 };
 
-},{"lodash":75,"pagerank-js":77}],5:[function(require,module,exports){
+},{"lodash":76,"pagerank-js":77}],5:[function(require,module,exports){
 'use strict';
 
 var _configureStore = require('./store/configureStore');
@@ -2043,7 +2037,7 @@ var store = (0, _configureStore2.default)();
 
 var app = new App(store);
 
-},{"./app.js":2,"./store/configureStore":112}],6:[function(require,module,exports){
+},{"./app.js":2,"./store/configureStore":115}],6:[function(require,module,exports){
 'use strict';
 
 var d3 = require('d3');
@@ -2224,7 +2218,7 @@ var cola;
             }
             return Math.abs(get_real_ratio() - desired_ratio);
         }
-        // looking for a position to one box
+        // looking for a position to one box 
         function put_rect(rect, max_width) {
             var parent = undefined;
             for (var i = 0; i < line.length; i++) {
@@ -2444,7 +2438,7 @@ var cola;
             };
             // calculate lagrangian multipliers on constraints and
             // find the active constraint in this block with the smallest lagrangian.
-            // if the lagrangian is negative, then the constraint is a split candidate.
+            // if the lagrangian is negative, then the constraint is a split candidate.  
             Block.prototype.findMinLM = function () {
                 var m = null;
                 this.compute_lm(this.vars[0], null, function (c) {
@@ -2604,7 +2598,7 @@ var cola;
                     return b.updateWeightedPosition();
                 });
             };
-            // split each block across its constraint with the minimum lagrangian
+            // split each block across its constraint with the minimum lagrangian 
             Blocks.prototype.split = function (inactive) {
                 var _this = this;
                 this.updateBlockPositions();
@@ -2670,7 +2664,7 @@ var cola;
                     private getId(v: Variable): number {
                         return this.vs.indexOf(v);
                     }
-
+            
                     // sanity check of the index integrity of the inactive list
                     checkInactive(): void {
                         var inactiveCount = 0;
@@ -5427,8 +5421,8 @@ var cola;
             Calculator.prototype.PathFromNodeToNode = function (start, end) {
                 return this.dijkstraNeighbours(start, end);
             };
-            // find shortest path from start to end, with the opportunity at
-            // each edge traversal to compute a custom cost based on the
+            // find shortest path from start to end, with the opportunity at 
+            // each edge traversal to compute a custom cost based on the 
             // previous edge.  For example, to penalise bends.
             Calculator.prototype.PathFromNodeToNodeWithPrevCost = function (start, end, prevCost) {
                 var q = new PriorityQueue(function (a, b) {
@@ -6154,7 +6148,7 @@ var cola;
             v.px = v.x;
             v.py = v.y;
         };
-        // we store offsets for each node relative to the centre of the ancestor group
+        // we store offsets for each node relative to the centre of the ancestor group 
         // being dragged in a pair of properties on the node
         Layout.storeOffset = function (d, origin) {
             if (typeof d.leaves !== 'undefined') {
@@ -6205,7 +6199,7 @@ var cola;
             }
         };
         // we unset only bits 2 and 3 so that the user can fix nodes with another a different
-        // bit such that the lock persists between drags
+        // bit such that the lock persists between drags 
         Layout.dragEnd = function (d) {
             if (isGroup(d)) {
                 if (typeof d.leaves !== 'undefined') {
@@ -6538,7 +6532,7 @@ var cola;
             });
             this.cols = this.getGridLines('x');
             this.rows = this.getGridLines('y');
-            // create parents for each node or group that is a member of another's children
+            // create parents for each node or group that is a member of another's children 
             this.groups.forEach(function (v) {
                 return v.children.forEach(function (c) {
                     return _this.nodes[c].parent = v;
@@ -6780,7 +6774,7 @@ var cola;
             return vsegmentsets;
         };
         // for all segments in this bundle create a vpsc problem such that
-        // each segment's x position is a variable and separation constraints
+        // each segment's x position is a variable and separation constraints 
         // are given by the partial order over the edges to which the segments belong
         // for each pair s1,s2 of segments in the open set:
         //   e1 = edge of s1, e2 = edge of s2
@@ -6944,7 +6938,7 @@ var cola;
                     var u, vi, vj;
                     if (lcs.length === 0) continue; // no common subpath
                     if (lcs.reversed) {
-                        // if we found a common subpath but one of the edges runs the wrong way,
+                        // if we found a common subpath but one of the edges runs the wrong way, 
                         // then reverse f.
                         f.reverse();
                         f.reversed = true;
@@ -6958,7 +6952,7 @@ var cola;
                     if (lcs.si + lcs.length >= e.length || lcs.ti + lcs.length >= f.length) {
                         // if the common subsequence of the
                         // two edges being considered goes all the way to the
-                        // end of one (or both) of the lines then we have to
+                        // end of one (or both) of the lines then we have to 
                         // base our ordering decision on the other end of the
                         // common subsequence
                         u = e[lcs.si + 1];
@@ -8460,7 +8454,7 @@ module.exports = function(arraybuffer, start, end) {
         var memoized = _restParam(function memoized(args) {
             var callback = args.pop();
             var key = hasher.apply(null, args);
-            if (has.call(memo, key)) {
+            if (has.call(memo, key)) {   
                 async.setImmediate(function () {
                     callback.apply(null, memo[key]);
                 });
@@ -8635,7 +8629,7 @@ module.exports = function(arraybuffer, start, end) {
 }());
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":126}],10:[function(require,module,exports){
+},{"_process":129}],10:[function(require,module,exports){
 
 /**
  * Expose `Backoff`.
@@ -10443,7 +10437,7 @@ module.exports = function(a, b){
           svg.remove();
         }
       }
-      if (d3_mouse_bug44083) point.x = e.pageX, point.y = e.pageY; else point.x = e.clientX,
+      if (d3_mouse_bug44083) point.x = e.pageX, point.y = e.pageY; else point.x = e.clientX, 
       point.y = e.clientY;
       point = point.matrixTransform(container.getScreenCTM().inverse());
       return [ point.x, point.y ];
@@ -10818,7 +10812,7 @@ module.exports = function(a, b){
     }
     function mousewheeled() {
       var dispatch = event.of(this, arguments);
-      if (mousewheelTimer) clearTimeout(mousewheelTimer); else d3_selection_interrupt.call(this),
+      if (mousewheelTimer) clearTimeout(mousewheelTimer); else d3_selection_interrupt.call(this), 
       translate0 = location(center0 = center || d3.mouse(this)), zoomstarted(dispatch);
       mousewheelTimer = setTimeout(function() {
         mousewheelTimer = null;
@@ -11187,7 +11181,7 @@ module.exports = function(a, b){
   d3.xhr = d3_xhrType(d3_identity);
   function d3_xhrType(response) {
     return function(url, mimeType, callback) {
-      if (arguments.length === 2 && typeof mimeType === "function") callback = mimeType,
+      if (arguments.length === 2 && typeof mimeType === "function") callback = mimeType, 
       mimeType = null;
       return d3_xhr(url, mimeType, response, callback);
     };
@@ -12028,7 +12022,7 @@ module.exports = function(a, b){
     return n ? (date.y = d3_time_expandYear(+n[0]), i + n[0].length) : -1;
   }
   function d3_time_parseZone(date, string, i) {
-    return /^[+-]\d{4}$/.test(string = string.slice(i, i + 5)) ? (date.Z = -string,
+    return /^[+-]\d{4}$/.test(string = string.slice(i, i + 5)) ? (date.Z = -string, 
     i + 5) : -1;
   }
   function d3_time_expandYear(d) {
@@ -12221,7 +12215,7 @@ module.exports = function(a, b){
     var λ00, φ00, λ0, cosφ0, sinφ0;
     d3_geo_area.point = function(λ, φ) {
       d3_geo_area.point = nextPoint;
-      λ0 = (λ00 = λ) * d3_radians, cosφ0 = Math.cos(φ = (φ00 = φ) * d3_radians / 2 + π / 4),
+      λ0 = (λ00 = λ) * d3_radians, cosφ0 = Math.cos(φ = (φ00 = φ) * d3_radians / 2 + π / 4), 
       sinφ0 = Math.sin(φ);
     };
     function nextPoint(λ, φ) {
@@ -14050,7 +14044,7 @@ module.exports = function(a, b){
       return _ ? center([ -_[1], _[0] ]) : (_ = center(), [ _[1], -_[0] ]);
     };
     projection.rotate = function(_) {
-      return _ ? rotate([ _[0], _[1], _.length > 2 ? _[2] + 90 : 90 ]) : (_ = rotate(),
+      return _ ? rotate([ _[0], _[1], _.length > 2 ? _[2] + 90 : 90 ]) : (_ = rotate(), 
       [ _[0], _[1], _[2] - 90 ]);
     };
     return rotate([ 0, 0, 90 ]);
@@ -14904,7 +14898,7 @@ module.exports = function(a, b){
     };
     quadtree.extent = function(_) {
       if (!arguments.length) return x1 == null ? null : [ [ x1, y1 ], [ x2, y2 ] ];
-      if (_ == null) x1 = y1 = x2 = y2 = null; else x1 = +_[0][0], y1 = +_[0][1], x2 = +_[1][0],
+      if (_ == null) x1 = y1 = x2 = y2 = null; else x1 = +_[0][0], y1 = +_[0][1], x2 = +_[1][0], 
       y2 = +_[1][1];
       return quadtree;
     };
@@ -16629,7 +16623,7 @@ module.exports = function(a, b){
         return d3_layout_treemapPad(node, x);
       }
       var type;
-      pad = (padding = x) == null ? d3_layout_treemapPadNull : (type = typeof x) === "function" ? padFunction : type === "number" ? (x = [ x, x, x, x ],
+      pad = (padding = x) == null ? d3_layout_treemapPadNull : (type = typeof x) === "function" ? padFunction : type === "number" ? (x = [ x, x, x, x ], 
       padConstant) : padConstant;
       return treemap;
     };
@@ -17032,7 +17026,7 @@ module.exports = function(a, b){
     };
     scale.rangePoints = function(x, padding) {
       if (arguments.length < 2) padding = 0;
-      var start = x[0], stop = x[1], step = domain.length < 2 ? (start = (start + stop) / 2,
+      var start = x[0], stop = x[1], step = domain.length < 2 ? (start = (start + stop) / 2, 
       0) : (stop - start) / (domain.length - 1 + padding);
       range = steps(start + step * padding / 2, step);
       rangeBand = 0;
@@ -17044,7 +17038,7 @@ module.exports = function(a, b){
     };
     scale.rangeRoundPoints = function(x, padding) {
       if (arguments.length < 2) padding = 0;
-      var start = x[0], stop = x[1], step = domain.length < 2 ? (start = stop = Math.round((start + stop) / 2),
+      var start = x[0], stop = x[1], step = domain.length < 2 ? (start = stop = Math.round((start + stop) / 2), 
       0) : (stop - start) / (domain.length - 1 + padding) | 0;
       range = steps(start + Math.round(step * padding / 2 + (stop - start - (domain.length - 1 + padding) * step) / 2), step);
       rangeBand = 0;
@@ -17472,7 +17466,7 @@ module.exports = function(a, b){
     return points.length < 4 ? d3_svg_lineLinear(points) : points[1] + d3_svg_lineHermite(points.slice(1, -1), d3_svg_lineCardinalTangents(points, tension));
   }
   function d3_svg_lineCardinalClosed(points, tension) {
-    return points.length < 3 ? d3_svg_lineLinearClosed(points) : points[0] + d3_svg_lineHermite((points.push(points[0]),
+    return points.length < 3 ? d3_svg_lineLinearClosed(points) : points[0] + d3_svg_lineHermite((points.push(points[0]), 
     points), d3_svg_lineCardinalTangents([ points[points.length - 2] ].concat(points, [ points[1] ]), tension));
   }
   function d3_svg_lineCardinal(points, tension) {
@@ -18245,7 +18239,7 @@ module.exports = function(a, b){
         var g = d3.select(this);
         var scale0 = this.__chart__ || scale, scale1 = this.__chart__ = scale.copy();
         var ticks = tickValues == null ? scale1.ticks ? scale1.ticks.apply(scale1, tickArguments_) : scale1.domain() : tickValues, tickFormat = tickFormat_ == null ? scale1.tickFormat ? scale1.tickFormat.apply(scale1, tickArguments_) : d3_identity : tickFormat_, tick = g.selectAll(".tick").data(ticks, scale1), tickEnter = tick.enter().insert("g", ".domain").attr("class", "tick").style("opacity", ε), tickExit = d3.transition(tick.exit()).style("opacity", ε).remove(), tickUpdate = d3.transition(tick.order()).style("opacity", 1), tickSpacing = Math.max(innerTickSize, 0) + tickPadding, tickTransform;
-        var range = d3_scaleRange(scale1), path = g.selectAll(".domain").data([ 0 ]), pathUpdate = (path.enter().append("path").attr("class", "domain"),
+        var range = d3_scaleRange(scale1), path = g.selectAll(".domain").data([ 0 ]), pathUpdate = (path.enter().append("path").attr("class", "domain"), 
         d3.transition(path));
         tickEnter.append("line");
         tickEnter.append("text");
@@ -18814,389 +18808,6 @@ module.exports = function(a, b){
   if (typeof define === "function" && define.amd) this.d3 = d3, define(d3); else if (typeof module === "object" && module.exports) module.exports = d3; else this.d3 = d3;
 }();
 },{}],18:[function(require,module,exports){
-(function (process){
-
-/**
- * This is the web browser implementation of `debug()`.
- *
- * Expose `debug()` as the module.
- */
-
-exports = module.exports = require('./debug');
-exports.log = log;
-exports.formatArgs = formatArgs;
-exports.save = save;
-exports.load = load;
-exports.useColors = useColors;
-exports.storage = 'undefined' != typeof chrome
-               && 'undefined' != typeof chrome.storage
-                  ? chrome.storage.local
-                  : localstorage();
-
-/**
- * Colors.
- */
-
-exports.colors = [
-  'lightseagreen',
-  'forestgreen',
-  'goldenrod',
-  'dodgerblue',
-  'darkorchid',
-  'crimson'
-];
-
-/**
- * Currently only WebKit-based Web Inspectors, Firefox >= v31,
- * and the Firebug extension (any Firefox version) are known
- * to support "%c" CSS customizations.
- *
- * TODO: add a `localStorage` variable to explicitly enable/disable colors
- */
-
-function useColors() {
-  // is webkit? http://stackoverflow.com/a/16459606/376773
-  // document is undefined in react-native: https://github.com/facebook/react-native/pull/1632
-  return (typeof document !== 'undefined' && 'WebkitAppearance' in document.documentElement.style) ||
-    // is firebug? http://stackoverflow.com/a/398120/376773
-    (window.console && (console.firebug || (console.exception && console.table))) ||
-    // is firefox >= v31?
-    // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
-    (navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31);
-}
-
-/**
- * Map %j to `JSON.stringify()`, since no Web Inspectors do that by default.
- */
-
-exports.formatters.j = function(v) {
-  try {
-    return JSON.stringify(v);
-  } catch (err) {
-    return '[UnexpectedJSONParseError]: ' + err.message;
-  }
-};
-
-
-/**
- * Colorize log arguments if enabled.
- *
- * @api public
- */
-
-function formatArgs() {
-  var args = arguments;
-  var useColors = this.useColors;
-
-  args[0] = (useColors ? '%c' : '')
-    + this.namespace
-    + (useColors ? ' %c' : ' ')
-    + args[0]
-    + (useColors ? '%c ' : ' ')
-    + '+' + exports.humanize(this.diff);
-
-  if (!useColors) return args;
-
-  var c = 'color: ' + this.color;
-  args = [args[0], c, 'color: inherit'].concat(Array.prototype.slice.call(args, 1));
-
-  // the final "%c" is somewhat tricky, because there could be other
-  // arguments passed either before or after the %c, so we need to
-  // figure out the correct index to insert the CSS into
-  var index = 0;
-  var lastC = 0;
-  args[0].replace(/%[a-z%]/g, function(match) {
-    if ('%%' === match) return;
-    index++;
-    if ('%c' === match) {
-      // we only are interested in the *last* %c
-      // (the user may have provided their own)
-      lastC = index;
-    }
-  });
-
-  args.splice(lastC, 0, c);
-  return args;
-}
-
-/**
- * Invokes `console.log()` when available.
- * No-op when `console.log` is not a "function".
- *
- * @api public
- */
-
-function log() {
-  // this hackery is required for IE8/9, where
-  // the `console.log` function doesn't have 'apply'
-  return 'object' === typeof console
-    && console.log
-    && Function.prototype.apply.call(console.log, console, arguments);
-}
-
-/**
- * Save `namespaces`.
- *
- * @param {String} namespaces
- * @api private
- */
-
-function save(namespaces) {
-  try {
-    if (null == namespaces) {
-      exports.storage.removeItem('debug');
-    } else {
-      exports.storage.debug = namespaces;
-    }
-  } catch(e) {}
-}
-
-/**
- * Load `namespaces`.
- *
- * @return {String} returns the previously persisted debug modes
- * @api private
- */
-
-function load() {
-  var r;
-  try {
-    return exports.storage.debug;
-  } catch(e) {}
-
-  // If debug isn't set in LS, and we're in Electron, try to load $DEBUG
-  if (typeof process !== 'undefined' && 'env' in process) {
-    return process.env.DEBUG;
-  }
-}
-
-/**
- * Enable namespaces listed in `localStorage.debug` initially.
- */
-
-exports.enable(load());
-
-/**
- * Localstorage attempts to return the localstorage.
- *
- * This is necessary because safari throws
- * when a user disables cookies/localstorage
- * and you attempt to access it.
- *
- * @return {LocalStorage}
- * @api private
- */
-
-function localstorage(){
-  try {
-    return window.localStorage;
-  } catch (e) {}
-}
-
-}).call(this,require('_process'))
-},{"./debug":19,"_process":126}],19:[function(require,module,exports){
-
-/**
- * This is the common logic for both the Node.js and web browser
- * implementations of `debug()`.
- *
- * Expose `debug()` as the module.
- */
-
-exports = module.exports = debug.debug = debug;
-exports.coerce = coerce;
-exports.disable = disable;
-exports.enable = enable;
-exports.enabled = enabled;
-exports.humanize = require('ms');
-
-/**
- * The currently active debug mode names, and names to skip.
- */
-
-exports.names = [];
-exports.skips = [];
-
-/**
- * Map of special "%n" handling functions, for the debug "format" argument.
- *
- * Valid key names are a single, lowercased letter, i.e. "n".
- */
-
-exports.formatters = {};
-
-/**
- * Previously assigned color.
- */
-
-var prevColor = 0;
-
-/**
- * Previous log timestamp.
- */
-
-var prevTime;
-
-/**
- * Select a color.
- *
- * @return {Number}
- * @api private
- */
-
-function selectColor() {
-  return exports.colors[prevColor++ % exports.colors.length];
-}
-
-/**
- * Create a debugger with the given `namespace`.
- *
- * @param {String} namespace
- * @return {Function}
- * @api public
- */
-
-function debug(namespace) {
-
-  // define the `disabled` version
-  function disabled() {
-  }
-  disabled.enabled = false;
-
-  // define the `enabled` version
-  function enabled() {
-
-    var self = enabled;
-
-    // set `diff` timestamp
-    var curr = +new Date();
-    var ms = curr - (prevTime || curr);
-    self.diff = ms;
-    self.prev = prevTime;
-    self.curr = curr;
-    prevTime = curr;
-
-    // add the `color` if not set
-    if (null == self.useColors) self.useColors = exports.useColors();
-    if (null == self.color && self.useColors) self.color = selectColor();
-
-    var args = new Array(arguments.length);
-    for (var i = 0; i < args.length; i++) {
-      args[i] = arguments[i];
-    }
-
-    args[0] = exports.coerce(args[0]);
-
-    if ('string' !== typeof args[0]) {
-      // anything else let's inspect with %o
-      args = ['%o'].concat(args);
-    }
-
-    // apply any `formatters` transformations
-    var index = 0;
-    args[0] = args[0].replace(/%([a-z%])/g, function(match, format) {
-      // if we encounter an escaped % then don't increase the array index
-      if (match === '%%') return match;
-      index++;
-      var formatter = exports.formatters[format];
-      if ('function' === typeof formatter) {
-        var val = args[index];
-        match = formatter.call(self, val);
-
-        // now we need to remove `args[index]` since it's inlined in the `format`
-        args.splice(index, 1);
-        index--;
-      }
-      return match;
-    });
-
-    // apply env-specific formatting
-    args = exports.formatArgs.apply(self, args);
-
-    var logFn = enabled.log || exports.log || console.log.bind(console);
-    logFn.apply(self, args);
-  }
-  enabled.enabled = true;
-
-  var fn = exports.enabled(namespace) ? enabled : disabled;
-
-  fn.namespace = namespace;
-
-  return fn;
-}
-
-/**
- * Enables a debug mode by namespaces. This can include modes
- * separated by a colon and wildcards.
- *
- * @param {String} namespaces
- * @api public
- */
-
-function enable(namespaces) {
-  exports.save(namespaces);
-
-  var split = (namespaces || '').split(/[\s,]+/);
-  var len = split.length;
-
-  for (var i = 0; i < len; i++) {
-    if (!split[i]) continue; // ignore empty strings
-    namespaces = split[i].replace(/[\\^$+?.()|[\]{}]/g, '\\$&').replace(/\*/g, '.*?');
-    if (namespaces[0] === '-') {
-      exports.skips.push(new RegExp('^' + namespaces.substr(1) + '$'));
-    } else {
-      exports.names.push(new RegExp('^' + namespaces + '$'));
-    }
-  }
-}
-
-/**
- * Disable debug output.
- *
- * @api public
- */
-
-function disable() {
-  exports.enable('');
-}
-
-/**
- * Returns true if the given mode name is enabled, false otherwise.
- *
- * @param {String} name
- * @return {Boolean}
- * @api public
- */
-
-function enabled(name) {
-  var i, len;
-  for (i = 0, len = exports.skips.length; i < len; i++) {
-    if (exports.skips[i].test(name)) {
-      return false;
-    }
-  }
-  for (i = 0, len = exports.names.length; i < len; i++) {
-    if (exports.names[i].test(name)) {
-      return true;
-    }
-  }
-  return false;
-}
-
-/**
- * Coerce `val`.
- *
- * @param {Mixed} val
- * @return {Mixed}
- * @api private
- */
-
-function coerce(val) {
-  if (val instanceof Error) return val.stack || val.message;
-  return val;
-}
-
-},{"ms":76}],20:[function(require,module,exports){
 /*jshint browser:true, node:true*/
 
 'use strict';
@@ -19479,7 +19090,7 @@ Delegate.prototype.handle = function(event) {
   root = this.rootElement;
 
   phase = event.eventPhase || ( event.target !== event.currentTarget ? 3 : 2 );
-
+  
   switch (phase) {
     case 1: //Event.CAPTURING_PHASE:
       listenerList = this.listenerMap[1][type];
@@ -19627,7 +19238,7 @@ Delegate.prototype.destroy = function() {
   this.root();
 };
 
-},{}],21:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 /*jshint browser:true, node:true*/
 
 'use strict';
@@ -19648,11 +19259,11 @@ module.exports = function(root) {
 
 module.exports.Delegate = Delegate;
 
-},{"./delegate":20}],22:[function(require,module,exports){
+},{"./delegate":18}],20:[function(require,module,exports){
 
 module.exports = require('./lib/index');
 
-},{"./lib/index":23}],23:[function(require,module,exports){
+},{"./lib/index":21}],21:[function(require,module,exports){
 
 module.exports = require('./socket');
 
@@ -19664,7 +19275,7 @@ module.exports = require('./socket');
  */
 module.exports.parser = require('engine.io-parser');
 
-},{"./socket":24,"engine.io-parser":32}],24:[function(require,module,exports){
+},{"./socket":22,"engine.io-parser":33}],22:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies.
@@ -20406,7 +20017,7 @@ Socket.prototype.filterUpgrades = function (upgrades) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./transport":25,"./transports/index":26,"component-emitter":15,"debug":18,"engine.io-parser":32,"indexof":61,"parsejson":78,"parseqs":79,"parseuri":80}],25:[function(require,module,exports){
+},{"./transport":23,"./transports/index":24,"component-emitter":15,"debug":30,"engine.io-parser":33,"indexof":62,"parsejson":78,"parseqs":79,"parseuri":80}],23:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -20565,7 +20176,7 @@ Transport.prototype.onClose = function () {
   this.emit('close');
 };
 
-},{"component-emitter":15,"engine.io-parser":32}],26:[function(require,module,exports){
+},{"component-emitter":15,"engine.io-parser":33}],24:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies
@@ -20622,7 +20233,7 @@ function polling (opts) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./polling-jsonp":27,"./polling-xhr":28,"./websocket":30,"xmlhttprequest-ssl":31}],27:[function(require,module,exports){
+},{"./polling-jsonp":25,"./polling-xhr":26,"./websocket":28,"xmlhttprequest-ssl":29}],25:[function(require,module,exports){
 (function (global){
 
 /**
@@ -20857,7 +20468,7 @@ JSONPPolling.prototype.doWrite = function (data, fn) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./polling":29,"component-inherit":16}],28:[function(require,module,exports){
+},{"./polling":27,"component-inherit":16}],26:[function(require,module,exports){
 (function (global){
 /**
  * Module requirements.
@@ -21285,7 +20896,7 @@ function unloadHandler () {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./polling":29,"component-emitter":15,"component-inherit":16,"debug":18,"xmlhttprequest-ssl":31}],29:[function(require,module,exports){
+},{"./polling":27,"component-emitter":15,"component-inherit":16,"debug":30,"xmlhttprequest-ssl":29}],27:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -21532,7 +21143,7 @@ Polling.prototype.uri = function () {
   return schema + '://' + (ipv6 ? '[' + this.hostname + ']' : this.hostname) + port + this.path + query;
 };
 
-},{"../transport":25,"component-inherit":16,"debug":18,"engine.io-parser":32,"parseqs":79,"xmlhttprequest-ssl":31,"yeast":107}],30:[function(require,module,exports){
+},{"../transport":23,"component-inherit":16,"debug":30,"engine.io-parser":33,"parseqs":79,"xmlhttprequest-ssl":29,"yeast":110}],28:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies.
@@ -21821,7 +21432,7 @@ WS.prototype.check = function () {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../transport":25,"component-inherit":16,"debug":18,"engine.io-parser":32,"parseqs":79,"ws":125,"yeast":107}],31:[function(require,module,exports){
+},{"../transport":23,"component-inherit":16,"debug":30,"engine.io-parser":33,"parseqs":79,"ws":128,"yeast":110}],29:[function(require,module,exports){
 (function (global){
 // browser shim for xmlhttprequest module
 
@@ -21862,7 +21473,541 @@ module.exports = function (opts) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"has-cors":56}],32:[function(require,module,exports){
+},{"has-cors":57}],30:[function(require,module,exports){
+(function (process){
+
+/**
+ * This is the web browser implementation of `debug()`.
+ *
+ * Expose `debug()` as the module.
+ */
+
+exports = module.exports = require('./debug');
+exports.log = log;
+exports.formatArgs = formatArgs;
+exports.save = save;
+exports.load = load;
+exports.useColors = useColors;
+exports.storage = 'undefined' != typeof chrome
+               && 'undefined' != typeof chrome.storage
+                  ? chrome.storage.local
+                  : localstorage();
+
+/**
+ * Colors.
+ */
+
+exports.colors = [
+  'lightseagreen',
+  'forestgreen',
+  'goldenrod',
+  'dodgerblue',
+  'darkorchid',
+  'crimson'
+];
+
+/**
+ * Currently only WebKit-based Web Inspectors, Firefox >= v31,
+ * and the Firebug extension (any Firefox version) are known
+ * to support "%c" CSS customizations.
+ *
+ * TODO: add a `localStorage` variable to explicitly enable/disable colors
+ */
+
+function useColors() {
+  // is webkit? http://stackoverflow.com/a/16459606/376773
+  // document is undefined in react-native: https://github.com/facebook/react-native/pull/1632
+  return (typeof document !== 'undefined' && 'WebkitAppearance' in document.documentElement.style) ||
+    // is firebug? http://stackoverflow.com/a/398120/376773
+    (window.console && (console.firebug || (console.exception && console.table))) ||
+    // is firefox >= v31?
+    // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
+    (navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31);
+}
+
+/**
+ * Map %j to `JSON.stringify()`, since no Web Inspectors do that by default.
+ */
+
+exports.formatters.j = function(v) {
+  try {
+    return JSON.stringify(v);
+  } catch (err) {
+    return '[UnexpectedJSONParseError]: ' + err.message;
+  }
+};
+
+
+/**
+ * Colorize log arguments if enabled.
+ *
+ * @api public
+ */
+
+function formatArgs() {
+  var args = arguments;
+  var useColors = this.useColors;
+
+  args[0] = (useColors ? '%c' : '')
+    + this.namespace
+    + (useColors ? ' %c' : ' ')
+    + args[0]
+    + (useColors ? '%c ' : ' ')
+    + '+' + exports.humanize(this.diff);
+
+  if (!useColors) return args;
+
+  var c = 'color: ' + this.color;
+  args = [args[0], c, 'color: inherit'].concat(Array.prototype.slice.call(args, 1));
+
+  // the final "%c" is somewhat tricky, because there could be other
+  // arguments passed either before or after the %c, so we need to
+  // figure out the correct index to insert the CSS into
+  var index = 0;
+  var lastC = 0;
+  args[0].replace(/%[a-z%]/g, function(match) {
+    if ('%%' === match) return;
+    index++;
+    if ('%c' === match) {
+      // we only are interested in the *last* %c
+      // (the user may have provided their own)
+      lastC = index;
+    }
+  });
+
+  args.splice(lastC, 0, c);
+  return args;
+}
+
+/**
+ * Invokes `console.log()` when available.
+ * No-op when `console.log` is not a "function".
+ *
+ * @api public
+ */
+
+function log() {
+  // this hackery is required for IE8/9, where
+  // the `console.log` function doesn't have 'apply'
+  return 'object' === typeof console
+    && console.log
+    && Function.prototype.apply.call(console.log, console, arguments);
+}
+
+/**
+ * Save `namespaces`.
+ *
+ * @param {String} namespaces
+ * @api private
+ */
+
+function save(namespaces) {
+  try {
+    if (null == namespaces) {
+      exports.storage.removeItem('debug');
+    } else {
+      exports.storage.debug = namespaces;
+    }
+  } catch(e) {}
+}
+
+/**
+ * Load `namespaces`.
+ *
+ * @return {String} returns the previously persisted debug modes
+ * @api private
+ */
+
+function load() {
+  var r;
+  try {
+    return exports.storage.debug;
+  } catch(e) {}
+
+  // If debug isn't set in LS, and we're in Electron, try to load $DEBUG
+  if (typeof process !== 'undefined' && 'env' in process) {
+    return process.env.DEBUG;
+  }
+}
+
+/**
+ * Enable namespaces listed in `localStorage.debug` initially.
+ */
+
+exports.enable(load());
+
+/**
+ * Localstorage attempts to return the localstorage.
+ *
+ * This is necessary because safari throws
+ * when a user disables cookies/localstorage
+ * and you attempt to access it.
+ *
+ * @return {LocalStorage}
+ * @api private
+ */
+
+function localstorage(){
+  try {
+    return window.localStorage;
+  } catch (e) {}
+}
+
+}).call(this,require('_process'))
+},{"./debug":31,"_process":129}],31:[function(require,module,exports){
+
+/**
+ * This is the common logic for both the Node.js and web browser
+ * implementations of `debug()`.
+ *
+ * Expose `debug()` as the module.
+ */
+
+exports = module.exports = debug.debug = debug;
+exports.coerce = coerce;
+exports.disable = disable;
+exports.enable = enable;
+exports.enabled = enabled;
+exports.humanize = require('ms');
+
+/**
+ * The currently active debug mode names, and names to skip.
+ */
+
+exports.names = [];
+exports.skips = [];
+
+/**
+ * Map of special "%n" handling functions, for the debug "format" argument.
+ *
+ * Valid key names are a single, lowercased letter, i.e. "n".
+ */
+
+exports.formatters = {};
+
+/**
+ * Previously assigned color.
+ */
+
+var prevColor = 0;
+
+/**
+ * Previous log timestamp.
+ */
+
+var prevTime;
+
+/**
+ * Select a color.
+ *
+ * @return {Number}
+ * @api private
+ */
+
+function selectColor() {
+  return exports.colors[prevColor++ % exports.colors.length];
+}
+
+/**
+ * Create a debugger with the given `namespace`.
+ *
+ * @param {String} namespace
+ * @return {Function}
+ * @api public
+ */
+
+function debug(namespace) {
+
+  // define the `disabled` version
+  function disabled() {
+  }
+  disabled.enabled = false;
+
+  // define the `enabled` version
+  function enabled() {
+
+    var self = enabled;
+
+    // set `diff` timestamp
+    var curr = +new Date();
+    var ms = curr - (prevTime || curr);
+    self.diff = ms;
+    self.prev = prevTime;
+    self.curr = curr;
+    prevTime = curr;
+
+    // add the `color` if not set
+    if (null == self.useColors) self.useColors = exports.useColors();
+    if (null == self.color && self.useColors) self.color = selectColor();
+
+    var args = new Array(arguments.length);
+    for (var i = 0; i < args.length; i++) {
+      args[i] = arguments[i];
+    }
+
+    args[0] = exports.coerce(args[0]);
+
+    if ('string' !== typeof args[0]) {
+      // anything else let's inspect with %o
+      args = ['%o'].concat(args);
+    }
+
+    // apply any `formatters` transformations
+    var index = 0;
+    args[0] = args[0].replace(/%([a-z%])/g, function(match, format) {
+      // if we encounter an escaped % then don't increase the array index
+      if (match === '%%') return match;
+      index++;
+      var formatter = exports.formatters[format];
+      if ('function' === typeof formatter) {
+        var val = args[index];
+        match = formatter.call(self, val);
+
+        // now we need to remove `args[index]` since it's inlined in the `format`
+        args.splice(index, 1);
+        index--;
+      }
+      return match;
+    });
+
+    // apply env-specific formatting
+    args = exports.formatArgs.apply(self, args);
+
+    var logFn = enabled.log || exports.log || console.log.bind(console);
+    logFn.apply(self, args);
+  }
+  enabled.enabled = true;
+
+  var fn = exports.enabled(namespace) ? enabled : disabled;
+
+  fn.namespace = namespace;
+
+  return fn;
+}
+
+/**
+ * Enables a debug mode by namespaces. This can include modes
+ * separated by a colon and wildcards.
+ *
+ * @param {String} namespaces
+ * @api public
+ */
+
+function enable(namespaces) {
+  exports.save(namespaces);
+
+  var split = (namespaces || '').split(/[\s,]+/);
+  var len = split.length;
+
+  for (var i = 0; i < len; i++) {
+    if (!split[i]) continue; // ignore empty strings
+    namespaces = split[i].replace(/[\\^$+?.()|[\]{}]/g, '\\$&').replace(/\*/g, '.*?');
+    if (namespaces[0] === '-') {
+      exports.skips.push(new RegExp('^' + namespaces.substr(1) + '$'));
+    } else {
+      exports.names.push(new RegExp('^' + namespaces + '$'));
+    }
+  }
+}
+
+/**
+ * Disable debug output.
+ *
+ * @api public
+ */
+
+function disable() {
+  exports.enable('');
+}
+
+/**
+ * Returns true if the given mode name is enabled, false otherwise.
+ *
+ * @param {String} name
+ * @return {Boolean}
+ * @api public
+ */
+
+function enabled(name) {
+  var i, len;
+  for (i = 0, len = exports.skips.length; i < len; i++) {
+    if (exports.skips[i].test(name)) {
+      return false;
+    }
+  }
+  for (i = 0, len = exports.names.length; i < len; i++) {
+    if (exports.names[i].test(name)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Coerce `val`.
+ *
+ * @param {Mixed} val
+ * @return {Mixed}
+ * @api private
+ */
+
+function coerce(val) {
+  if (val instanceof Error) return val.stack || val.message;
+  return val;
+}
+
+},{"ms":32}],32:[function(require,module,exports){
+/**
+ * Helpers.
+ */
+
+var s = 1000
+var m = s * 60
+var h = m * 60
+var d = h * 24
+var y = d * 365.25
+
+/**
+ * Parse or format the given `val`.
+ *
+ * Options:
+ *
+ *  - `long` verbose formatting [false]
+ *
+ * @param {String|Number} val
+ * @param {Object} options
+ * @throws {Error} throw an error if val is not a non-empty string or a number
+ * @return {String|Number}
+ * @api public
+ */
+
+module.exports = function (val, options) {
+  options = options || {}
+  var type = typeof val
+  if (type === 'string' && val.length > 0) {
+    return parse(val)
+  } else if (type === 'number' && isNaN(val) === false) {
+    return options.long ?
+			fmtLong(val) :
+			fmtShort(val)
+  }
+  throw new Error('val is not a non-empty string or a valid number. val=' + JSON.stringify(val))
+}
+
+/**
+ * Parse the given `str` and return milliseconds.
+ *
+ * @param {String} str
+ * @return {Number}
+ * @api private
+ */
+
+function parse(str) {
+  str = String(str)
+  if (str.length > 10000) {
+    return
+  }
+  var match = /^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(str)
+  if (!match) {
+    return
+  }
+  var n = parseFloat(match[1])
+  var type = (match[2] || 'ms').toLowerCase()
+  switch (type) {
+    case 'years':
+    case 'year':
+    case 'yrs':
+    case 'yr':
+    case 'y':
+      return n * y
+    case 'days':
+    case 'day':
+    case 'd':
+      return n * d
+    case 'hours':
+    case 'hour':
+    case 'hrs':
+    case 'hr':
+    case 'h':
+      return n * h
+    case 'minutes':
+    case 'minute':
+    case 'mins':
+    case 'min':
+    case 'm':
+      return n * m
+    case 'seconds':
+    case 'second':
+    case 'secs':
+    case 'sec':
+    case 's':
+      return n * s
+    case 'milliseconds':
+    case 'millisecond':
+    case 'msecs':
+    case 'msec':
+    case 'ms':
+      return n
+    default:
+      return undefined
+  }
+}
+
+/**
+ * Short format for `ms`.
+ *
+ * @param {Number} ms
+ * @return {String}
+ * @api private
+ */
+
+function fmtShort(ms) {
+  if (ms >= d) {
+    return Math.round(ms / d) + 'd'
+  }
+  if (ms >= h) {
+    return Math.round(ms / h) + 'h'
+  }
+  if (ms >= m) {
+    return Math.round(ms / m) + 'm'
+  }
+  if (ms >= s) {
+    return Math.round(ms / s) + 's'
+  }
+  return ms + 'ms'
+}
+
+/**
+ * Long format for `ms`.
+ *
+ * @param {Number} ms
+ * @return {String}
+ * @api private
+ */
+
+function fmtLong(ms) {
+  return plural(ms, d, 'day') ||
+    plural(ms, h, 'hour') ||
+    plural(ms, m, 'minute') ||
+    plural(ms, s, 'second') ||
+    ms + ' ms'
+}
+
+/**
+ * Pluralization helper.
+ */
+
+function plural(ms, n, name) {
+  if (ms < n) {
+    return
+  }
+  if (ms < n * 1.5) {
+    return Math.floor(ms / n) + ' ' + name
+  }
+  return Math.ceil(ms / n) + ' ' + name + 's'
+}
+
+},{}],33:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies.
@@ -22475,7 +22620,7 @@ exports.decodePayloadAsBinary = function (data, binaryType, callback) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./keys":33,"after":7,"arraybuffer.slice":8,"base64-arraybuffer":12,"blob":13,"has-binary":55,"wtf-8":106}],33:[function(require,module,exports){
+},{"./keys":34,"after":7,"arraybuffer.slice":8,"base64-arraybuffer":12,"blob":13,"has-binary":56,"wtf-8":109}],34:[function(require,module,exports){
 
 /**
  * Gets the keys for an object.
@@ -22496,7 +22641,7 @@ module.exports = Object.keys || function keys (obj){
   return arr;
 };
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 (function (process,global){
 /*!
  * @overview es6-promise - a tiny implementation of Promises/A+.
@@ -23387,7 +23532,7 @@ Promise.prototype = {
     The primary way of interacting with a promise is through its `then` method,
     which registers callbacks to receive either a promise's eventual value or the
     reason why the promise cannot be fulfilled.
-
+  
     ```js
     findUser().then(function(user){
       // user is available
@@ -23395,14 +23540,14 @@ Promise.prototype = {
       // user is unavailable, and you are given the reason why
     });
     ```
-
+  
     Chaining
     --------
-
+  
     The return value of `then` is itself a promise.  This second, 'downstream'
     promise is resolved with the return value of the first promise's fulfillment
     or rejection handler, or rejected if the handler throws an exception.
-
+  
     ```js
     findUser().then(function (user) {
       return user.name;
@@ -23412,7 +23557,7 @@ Promise.prototype = {
       // If `findUser` fulfilled, `userName` will be the user's name, otherwise it
       // will be `'default name'`
     });
-
+  
     findUser().then(function (user) {
       throw new Error('Found user, but still unhappy');
     }, function (reason) {
@@ -23425,7 +23570,7 @@ Promise.prototype = {
     });
     ```
     If the downstream promise does not specify a rejection handler, rejection reasons will be propagated further downstream.
-
+  
     ```js
     findUser().then(function (user) {
       throw new PedagogicalException('Upstream error');
@@ -23437,15 +23582,15 @@ Promise.prototype = {
       // The `PedgagocialException` is propagated all the way down to here
     });
     ```
-
+  
     Assimilation
     ------------
-
+  
     Sometimes the value you want to propagate to a downstream promise can only be
     retrieved asynchronously. This can be achieved by returning a promise in the
     fulfillment or rejection handler. The downstream promise will then be pending
     until the returned promise is settled. This is called *assimilation*.
-
+  
     ```js
     findUser().then(function (user) {
       return findCommentsByAuthor(user);
@@ -23453,9 +23598,9 @@ Promise.prototype = {
       // The user's comments are now available
     });
     ```
-
+  
     If the assimliated promise rejects, then the downstream promise will also reject.
-
+  
     ```js
     findUser().then(function (user) {
       return findCommentsByAuthor(user);
@@ -23465,15 +23610,15 @@ Promise.prototype = {
       // If `findCommentsByAuthor` rejects, we'll have the reason here
     });
     ```
-
+  
     Simple Example
     --------------
-
+  
     Synchronous Example
-
+  
     ```javascript
     let result;
-
+  
     try {
       result = findResult();
       // success
@@ -23481,9 +23626,9 @@ Promise.prototype = {
       // failure
     }
     ```
-
+  
     Errback Example
-
+  
     ```js
     findResult(function(result, err){
       if (err) {
@@ -23493,9 +23638,9 @@ Promise.prototype = {
       }
     });
     ```
-
+  
     Promise Example;
-
+  
     ```javascript
     findResult().then(function(result){
       // success
@@ -23503,15 +23648,15 @@ Promise.prototype = {
       // failure
     });
     ```
-
+  
     Advanced Example
     --------------
-
+  
     Synchronous Example
-
+  
     ```javascript
     let author, books;
-
+  
     try {
       author = findAuthor();
       books  = findBooksByAuthor(author);
@@ -23520,19 +23665,19 @@ Promise.prototype = {
       // failure
     }
     ```
-
+  
     Errback Example
-
+  
     ```js
-
+  
     function foundBooks(books) {
-
+  
     }
-
+  
     function failure(reason) {
-
+  
     }
-
+  
     findAuthor(function(author, err){
       if (err) {
         failure(err);
@@ -23557,9 +23702,9 @@ Promise.prototype = {
       }
     });
     ```
-
+  
     Promise Example;
-
+  
     ```javascript
     findAuthor().
       then(findBooksByAuthor).
@@ -23569,7 +23714,7 @@ Promise.prototype = {
       // something went wrong
     });
     ```
-
+  
     @method then
     @param {Function} onFulfilled
     @param {Function} onRejected
@@ -23581,25 +23726,25 @@ Promise.prototype = {
   /**
     `catch` is simply sugar for `then(undefined, onRejection)` which makes it the same
     as the catch block of a try/catch statement.
-
+  
     ```js
     function findAuthor(){
       throw new Error('couldn't find that author');
     }
-
+  
     // synchronous
     try {
       findAuthor();
     } catch(reason) {
       // something went wrong
     }
-
+  
     // async with promises
     findAuthor().catch(function(reason){
       // something went wrong
     });
     ```
-
+  
     @method catch
     @param {Function} onRejection
     Useful for tooling.
@@ -23653,7 +23798,7 @@ return Promise;
 })));
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":126}],35:[function(require,module,exports){
+},{"_process":129}],36:[function(require,module,exports){
 // get successful control from form and assemble into object
 // http://www.w3.org/TR/html401/interact/forms.html#h-17.13.2
 
@@ -23734,7 +23879,7 @@ function serialize(form, options) {
             }
 
             // if options empty is true, continue only if its radio
-            if (!val && element.type == 'radio') {
+            if (val == undefined && element.type == 'radio') {
                 continue;
             }
         }
@@ -23915,7 +24060,7 @@ function str_serialize(result, key, value) {
 
 module.exports = serialize;
 
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23983,7 +24128,7 @@ exports['default'] = inst;
 module.exports = exports['default'];
 
 
-},{"./handlebars/base":37,"./handlebars/exception":40,"./handlebars/no-conflict":50,"./handlebars/runtime":51,"./handlebars/safe-string":52,"./handlebars/utils":53}],37:[function(require,module,exports){
+},{"./handlebars/base":38,"./handlebars/exception":41,"./handlebars/no-conflict":51,"./handlebars/runtime":52,"./handlebars/safe-string":53,"./handlebars/utils":54}],38:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24006,7 +24151,7 @@ var _logger = require('./logger');
 
 var _logger2 = _interopRequireDefault(_logger);
 
-var VERSION = '4.0.5';
+var VERSION = '4.0.11';
 exports.VERSION = VERSION;
 var COMPILER_REVISION = 7;
 
@@ -24089,7 +24234,7 @@ exports.createFrame = _utils.createFrame;
 exports.logger = _logger2['default'];
 
 
-},{"./decorators":38,"./exception":40,"./helpers":41,"./logger":49,"./utils":53}],38:[function(require,module,exports){
+},{"./decorators":39,"./exception":41,"./helpers":42,"./logger":50,"./utils":54}],39:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24107,7 +24252,7 @@ function registerDefaultDecorators(instance) {
 }
 
 
-},{"./decorators/inline":39}],39:[function(require,module,exports){
+},{"./decorators/inline":40}],40:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24138,7 +24283,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":53}],40:[function(require,module,exports){
+},{"../utils":54}],41:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24175,7 +24320,10 @@ function Exception(message, node) {
       // Work around issue under safari where we can't directly set the column value
       /* istanbul ignore next */
       if (Object.defineProperty) {
-        Object.defineProperty(this, 'column', { value: column });
+        Object.defineProperty(this, 'column', {
+          value: column,
+          enumerable: true
+        });
       } else {
         this.column = column;
       }
@@ -24191,7 +24339,7 @@ exports['default'] = Exception;
 module.exports = exports['default'];
 
 
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24239,7 +24387,7 @@ function registerDefaultHelpers(instance) {
 }
 
 
-},{"./helpers/block-helper-missing":42,"./helpers/each":43,"./helpers/helper-missing":44,"./helpers/if":45,"./helpers/log":46,"./helpers/lookup":47,"./helpers/with":48}],42:[function(require,module,exports){
+},{"./helpers/block-helper-missing":43,"./helpers/each":44,"./helpers/helper-missing":45,"./helpers/if":46,"./helpers/log":47,"./helpers/lookup":48,"./helpers/with":49}],43:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24280,7 +24428,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":53}],43:[function(require,module,exports){
+},{"../utils":54}],44:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24376,7 +24524,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../exception":40,"../utils":53}],44:[function(require,module,exports){
+},{"../exception":41,"../utils":54}],45:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24403,7 +24551,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../exception":40}],45:[function(require,module,exports){
+},{"../exception":41}],46:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24434,7 +24582,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":53}],46:[function(require,module,exports){
+},{"../utils":54}],47:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24462,7 +24610,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24476,7 +24624,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24511,7 +24659,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":53}],49:[function(require,module,exports){
+},{"../utils":54}],50:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24560,7 +24708,7 @@ exports['default'] = logger;
 module.exports = exports['default'];
 
 
-},{"./utils":53}],50:[function(require,module,exports){
+},{"./utils":54}],51:[function(require,module,exports){
 (function (global){
 /* global window */
 'use strict';
@@ -24584,7 +24732,7 @@ module.exports = exports['default'];
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],51:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24732,6 +24880,8 @@ function template(templateSpec, env) {
 
       return obj;
     },
+    // An empty object to use as replacement for null-contexts
+    nullContext: Object.seal({}),
 
     noop: env.VM.noop,
     compilerInfo: templateSpec.compiler
@@ -24799,7 +24949,7 @@ function wrapProgram(container, i, fn, data, declaredBlockParams, blockParams, d
     var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
     var currentDepths = depths;
-    if (depths && context != depths[0]) {
+    if (depths && context != depths[0] && !(context === container.nullContext && depths[0] === null)) {
       currentDepths = [context].concat(depths);
     }
 
@@ -24817,12 +24967,7 @@ function wrapProgram(container, i, fn, data, declaredBlockParams, blockParams, d
 function resolvePartial(partial, context, options) {
   if (!partial) {
     if (options.name === '@partial-block') {
-      var data = options.data;
-      while (data['partial-block'] === noop) {
-        data = data._parent;
-      }
-      partial = data['partial-block'];
-      data['partial-block'] = noop;
+      partial = options.data['partial-block'];
     } else {
       partial = options.partials[options.name];
     }
@@ -24835,6 +24980,8 @@ function resolvePartial(partial, context, options) {
 }
 
 function invokePartial(partial, context, options) {
+  // Use the current closure context to save the partial-block if this partial
+  var currentPartialBlock = options.data && options.data['partial-block'];
   options.partial = true;
   if (options.ids) {
     options.data.contextPath = options.ids[0] || options.data.contextPath;
@@ -24842,12 +24989,23 @@ function invokePartial(partial, context, options) {
 
   var partialBlock = undefined;
   if (options.fn && options.fn !== noop) {
-    options.data = _base.createFrame(options.data);
-    partialBlock = options.data['partial-block'] = options.fn;
+    (function () {
+      options.data = _base.createFrame(options.data);
+      // Wrapper function to get access to currentPartialBlock from the closure
+      var fn = options.fn;
+      partialBlock = options.data['partial-block'] = function partialBlockWrapper(context) {
+        var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
-    if (partialBlock.partials) {
-      options.partials = Utils.extend({}, options.partials, partialBlock.partials);
-    }
+        // Restore the partial-block from the closure for the execution of the block
+        // i.e. the part inside the block of the partial call.
+        options.data = _base.createFrame(options.data);
+        options.data['partial-block'] = currentPartialBlock;
+        return fn(context, options);
+      };
+      if (fn.partials) {
+        options.partials = Utils.extend({}, options.partials, fn.partials);
+      }
+    })();
   }
 
   if (partial === undefined && partialBlock) {
@@ -24883,7 +25041,7 @@ function executeDecorators(fn, prog, container, depths, data, blockParams) {
 }
 
 
-},{"./base":37,"./exception":40,"./utils":53}],52:[function(require,module,exports){
+},{"./base":38,"./exception":41,"./utils":54}],53:[function(require,module,exports){
 // Build out our basic SafeString type
 'use strict';
 
@@ -24900,7 +25058,7 @@ exports['default'] = SafeString;
 module.exports = exports['default'];
 
 
-},{}],53:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25026,12 +25184,12 @@ function appendContextPath(contextPath, id) {
 }
 
 
-},{}],54:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 // Create a simple path alias to allow browserify to resolve
 // the runtime on a supported path.
 module.exports = require('./dist/cjs/handlebars.runtime')['default'];
 
-},{"./dist/cjs/handlebars.runtime":36}],55:[function(require,module,exports){
+},{"./dist/cjs/handlebars.runtime":37}],56:[function(require,module,exports){
 (function (global){
 
 /*
@@ -25094,7 +25252,7 @@ function hasBinary(data) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"isarray":62}],56:[function(require,module,exports){
+},{"isarray":63}],57:[function(require,module,exports){
 
 /**
  * Module exports.
@@ -25113,10 +25271,10 @@ try {
   module.exports = false;
 }
 
-},{}],57:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 module.exports = require("handlebars/runtime")["default"];
 
-},{"handlebars/runtime":54}],58:[function(require,module,exports){
+},{"handlebars/runtime":55}],59:[function(require,module,exports){
 module.exports = {
 	'id': 'de',
 	'leftmin': 2,
@@ -25139,7 +25297,7 @@ module.exports = {
 	}
 };
 
-},{}],59:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 /**
  * @constructor
  * @param {!{patterns: !Object, leftmin: !number, rightmin: !number}} language The language pattern file. Compatible with Hyphenator.js.
@@ -25246,7 +25404,7 @@ Hypher.prototype.hyphenateText = function (str, minLength) {
     // any special cases for those characters. Unfortunately
     // it does not support unicode word boundaries, so
     // we implement it manually.
-    var words = str.split(/([a-zA-Z0-9_\u0027\u00DF-\u00EA\u00EB\u00EC-\u00EF\u00F1-\u00F6\u00F8-\u00FD\u0101\u0103\u0105\u0107\u0109\u010D\u010F\u0111\u0113\u0117\u0119\u011B\u011D\u011F\u0123\u0125\u012B\u012F\u0131\u0135\u0137\u013C\u013E\u0142\u0144\u0146\u0148\u0151\u0153\u0155\u0159\u015B\u015D\u015F\u0161\u0165\u016B\u016D\u016F\u0171\u0173\u017A\u017C\u017E\u017F\u0219\u021B\u02BC\u0390\u03AC-\u03CE\u03F2\u0401\u0410-\u044F\u0451\u0454\u0456\u0457\u045E\u0491\u0531-\u0556\u0561-\u0587\u0902\u0903\u0905-\u090B\u090E-\u0910\u0912\u0914-\u0928\u092A-\u0939\u093E-\u0943\u0946-\u0948\u094A-\u094D\u0982\u0983\u0985-\u098B\u098F\u0990\u0994-\u09A8\u09AA-\u09B0\u09B2\u09B6-\u09B9\u09BE-\u09C3\u09C7\u09C8\u09CB-\u09CD\u09D7\u0A02\u0A03\u0A05-\u0A0A\u0A0F\u0A10\u0A14-\u0A28\u0A2A-\u0A30\u0A32\u0A33\u0A35\u0A36\u0A38\u0A39\u0A3E-\u0A42\u0A47\u0A48\u0A4B-\u0A4D\u0A82\u0A83\u0A85-\u0A8B\u0A8F\u0A90\u0A94-\u0AA8\u0AAA-\u0AB0\u0AB2\u0AB3\u0AB5-\u0AB9\u0ABE-\u0AC3\u0AC7\u0AC8\u0ACB-\u0ACD\u0B02\u0B03\u0B05-\u0B0B\u0B0F\u0B10\u0B14-\u0B28\u0B2A-\u0B30\u0B32\u0B33\u0B35-\u0B39\u0B3E-\u0B43\u0B47\u0B48\u0B4B-\u0B4D\u0B57\u0B82\u0B83\u0B85-\u0B8A\u0B8E-\u0B90\u0B92-\u0B95\u0B99\u0B9A\u0B9C\u0B9E\u0B9F\u0BA3\u0BA4\u0BA8-\u0BAA\u0BAE-\u0BB5\u0BB7-\u0BB9\u0BBE-\u0BC2\u0BC6-\u0BC8\u0BCA-\u0BCD\u0BD7\u0C02\u0C03\u0C05-\u0C0B\u0C0E-\u0C10\u0C12\u0C14-\u0C28\u0C2A-\u0C33\u0C35-\u0C39\u0C3E-\u0C43\u0C46-\u0C48\u0C4A-\u0C4D\u0C82\u0C83\u0C85-\u0C8B\u0C8E-\u0C90\u0C92\u0C94-\u0CA8\u0CAA-\u0CB3\u0CB5-\u0CB9\u0CBE-\u0CC3\u0CC6-\u0CC8\u0CCA-\u0CCD\u0D02\u0D03\u0D05-\u0D0C\u0D0E-\u0D10\u0D12-\u0D28\u0D2A-\u0D39\u0D3E-\u0D43\u0D46-\u0D48\u0D4A-\u0D4D\u0D57\u0D60\u0D61\u0D7A-\u0D7F\u1F00-\u1F07\u1F10-\u1F15\u1F20-\u1F27\u1F30-\u1F37\u1F40-\u1F45\u1F50-\u1F57\u1F60-\u1F67\u1F70-\u1F7D\u1F80-\u1F87\u1F90-\u1F97\u1FA0-\u1FA7\u1FB2-\u1FB4\u1FB6\u1FB7\u1FBD\u1FBF\u1FC2-\u1FC4\u1FC6\u1FC7\u1FD2\u1FD3\u1FD6\u1FD7\u1FE2-\u1FE7\u1FF2-\u1FF4\u1FF6\u1FF7\u200D\u2019]+)/g);
+    var words = str.split(/([a-zA-Z0-9_\u0027\u00AD\u00DF-\u00EA\u00EB\u00EC-\u00EF\u00F1-\u00F6\u00F8-\u00FD\u0101\u0103\u0105\u0107\u0109\u010D\u010F\u0111\u0113\u0117\u0119\u011B\u011D\u011F\u0123\u0125\u012B\u012F\u0131\u0135\u0137\u013C\u013E\u0142\u0144\u0146\u0148\u0151\u0153\u0155\u0159\u015B\u015D\u015F\u0161\u0165\u016B\u016D\u016F\u0171\u0173\u017A\u017C\u017E\u017F\u0219\u021B\u02BC\u0390\u03AC-\u03CE\u03F2\u0401\u0410-\u044F\u0451\u0454\u0456\u0457\u045E\u0491\u0531-\u0556\u0561-\u0587\u0902\u0903\u0905-\u090B\u090E-\u0910\u0912\u0914-\u0928\u092A-\u0939\u093E-\u0943\u0946-\u0948\u094A-\u094D\u0982\u0983\u0985-\u098B\u098F\u0990\u0994-\u09A8\u09AA-\u09B0\u09B2\u09B6-\u09B9\u09BE-\u09C3\u09C7\u09C8\u09CB-\u09CD\u09D7\u0A02\u0A03\u0A05-\u0A0A\u0A0F\u0A10\u0A14-\u0A28\u0A2A-\u0A30\u0A32\u0A33\u0A35\u0A36\u0A38\u0A39\u0A3E-\u0A42\u0A47\u0A48\u0A4B-\u0A4D\u0A82\u0A83\u0A85-\u0A8B\u0A8F\u0A90\u0A94-\u0AA8\u0AAA-\u0AB0\u0AB2\u0AB3\u0AB5-\u0AB9\u0ABE-\u0AC3\u0AC7\u0AC8\u0ACB-\u0ACD\u0B02\u0B03\u0B05-\u0B0B\u0B0F\u0B10\u0B14-\u0B28\u0B2A-\u0B30\u0B32\u0B33\u0B35-\u0B39\u0B3E-\u0B43\u0B47\u0B48\u0B4B-\u0B4D\u0B57\u0B82\u0B83\u0B85-\u0B8A\u0B8E-\u0B90\u0B92-\u0B95\u0B99\u0B9A\u0B9C\u0B9E\u0B9F\u0BA3\u0BA4\u0BA8-\u0BAA\u0BAE-\u0BB5\u0BB7-\u0BB9\u0BBE-\u0BC2\u0BC6-\u0BC8\u0BCA-\u0BCD\u0BD7\u0C02\u0C03\u0C05-\u0C0B\u0C0E-\u0C10\u0C12\u0C14-\u0C28\u0C2A-\u0C33\u0C35-\u0C39\u0C3E-\u0C43\u0C46-\u0C48\u0C4A-\u0C4D\u0C82\u0C83\u0C85-\u0C8B\u0C8E-\u0C90\u0C92\u0C94-\u0CA8\u0CAA-\u0CB3\u0CB5-\u0CB9\u0CBE-\u0CC3\u0CC6-\u0CC8\u0CCA-\u0CCD\u0D02\u0D03\u0D05-\u0D0C\u0D0E-\u0D10\u0D12-\u0D28\u0D2A-\u0D39\u0D3E-\u0D43\u0D46-\u0D48\u0D4A-\u0D4D\u0D57\u0D60\u0D61\u0D7A-\u0D7F\u1F00-\u1F07\u1F10-\u1F15\u1F20-\u1F27\u1F30-\u1F37\u1F40-\u1F45\u1F50-\u1F57\u1F60-\u1F67\u1F70-\u1F7D\u1F80-\u1F87\u1F90-\u1F97\u1FA0-\u1FA7\u1FB2-\u1FB4\u1FB6\u1FB7\u1FBD\u1FBF\u1FC2-\u1FC4\u1FC6\u1FC7\u1FD2\u1FD3\u1FD6\u1FD7\u1FE2-\u1FE7\u1FF2-\u1FF4\u1FF6\u1FF7\u200D\u2019]+)/gi);
 
     for (var i = 0; i < words.length; i += 1) {
         if (words[i].indexOf('/') !== -1) {
@@ -25335,14 +25493,12 @@ Hypher.prototype.hyphenate = function (word) {
 
 module.exports = Hypher;
 
-},{}],60:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 /**
- *  Copyright (c) 2014-2015, Facebook, Inc.
- *  All rights reserved.
+ * Copyright (c) 2014-present, Facebook, Inc.
  *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant
- *  of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 (function (global, factory) {
@@ -25721,7 +25877,7 @@ module.exports = Hypher;
       var array = this._array;
       var maxIndex = array.length - 1;
       var ii = 0;
-      return new Iterator(function()
+      return new Iterator(function() 
         {return ii > maxIndex ?
           iteratorDone() :
           iteratorValue(type, ii, array[reverse ? maxIndex - ii++ : ii++])}
@@ -26192,7 +26348,7 @@ module.exports = Hypher;
 
     Repeat.prototype.__iterator = function(type, reverse) {var this$0 = this;
       var ii = 0;
-      return new Iterator(function()
+      return new Iterator(function() 
         {return ii < this$0.size ? iteratorValue(type, ii++, this$0._value) : iteratorDone()}
       );
     };
@@ -28390,7 +28546,7 @@ module.exports = Hypher;
         return flipSequence;
       };
     }
-    reversedSequence.get = function(key, notSetValue)
+    reversedSequence.get = function(key, notSetValue) 
       {return iterable.get(useKeys ? key : -1 - key, notSetValue)};
     reversedSequence.has = function(key )
       {return iterable.has(useKeys ? key : -1 - key)};
@@ -28589,7 +28745,7 @@ module.exports = Hypher;
         return this.cacheResult().__iterate(fn, reverse);
       }
       var iterations = 0;
-      iterable.__iterate(function(v, k, c)
+      iterable.__iterate(function(v, k, c) 
         {return predicate.call(context, v, k, c) && ++iterations && fn(v, k, this$0)}
       );
       return iterations;
@@ -28780,7 +28936,7 @@ module.exports = Hypher;
     interposedSequence.size = iterable.size && iterable.size * 2 -1;
     interposedSequence.__iterateUncached = function(fn, reverse) {var this$0 = this;
       var iterations = 0;
-      iterable.__iterate(function(v, k)
+      iterable.__iterate(function(v, k) 
         {return (!iterations || fn(separator, iterations++, this$0) !== false) &&
         fn(v, iterations++, this$0) !== false},
         reverse
@@ -30315,7 +30471,7 @@ module.exports = Hypher;
   return Immutable;
 
 }));
-},{}],61:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 
 var indexOf = [].indexOf;
 
@@ -30326,12 +30482,12 @@ module.exports = function(arr, obj){
   }
   return -1;
 };
-},{}],62:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 module.exports = Array.isArray || function (arr) {
   return Object.prototype.toString.call(arr) == '[object Array]';
 };
 
-},{}],63:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 // the whatwg-fetch polyfill installs the fetch() function
 // on the global object (window or self)
 //
@@ -30339,7 +30495,7 @@ module.exports = Array.isArray || function (arr) {
 require('whatwg-fetch');
 module.exports = self.fetch.bind(self);
 
-},{"whatwg-fetch":105}],64:[function(require,module,exports){
+},{"whatwg-fetch":108}],65:[function(require,module,exports){
 (function (global){
 /*! JSON v3.3.2 | http://bestiejs.github.io/json3 | Copyright 2012-2014, Kit Cambridge | http://kit.mit-license.org */
 ;(function () {
@@ -31245,7 +31401,7 @@ module.exports = self.fetch.bind(self);
 }).call(this);
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],65:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 var root = require('./_root');
 
 /** Built-in value references. */
@@ -31253,7 +31409,7 @@ var Symbol = root.Symbol;
 
 module.exports = Symbol;
 
-},{"./_root":72}],66:[function(require,module,exports){
+},{"./_root":73}],67:[function(require,module,exports){
 var Symbol = require('./_Symbol'),
     getRawTag = require('./_getRawTag'),
     objectToString = require('./_objectToString');
@@ -31276,15 +31432,14 @@ function baseGetTag(value) {
   if (value == null) {
     return value === undefined ? undefinedTag : nullTag;
   }
-  value = Object(value);
-  return (symToStringTag && symToStringTag in value)
+  return (symToStringTag && symToStringTag in Object(value))
     ? getRawTag(value)
     : objectToString(value);
 }
 
 module.exports = baseGetTag;
 
-},{"./_Symbol":65,"./_getRawTag":69,"./_objectToString":70}],67:[function(require,module,exports){
+},{"./_Symbol":66,"./_getRawTag":70,"./_objectToString":71}],68:[function(require,module,exports){
 (function (global){
 /** Detect free variable `global` from Node.js. */
 var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
@@ -31292,7 +31447,7 @@ var freeGlobal = typeof global == 'object' && global && global.Object === Object
 module.exports = freeGlobal;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],68:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 var overArg = require('./_overArg');
 
 /** Built-in value references. */
@@ -31300,7 +31455,7 @@ var getPrototype = overArg(Object.getPrototypeOf, Object);
 
 module.exports = getPrototype;
 
-},{"./_overArg":71}],69:[function(require,module,exports){
+},{"./_overArg":72}],70:[function(require,module,exports){
 var Symbol = require('./_Symbol');
 
 /** Used for built-in method references. */
@@ -31348,7 +31503,7 @@ function getRawTag(value) {
 
 module.exports = getRawTag;
 
-},{"./_Symbol":65}],70:[function(require,module,exports){
+},{"./_Symbol":66}],71:[function(require,module,exports){
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
 
@@ -31372,7 +31527,7 @@ function objectToString(value) {
 
 module.exports = objectToString;
 
-},{}],71:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 /**
  * Creates a unary function that invokes `func` with its argument transformed.
  *
@@ -31389,7 +31544,7 @@ function overArg(func, transform) {
 
 module.exports = overArg;
 
-},{}],72:[function(require,module,exports){
+},{}],73:[function(require,module,exports){
 var freeGlobal = require('./_freeGlobal');
 
 /** Detect free variable `self`. */
@@ -31400,7 +31555,7 @@ var root = freeGlobal || freeSelf || Function('return this')();
 
 module.exports = root;
 
-},{"./_freeGlobal":67}],73:[function(require,module,exports){
+},{"./_freeGlobal":68}],74:[function(require,module,exports){
 /**
  * Checks if `value` is object-like. A value is object-like if it's not `null`
  * and has a `typeof` result of "object".
@@ -31431,7 +31586,7 @@ function isObjectLike(value) {
 
 module.exports = isObjectLike;
 
-},{}],74:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 var baseGetTag = require('./_baseGetTag'),
     getPrototype = require('./_getPrototype'),
     isObjectLike = require('./isObjectLike');
@@ -31495,7 +31650,7 @@ function isPlainObject(value) {
 
 module.exports = isPlainObject;
 
-},{"./_baseGetTag":66,"./_getPrototype":68,"./isObjectLike":73}],75:[function(require,module,exports){
+},{"./_baseGetTag":67,"./_getPrototype":69,"./isObjectLike":74}],76:[function(require,module,exports){
 (function (global){
 /**
  * @license
@@ -31511,7 +31666,7 @@ module.exports = isPlainObject;
   var undefined;
 
   /** Used as the semantic version number. */
-  var VERSION = '4.17.2';
+  var VERSION = '4.17.4';
 
   /** Used as the size to enable large array optimizations. */
   var LARGE_ARRAY_SIZE = 200;
@@ -33066,9 +33221,9 @@ module.exports = isPlainObject;
      * Shortcut fusion is an optimization to merge iteratee calls; this avoids
      * the creation of intermediate arrays and can greatly reduce the number of
      * iteratee executions. Sections of a chain sequence qualify for shortcut
-     * fusion if the section is applied to an array of at least `200` elements
-     * and any iteratees accept only one argument. The heuristic for whether a
-     * section qualifies for shortcut fusion is subject to change.
+     * fusion if the section is applied to an array and iteratees accept only
+     * one argument. The heuristic for whether a section qualifies for shortcut
+     * fusion is subject to change.
      *
      * Chaining is supported in custom builds as long as the `_#value` method is
      * directly or indirectly included in the build.
@@ -33227,8 +33382,8 @@ module.exports = isPlainObject;
 
     /**
      * By default, the template delimiters used by lodash are like those in
-     * embedded Ruby (ERB). Change the following template settings to use
-     * alternative delimiters.
+     * embedded Ruby (ERB) as well as ES2015 template strings. Change the
+     * following template settings to use alternative delimiters.
      *
      * @static
      * @memberOf _
@@ -33375,8 +33530,7 @@ module.exports = isPlainObject;
           resIndex = 0,
           takeCount = nativeMin(length, this.__takeCount__);
 
-      if (!isArr || arrLength < LARGE_ARRAY_SIZE ||
-          (arrLength == length && takeCount == length)) {
+      if (!isArr || (!isRight && arrLength == length && takeCount == length)) {
         return baseWrapperValue(array, this.__actions__);
       }
       var result = [];
@@ -33490,7 +33644,7 @@ module.exports = isPlainObject;
      */
     function hashHas(key) {
       var data = this.__data__;
-      return nativeCreate ? data[key] !== undefined : hasOwnProperty.call(data, key);
+      return nativeCreate ? (data[key] !== undefined) : hasOwnProperty.call(data, key);
     }
 
     /**
@@ -33961,24 +34115,6 @@ module.exports = isPlainObject;
      */
     function arrayShuffle(array) {
       return shuffleSelf(copyArray(array));
-    }
-
-    /**
-     * Used by `_.defaults` to customize its `_.assignIn` use.
-     *
-     * @private
-     * @param {*} objValue The destination value.
-     * @param {*} srcValue The source value.
-     * @param {string} key The key of the property to assign.
-     * @param {Object} object The parent object of `objValue`.
-     * @returns {*} Returns the value to assign.
-     */
-    function assignInDefaults(objValue, srcValue, key, object) {
-      if (objValue === undefined ||
-          (eq(objValue, objectProto[key]) && !hasOwnProperty.call(object, key))) {
-        return srcValue;
-      }
-      return objValue;
     }
 
     /**
@@ -34593,8 +34729,7 @@ module.exports = isPlainObject;
       if (value == null) {
         return value === undefined ? undefinedTag : nullTag;
       }
-      value = Object(value);
-      return (symToStringTag && symToStringTag in value)
+      return (symToStringTag && symToStringTag in Object(value))
         ? getRawTag(value)
         : objectToString(value);
     }
@@ -34798,7 +34933,7 @@ module.exports = isPlainObject;
       if (value === other) {
         return true;
       }
-      if (value == null || other == null || (!isObject(value) && !isObjectLike(other))) {
+      if (value == null || other == null || (!isObjectLike(value) && !isObjectLike(other))) {
         return value !== value && other !== other;
       }
       return baseIsEqualDeep(value, other, bitmask, customizer, baseIsEqual, stack);
@@ -34821,17 +34956,12 @@ module.exports = isPlainObject;
     function baseIsEqualDeep(object, other, bitmask, customizer, equalFunc, stack) {
       var objIsArr = isArray(object),
           othIsArr = isArray(other),
-          objTag = arrayTag,
-          othTag = arrayTag;
+          objTag = objIsArr ? arrayTag : getTag(object),
+          othTag = othIsArr ? arrayTag : getTag(other);
 
-      if (!objIsArr) {
-        objTag = getTag(object);
-        objTag = objTag == argsTag ? objectTag : objTag;
-      }
-      if (!othIsArr) {
-        othTag = getTag(other);
-        othTag = othTag == argsTag ? objectTag : othTag;
-      }
+      objTag = objTag == argsTag ? objectTag : objTag;
+      othTag = othTag == argsTag ? objectTag : othTag;
+
       var objIsObj = objTag == objectTag,
           othIsObj = othTag == objectTag,
           isSameTag = objTag == othTag;
@@ -35279,7 +35409,6 @@ module.exports = isPlainObject;
      * @returns {Object} Returns the new object.
      */
     function basePick(object, paths) {
-      object = Object(object);
       return basePickBy(object, paths, function(value, path) {
         return hasIn(object, path);
       });
@@ -36672,8 +36801,7 @@ module.exports = isPlainObject;
           var args = arguments,
               value = args[0];
 
-          if (wrapper && args.length == 1 &&
-              isArray(value) && value.length >= LARGE_ARRAY_SIZE) {
+          if (wrapper && args.length == 1 && isArray(value)) {
             return wrapper.plant(value).value();
           }
           var index = 0,
@@ -36980,7 +37108,7 @@ module.exports = isPlainObject;
       var func = Math[methodName];
       return function(number, precision) {
         number = toNumber(number);
-        precision = nativeMin(toInteger(precision), 292);
+        precision = precision == null ? 0 : nativeMin(toInteger(precision), 292);
         if (precision) {
           // Shift with exponential notation to avoid floating-point issues.
           // See [MDN](https://mdn.io/round#Examples) for more details.
@@ -37085,7 +37213,7 @@ module.exports = isPlainObject;
       thisArg = newData[2];
       partials = newData[3];
       holders = newData[4];
-      arity = newData[9] = newData[9] == null
+      arity = newData[9] = newData[9] === undefined
         ? (isBindKey ? 0 : func.length)
         : nativeMax(newData[9] - length, 0);
 
@@ -37103,6 +37231,63 @@ module.exports = isPlainObject;
       }
       var setter = data ? baseSetData : setData;
       return setWrapToString(setter(result, newData), func, bitmask);
+    }
+
+    /**
+     * Used by `_.defaults` to customize its `_.assignIn` use to assign properties
+     * of source objects to the destination object for all destination properties
+     * that resolve to `undefined`.
+     *
+     * @private
+     * @param {*} objValue The destination value.
+     * @param {*} srcValue The source value.
+     * @param {string} key The key of the property to assign.
+     * @param {Object} object The parent object of `objValue`.
+     * @returns {*} Returns the value to assign.
+     */
+    function customDefaultsAssignIn(objValue, srcValue, key, object) {
+      if (objValue === undefined ||
+          (eq(objValue, objectProto[key]) && !hasOwnProperty.call(object, key))) {
+        return srcValue;
+      }
+      return objValue;
+    }
+
+    /**
+     * Used by `_.defaultsDeep` to customize its `_.merge` use to merge source
+     * objects into destination objects that are passed thru.
+     *
+     * @private
+     * @param {*} objValue The destination value.
+     * @param {*} srcValue The source value.
+     * @param {string} key The key of the property to merge.
+     * @param {Object} object The parent object of `objValue`.
+     * @param {Object} source The parent object of `srcValue`.
+     * @param {Object} [stack] Tracks traversed source values and their merged
+     *  counterparts.
+     * @returns {*} Returns the value to assign.
+     */
+    function customDefaultsMerge(objValue, srcValue, key, object, source, stack) {
+      if (isObject(objValue) && isObject(srcValue)) {
+        // Recursively merge objects and arrays (susceptible to call stack limits).
+        stack.set(srcValue, objValue);
+        baseMerge(objValue, srcValue, undefined, customDefaultsMerge, stack);
+        stack['delete'](srcValue);
+      }
+      return objValue;
+    }
+
+    /**
+     * Used by `_.omit` to customize its `_.cloneDeep` use to only clone plain
+     * objects.
+     *
+     * @private
+     * @param {*} value The value to inspect.
+     * @param {string} key The key of the property to inspect.
+     * @returns {*} Returns the uncloned value or `undefined` to defer cloning to `_.cloneDeep`.
+     */
+    function customOmitClone(value) {
+      return isPlainObject(value) ? undefined : value;
     }
 
     /**
@@ -37276,9 +37461,9 @@ module.exports = isPlainObject;
      */
     function equalObjects(object, other, bitmask, customizer, equalFunc, stack) {
       var isPartial = bitmask & COMPARE_PARTIAL_FLAG,
-          objProps = keys(object),
+          objProps = getAllKeys(object),
           objLength = objProps.length,
-          othProps = keys(other),
+          othProps = getAllKeys(other),
           othLength = othProps.length;
 
       if (objLength != othLength && !isPartial) {
@@ -37516,7 +37701,15 @@ module.exports = isPlainObject;
      * @param {Object} object The object to query.
      * @returns {Array} Returns the array of symbols.
      */
-    var getSymbols = nativeGetSymbols ? overArg(nativeGetSymbols, Object) : stubArray;
+    var getSymbols = !nativeGetSymbols ? stubArray : function(object) {
+      if (object == null) {
+        return [];
+      }
+      object = Object(object);
+      return arrayFilter(nativeGetSymbols(object), function(symbol) {
+        return propertyIsEnumerable.call(object, symbol);
+      });
+    };
 
     /**
      * Creates an array of the own and inherited enumerable symbols of `object`.
@@ -38000,29 +38193,6 @@ module.exports = isPlainObject;
       data[1] = newBitmask;
 
       return data;
-    }
-
-    /**
-     * Used by `_.defaultsDeep` to customize its `_.merge` use.
-     *
-     * @private
-     * @param {*} objValue The destination value.
-     * @param {*} srcValue The source value.
-     * @param {string} key The key of the property to merge.
-     * @param {Object} object The parent object of `objValue`.
-     * @param {Object} source The parent object of `srcValue`.
-     * @param {Object} [stack] Tracks traversed source values and their merged
-     *  counterparts.
-     * @returns {*} Returns the value to assign.
-     */
-    function mergeDefaults(objValue, srcValue, key, object, source, stack) {
-      if (isObject(objValue) && isObject(srcValue)) {
-        // Recursively merge objects and arrays (susceptible to call stack limits).
-        stack.set(srcValue, objValue);
-        baseMerge(objValue, srcValue, undefined, mergeDefaults, stack);
-        stack['delete'](srcValue);
-      }
-      return objValue;
     }
 
     /**
@@ -39767,7 +39937,7 @@ module.exports = isPlainObject;
      *
      * var users = [
      *   { 'user': 'barney',  'active': false },
-     *   { 'user': 'fred',    'active': false},
+     *   { 'user': 'fred',    'active': false },
      *   { 'user': 'pebbles', 'active': true }
      * ];
      *
@@ -42336,7 +42506,7 @@ module.exports = isPlainObject;
       if (typeof func != 'function') {
         throw new TypeError(FUNC_ERROR_TEXT);
       }
-      start = start === undefined ? 0 : nativeMax(toInteger(start), 0);
+      start = start == null ? 0 : nativeMax(toInteger(start), 0);
       return baseRest(function(args) {
         var array = args[start],
             otherArgs = castSlice(args, 0, start);
@@ -43006,7 +43176,7 @@ module.exports = isPlainObject;
      * date objects, error objects, maps, numbers, `Object` objects, regexes,
      * sets, strings, symbols, and typed arrays. `Object` objects are compared
      * by their own, not inherited, enumerable properties. Functions and DOM
-     * nodes are **not** supported.
+     * nodes are compared by strict equality, i.e. `===`.
      *
      * @static
      * @memberOf _
@@ -44026,7 +44196,9 @@ module.exports = isPlainObject;
      * // => 3
      */
     function toSafeInteger(value) {
-      return baseClamp(toInteger(value), -MAX_SAFE_INTEGER, MAX_SAFE_INTEGER);
+      return value
+        ? baseClamp(toInteger(value), -MAX_SAFE_INTEGER, MAX_SAFE_INTEGER)
+        : (value === 0 ? value : 0);
     }
 
     /**
@@ -44280,7 +44452,7 @@ module.exports = isPlainObject;
      * // => { 'a': 1, 'b': 2 }
      */
     var defaults = baseRest(function(args) {
-      args.push(undefined, assignInDefaults);
+      args.push(undefined, customDefaultsAssignIn);
       return apply(assignInWith, undefined, args);
     });
 
@@ -44304,7 +44476,7 @@ module.exports = isPlainObject;
      * // => { 'a': { 'b': 2, 'c': 3 } }
      */
     var defaultsDeep = baseRest(function(args) {
-      args.push(undefined, mergeDefaults);
+      args.push(undefined, customDefaultsMerge);
       return apply(mergeWith, undefined, args);
     });
 
@@ -44966,7 +45138,7 @@ module.exports = isPlainObject;
       });
       copyObject(object, getAllKeysIn(object), result);
       if (isDeep) {
-        result = baseClone(result, CLONE_DEEP_FLAG | CLONE_FLAT_FLAG | CLONE_SYMBOLS_FLAG);
+        result = baseClone(result, CLONE_DEEP_FLAG | CLONE_FLAT_FLAG | CLONE_SYMBOLS_FLAG, customOmitClone);
       }
       var length = paths.length;
       while (length--) {
@@ -46115,7 +46287,10 @@ module.exports = isPlainObject;
      */
     function startsWith(string, target, position) {
       string = toString(string);
-      position = baseClamp(toInteger(position), 0, string.length);
+      position = position == null
+        ? 0
+        : baseClamp(toInteger(position), 0, string.length);
+
       target = baseToString(target);
       return string.slice(position, position + target.length) == target;
     }
@@ -46234,9 +46409,9 @@ module.exports = isPlainObject;
         options = undefined;
       }
       string = toString(string);
-      options = assignInWith({}, options, settings, assignInDefaults);
+      options = assignInWith({}, options, settings, customDefaultsAssignIn);
 
-      var imports = assignInWith({}, options.imports, settings.imports, assignInDefaults),
+      var imports = assignInWith({}, options.imports, settings.imports, customDefaultsAssignIn),
           importsKeys = keys(imports),
           importsValues = baseValues(imports, importsKeys);
 
@@ -48320,14 +48495,13 @@ module.exports = isPlainObject;
     // Add `LazyWrapper` methods for `_.drop` and `_.take` variants.
     arrayEach(['drop', 'take'], function(methodName, index) {
       LazyWrapper.prototype[methodName] = function(n) {
-        var filtered = this.__filtered__;
-        if (filtered && !index) {
-          return new LazyWrapper(this);
-        }
         n = n === undefined ? 1 : nativeMax(toInteger(n), 0);
 
-        var result = this.clone();
-        if (filtered) {
+        var result = (this.__filtered__ && !index)
+          ? new LazyWrapper(this)
+          : this.clone();
+
+        if (result.__filtered__) {
           result.__takeCount__ = nativeMin(n, result.__takeCount__);
         } else {
           result.__views__.push({
@@ -48564,165 +48738,14 @@ module.exports = isPlainObject;
 }.call(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],76:[function(require,module,exports){
-/**
- * Helpers.
- */
-
-var s = 1000
-var m = s * 60
-var h = m * 60
-var d = h * 24
-var y = d * 365.25
-
-/**
- * Parse or format the given `val`.
- *
- * Options:
- *
- *  - `long` verbose formatting [false]
- *
- * @param {String|Number} val
- * @param {Object} options
- * @throws {Error} throw an error if val is not a non-empty string or a number
- * @return {String|Number}
- * @api public
- */
-
-module.exports = function (val, options) {
-  options = options || {}
-  var type = typeof val
-  if (type === 'string' && val.length > 0) {
-    return parse(val)
-  } else if (type === 'number' && isNaN(val) === false) {
-    return options.long ?
-			fmtLong(val) :
-			fmtShort(val)
-  }
-  throw new Error('val is not a non-empty string or a valid number. val=' + JSON.stringify(val))
-}
-
-/**
- * Parse the given `str` and return milliseconds.
- *
- * @param {String} str
- * @return {Number}
- * @api private
- */
-
-function parse(str) {
-  str = String(str)
-  if (str.length > 10000) {
-    return
-  }
-  var match = /^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(str)
-  if (!match) {
-    return
-  }
-  var n = parseFloat(match[1])
-  var type = (match[2] || 'ms').toLowerCase()
-  switch (type) {
-    case 'years':
-    case 'year':
-    case 'yrs':
-    case 'yr':
-    case 'y':
-      return n * y
-    case 'days':
-    case 'day':
-    case 'd':
-      return n * d
-    case 'hours':
-    case 'hour':
-    case 'hrs':
-    case 'hr':
-    case 'h':
-      return n * h
-    case 'minutes':
-    case 'minute':
-    case 'mins':
-    case 'min':
-    case 'm':
-      return n * m
-    case 'seconds':
-    case 'second':
-    case 'secs':
-    case 'sec':
-    case 's':
-      return n * s
-    case 'milliseconds':
-    case 'millisecond':
-    case 'msecs':
-    case 'msec':
-    case 'ms':
-      return n
-    default:
-      return undefined
-  }
-}
-
-/**
- * Short format for `ms`.
- *
- * @param {Number} ms
- * @return {String}
- * @api private
- */
-
-function fmtShort(ms) {
-  if (ms >= d) {
-    return Math.round(ms / d) + 'd'
-  }
-  if (ms >= h) {
-    return Math.round(ms / h) + 'h'
-  }
-  if (ms >= m) {
-    return Math.round(ms / m) + 'm'
-  }
-  if (ms >= s) {
-    return Math.round(ms / s) + 's'
-  }
-  return ms + 'ms'
-}
-
-/**
- * Long format for `ms`.
- *
- * @param {Number} ms
- * @return {String}
- * @api private
- */
-
-function fmtLong(ms) {
-  return plural(ms, d, 'day') ||
-    plural(ms, h, 'hour') ||
-    plural(ms, m, 'minute') ||
-    plural(ms, s, 'second') ||
-    ms + ' ms'
-}
-
-/**
- * Pluralization helper.
- */
-
-function plural(ms, n, name) {
-  if (ms < n) {
-    return
-  }
-  if (ms < n * 1.5) {
-    return Math.floor(ms / n) + ' ' + name
-  }
-  return Math.ceil(ms / n) + ' ' + name + 's'
-}
-
 },{}],77:[function(require,module,exports){
 "use strict";
 // pagerank.js 0.0.1
 
-//Use a random surfer algorithm to determine the relative
+//Use a random surfer algorithm to determine the relative 
 //rank of nodes. The importance of each node is determined
-//by the number of incoming links as well as the importance
-//of those incoming links.
+//by the number of incoming links as well as the importance 
+//of those incoming links. 
 
 // Expose
 // ----------
@@ -48734,7 +48757,7 @@ module.exports = function (nodeMatrix, linkProb, tolerance, callback, debug) {
             "nodeMatrix, link probability, tolerance, callback");
     }
     //If debug is unset set it to false
-    if (!debug) {
+    if (!debug) { 
         debug=false;
     }
     return new Pagerank(nodeMatrix, linkProb, tolerance, callback, debug);
@@ -48743,14 +48766,14 @@ module.exports = function (nodeMatrix, linkProb, tolerance, callback, debug) {
 // Initialize
 // ----------
 function Pagerank(nodeMatrix, linkProb, tolerance, callback, debug) {
-    //**OutgoingNodes:** represents an array of nodes. Each node in this
+    //**OutgoingNodes:** represents an array of nodes. Each node in this 
     //array contains an array of nodes to which the corresponding node has
     //outgoing links.
     this.outgoingNodes = nodeMatrix;
     //**LinkProb:** a value ??
     this.linkProb = linkProb;
-    //**Tolerance:** the point at which a solution is deemed optimal.
-    //Higher values are more accurate, lower values are faster to computer.
+    //**Tolerance:** the point at which a solution is deemed optimal. 
+    //Higher values are more accurate, lower values are faster to computer. 
     this.tolerance = tolerance;
     this.callback = callback;
 
@@ -48758,29 +48781,29 @@ function Pagerank(nodeMatrix, linkProb, tolerance, callback, debug) {
     this.pageCount = Object.keys(this.outgoingNodes).length;
     //**Coeff:** coefficient for the likelihood that a page will be visited.
     this.coeff = (1-linkProb)/this.pageCount;
-
+    
     this.probabilityNodes = !(nodeMatrix instanceof Array) ? {} : [];
     this.incomingNodes = !(nodeMatrix instanceof Array) ? {} : [];
     this.debug=debug;
-
+    
     this.startRanking();
 }
 
-//Start ranking
+//Start ranking 
 // ----------
 Pagerank.prototype.startRanking = function () {
 
     //we initialize all of our probabilities
-    var initialProbability = 1/this.pageCount,
+    var initialProbability = 1/this.pageCount, 
         outgoingNodes = this.outgoingNodes, i, a, index;
-
+    
     //rearray the graph and generate initial probability
     for (i in outgoingNodes) {
         this.probabilityNodes[i]=initialProbability;
         for (a in outgoingNodes[i]) {
             index = outgoingNodes[i][a];
             if (!this.incomingNodes[index]) {
-                this.incomingNodes[index]=[];
+                this.incomingNodes[index]=[]; 
             }
             this.incomingNodes[index].push(i);
         }
@@ -48788,11 +48811,11 @@ Pagerank.prototype.startRanking = function () {
 
     //if debug is set, print each iteration
     if (this.debug) this.reportDebug(1)
-
+    
     this.iterate(1);
 };
 
-//Log iteration to console
+//Log iteration to console 
 // ----------
 Pagerank.prototype.reportDebug = function (count) {
     console.log("____ITERATION "+count+"____");
@@ -48803,17 +48826,17 @@ Pagerank.prototype.reportDebug = function (count) {
 };
 
 
-//Calculate new weights
+//Calculate new weights 
 // ----------
 Pagerank.prototype.iterate = function(count) {
     var result = [];
     var resultHash={};
     var prob, ct, b, a, sum, res, max, min;
 
-    //For each node, we look at the incoming edges and
-    //the weight of the node connected via each edge.
-    //This weight is divided by the total number of
-    //outgoing edges from each weighted node and summed to
+    //For each node, we look at the incoming edges and 
+    //the weight of the node connected via each edge. 
+    //This weight is divided by the total number of 
+    //outgoing edges from each weighted node and summed to 
     //determine the new weight of the original node.
     for (b in this.probabilityNodes) {
         sum = 0;
@@ -48828,14 +48851,14 @@ Pagerank.prototype.iterate = function(count) {
         //determine if the new probability is within tolerance.
         res = this.coeff+this.linkProb*sum;
         max = this.probabilityNodes[b]+this.tolerance;
-        min = this.probabilityNodes[b]-this.tolerance;
+        min = this.probabilityNodes[b]-this.tolerance;   
 
         //if the result has changed push that result
         if (min <= res && res<= max) {
             resultHash[b]=res;
             result.push(res);
         }
-
+    
         //update the probability for node *b*
         this.probabilityNodes[b]=res;
     }
@@ -48847,12 +48870,12 @@ Pagerank.prototype.iterate = function(count) {
         }
         return this.callback(null, result);
     }
-
+    
     //if debug is set, print each iteration
     if (this.debug) {
-        this.reportDebug(count);
+        this.reportDebug(count); 
     }
-
+    
     ++count;
     return this.iterate(count);
 };
@@ -48978,8 +49001,8 @@ module.exports = function parseuri(str) {
 exports.__esModule = true;
 function createThunkMiddleware(extraArgument) {
   return function (_ref) {
-    var dispatch = _ref.dispatch;
-    var getState = _ref.getState;
+    var dispatch = _ref.dispatch,
+        getState = _ref.getState;
     return function (next) {
       return function (action) {
         if (typeof action === 'function') {
@@ -49130,7 +49153,7 @@ function getUndefinedStateErrorMessage(key, action) {
   var actionType = action && action.type;
   var actionName = actionType && '"' + actionType.toString() + '"' || 'an action';
 
-  return 'Given action ' + actionName + ', reducer "' + key + '" returned undefined. ' + 'To ignore an action, you must explicitly return the previous state.';
+  return 'Given action ' + actionName + ', reducer "' + key + '" returned undefined. ' + 'To ignore an action, you must explicitly return the previous state. ' + 'If you want this reducer to hold no value, you can return null instead of undefined.';
 }
 
 function getUnexpectedStateShapeWarningMessage(inputState, reducers, action, unexpectedKeyCache) {
@@ -49158,18 +49181,18 @@ function getUnexpectedStateShapeWarningMessage(inputState, reducers, action, une
   }
 }
 
-function assertReducerSanity(reducers) {
+function assertReducerShape(reducers) {
   Object.keys(reducers).forEach(function (key) {
     var reducer = reducers[key];
     var initialState = reducer(undefined, { type: _createStore.ActionTypes.INIT });
 
     if (typeof initialState === 'undefined') {
-      throw new Error('Reducer "' + key + '" returned undefined during initialization. ' + 'If the state passed to the reducer is undefined, you must ' + 'explicitly return the initial state. The initial state may ' + 'not be undefined.');
+      throw new Error('Reducer "' + key + '" returned undefined during initialization. ' + 'If the state passed to the reducer is undefined, you must ' + 'explicitly return the initial state. The initial state may ' + 'not be undefined. If you don\'t want to set a value for this reducer, ' + 'you can use null instead of undefined.');
     }
 
     var type = '@@redux/PROBE_UNKNOWN_ACTION_' + Math.random().toString(36).substring(7).split('').join('.');
     if (typeof reducer(undefined, { type: type }) === 'undefined') {
-      throw new Error('Reducer "' + key + '" returned undefined when probed with a random type. ' + ('Don\'t try to handle ' + _createStore.ActionTypes.INIT + ' or other actions in "redux/*" ') + 'namespace. They are considered private. Instead, you must return the ' + 'current state for any unknown actions, unless it is undefined, ' + 'in which case you must return the initial state, regardless of the ' + 'action type. The initial state may not be undefined.');
+      throw new Error('Reducer "' + key + '" returned undefined when probed with a random type. ' + ('Don\'t try to handle ' + _createStore.ActionTypes.INIT + ' or other actions in "redux/*" ') + 'namespace. They are considered private. Instead, you must return the ' + 'current state for any unknown actions, unless it is undefined, ' + 'in which case you must return the initial state, regardless of the ' + 'action type. The initial state may not be undefined, but can be null.');
     }
   });
 }
@@ -49208,23 +49231,24 @@ function combineReducers(reducers) {
   }
   var finalReducerKeys = Object.keys(finalReducers);
 
+  var unexpectedKeyCache = void 0;
   if (process.env.NODE_ENV !== 'production') {
-    var unexpectedKeyCache = {};
+    unexpectedKeyCache = {};
   }
 
-  var sanityError;
+  var shapeAssertionError = void 0;
   try {
-    assertReducerSanity(finalReducers);
+    assertReducerShape(finalReducers);
   } catch (e) {
-    sanityError = e;
+    shapeAssertionError = e;
   }
 
   return function combination() {
-    var state = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
     var action = arguments[1];
 
-    if (sanityError) {
-      throw sanityError;
+    if (shapeAssertionError) {
+      throw shapeAssertionError;
     }
 
     if (process.env.NODE_ENV !== 'production') {
@@ -49236,23 +49260,23 @@ function combineReducers(reducers) {
 
     var hasChanged = false;
     var nextState = {};
-    for (var i = 0; i < finalReducerKeys.length; i++) {
-      var key = finalReducerKeys[i];
-      var reducer = finalReducers[key];
-      var previousStateForKey = state[key];
+    for (var _i = 0; _i < finalReducerKeys.length; _i++) {
+      var _key = finalReducerKeys[_i];
+      var reducer = finalReducers[_key];
+      var previousStateForKey = state[_key];
       var nextStateForKey = reducer(previousStateForKey, action);
       if (typeof nextStateForKey === 'undefined') {
-        var errorMessage = getUndefinedStateErrorMessage(key, action);
+        var errorMessage = getUndefinedStateErrorMessage(_key, action);
         throw new Error(errorMessage);
       }
-      nextState[key] = nextStateForKey;
+      nextState[_key] = nextStateForKey;
       hasChanged = hasChanged || nextStateForKey !== previousStateForKey;
     }
     return hasChanged ? nextState : state;
   };
 }
 }).call(this,require('_process'))
-},{"./createStore":86,"./utils/warning":88,"_process":126,"lodash/isPlainObject":74}],85:[function(require,module,exports){
+},{"./createStore":86,"./utils/warning":88,"_process":129,"lodash/isPlainObject":75}],85:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -49283,13 +49307,11 @@ function compose() {
     return funcs[0];
   }
 
-  var last = funcs[funcs.length - 1];
-  var rest = funcs.slice(0, -1);
-  return function () {
-    return rest.reduceRight(function (composed, f) {
-      return f(composed);
-    }, last.apply(undefined, arguments));
-  };
+  return funcs.reduce(function (a, b) {
+    return function () {
+      return a(b.apply(undefined, arguments));
+    };
+  });
 }
 },{}],86:[function(require,module,exports){
 'use strict';
@@ -49316,34 +49338,33 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
  */
 var ActionTypes = exports.ActionTypes = {
   INIT: '@@redux/INIT'
-};
 
-/**
- * Creates a Redux store that holds the state tree.
- * The only way to change the data in the store is to call `dispatch()` on it.
- *
- * There should only be a single store in your app. To specify how different
- * parts of the state tree respond to actions, you may combine several reducers
- * into a single reducer function by using `combineReducers`.
- *
- * @param {Function} reducer A function that returns the next state tree, given
- * the current state tree and the action to handle.
- *
- * @param {any} [preloadedState] The initial state. You may optionally specify it
- * to hydrate the state from the server in universal apps, or to restore a
- * previously serialized user session.
- * If you use `combineReducers` to produce the root reducer function, this must be
- * an object with the same shape as `combineReducers` keys.
- *
- * @param {Function} enhancer The store enhancer. You may optionally specify it
- * to enhance the store with third-party capabilities such as middleware,
- * time travel, persistence, etc. The only store enhancer that ships with Redux
- * is `applyMiddleware()`.
- *
- * @returns {Store} A Redux store that lets you read the state, dispatch actions
- * and subscribe to changes.
- */
-function createStore(reducer, preloadedState, enhancer) {
+  /**
+   * Creates a Redux store that holds the state tree.
+   * The only way to change the data in the store is to call `dispatch()` on it.
+   *
+   * There should only be a single store in your app. To specify how different
+   * parts of the state tree respond to actions, you may combine several reducers
+   * into a single reducer function by using `combineReducers`.
+   *
+   * @param {Function} reducer A function that returns the next state tree, given
+   * the current state tree and the action to handle.
+   *
+   * @param {any} [preloadedState] The initial state. You may optionally specify it
+   * to hydrate the state from the server in universal apps, or to restore a
+   * previously serialized user session.
+   * If you use `combineReducers` to produce the root reducer function, this must be
+   * an object with the same shape as `combineReducers` keys.
+   *
+   * @param {Function} [enhancer] The store enhancer. You may optionally specify it
+   * to enhance the store with third-party capabilities such as middleware,
+   * time travel, persistence, etc. The only store enhancer that ships with Redux
+   * is `applyMiddleware()`.
+   *
+   * @returns {Store} A Redux store that lets you read the state, dispatch actions
+   * and subscribe to changes.
+   */
+};function createStore(reducer, preloadedState, enhancer) {
   var _ref2;
 
   if (typeof preloadedState === 'function' && typeof enhancer === 'undefined') {
@@ -49477,7 +49498,8 @@ function createStore(reducer, preloadedState, enhancer) {
 
     var listeners = currentListeners = nextListeners;
     for (var i = 0; i < listeners.length; i++) {
-      listeners[i]();
+      var listener = listeners[i];
+      listener();
     }
 
     return action;
@@ -49506,7 +49528,7 @@ function createStore(reducer, preloadedState, enhancer) {
    * Interoperability point for observable/reactive libraries.
    * @returns {observable} A minimal observable of state changes.
    * For more information, see the observable proposal:
-   * https://github.com/zenparsing/es-observable
+   * https://github.com/tc39/proposal-observable
    */
   function observable() {
     var _ref;
@@ -49553,7 +49575,7 @@ function createStore(reducer, preloadedState, enhancer) {
     replaceReducer: replaceReducer
   }, _ref2[_symbolObservable2['default']] = observable, _ref2;
 }
-},{"lodash/isPlainObject":74,"symbol-observable":101}],87:[function(require,module,exports){
+},{"lodash/isPlainObject":75,"symbol-observable":104}],87:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -49602,7 +49624,7 @@ exports.bindActionCreators = _bindActionCreators2['default'];
 exports.applyMiddleware = _applyMiddleware2['default'];
 exports.compose = _compose2['default'];
 }).call(this,require('_process'))
-},{"./applyMiddleware":82,"./bindActionCreators":83,"./combineReducers":84,"./compose":85,"./createStore":86,"./utils/warning":88,"_process":126}],88:[function(require,module,exports){
+},{"./applyMiddleware":82,"./bindActionCreators":83,"./combineReducers":84,"./compose":85,"./createStore":86,"./utils/warning":88,"_process":129}],88:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -49739,7 +49761,7 @@ exports.connect = lookup;
 exports.Manager = require('./manager');
 exports.Socket = require('./socket');
 
-},{"./manager":90,"./socket":92,"./url":93,"debug":18,"socket.io-parser":95}],90:[function(require,module,exports){
+},{"./manager":90,"./socket":92,"./url":93,"debug":94,"socket.io-parser":98}],90:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -50301,7 +50323,7 @@ Manager.prototype.onreconnect = function () {
   this.emitAll('reconnect', attempt);
 };
 
-},{"./on":91,"./socket":92,"backo2":10,"component-bind":14,"component-emitter":15,"debug":18,"engine.io-client":22,"indexof":61,"socket.io-parser":95}],91:[function(require,module,exports){
+},{"./on":91,"./socket":92,"backo2":10,"component-bind":14,"component-emitter":15,"debug":94,"engine.io-client":20,"indexof":62,"socket.io-parser":98}],91:[function(require,module,exports){
 
 /**
  * Module exports.
@@ -50748,7 +50770,7 @@ Socket.prototype.compress = function (compress) {
   return this;
 };
 
-},{"./on":91,"component-bind":14,"component-emitter":15,"debug":18,"has-binary":55,"socket.io-parser":95,"to-array":104}],93:[function(require,module,exports){
+},{"./on":91,"component-bind":14,"component-emitter":15,"debug":94,"has-binary":56,"socket.io-parser":98,"to-array":107}],93:[function(require,module,exports){
 (function (global){
 
 /**
@@ -50827,7 +50849,13 @@ function url (uri, loc) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"debug":18,"parseuri":80}],94:[function(require,module,exports){
+},{"debug":94,"parseuri":80}],94:[function(require,module,exports){
+arguments[4][30][0].apply(exports,arguments)
+},{"./debug":95,"_process":129,"dup":30}],95:[function(require,module,exports){
+arguments[4][31][0].apply(exports,arguments)
+},{"dup":31,"ms":96}],96:[function(require,module,exports){
+arguments[4][32][0].apply(exports,arguments)
+},{"dup":32}],97:[function(require,module,exports){
 (function (global){
 /*global Blob,File*/
 
@@ -50972,7 +51000,7 @@ exports.removeBlobs = function(data, callback) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./is-buffer":96,"isarray":62}],95:[function(require,module,exports){
+},{"./is-buffer":99,"isarray":63}],98:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -51310,7 +51338,7 @@ function tryParse(p, str) {
   } catch(e){
     return error();
   }
-  return p;
+  return p; 
 };
 
 /**
@@ -51378,7 +51406,7 @@ function error(data){
   };
 }
 
-},{"./binary":94,"./is-buffer":96,"component-emitter":97,"debug":98,"json3":64}],96:[function(require,module,exports){
+},{"./binary":97,"./is-buffer":99,"component-emitter":100,"debug":101,"json3":65}],99:[function(require,module,exports){
 (function (global){
 
 module.exports = isBuf;
@@ -51395,7 +51423,7 @@ function isBuf(obj) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],97:[function(require,module,exports){
+},{}],100:[function(require,module,exports){
 
 /**
  * Expose `Emitter`.
@@ -51561,7 +51589,7 @@ Emitter.prototype.hasListeners = function(event){
   return !! this.listeners(event).length;
 };
 
-},{}],98:[function(require,module,exports){
+},{}],101:[function(require,module,exports){
 
 /**
  * This is the web browser implementation of `debug()`.
@@ -51731,7 +51759,7 @@ function localstorage(){
   } catch (e) {}
 }
 
-},{"./debug":99}],99:[function(require,module,exports){
+},{"./debug":102}],102:[function(require,module,exports){
 
 /**
  * This is the common logic for both the Node.js and web browser
@@ -51930,7 +51958,7 @@ function coerce(val) {
   return val;
 }
 
-},{"ms":100}],100:[function(require,module,exports){
+},{"ms":103}],103:[function(require,module,exports){
 /**
  * Helpers.
  */
@@ -52057,10 +52085,10 @@ function plural(ms, n, name) {
   return Math.ceil(ms / n) + ' ' + name + 's';
 }
 
-},{}],101:[function(require,module,exports){
+},{}],104:[function(require,module,exports){
 module.exports = require('./lib/index');
 
-},{"./lib/index":102}],102:[function(require,module,exports){
+},{"./lib/index":105}],105:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -52092,7 +52120,7 @@ if (typeof self !== 'undefined') {
 var result = (0, _ponyfill2['default'])(root);
 exports['default'] = result;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./ponyfill":103}],103:[function(require,module,exports){
+},{"./ponyfill":106}],106:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -52116,7 +52144,7 @@ function symbolObservablePonyfill(root) {
 
 	return result;
 };
-},{}],104:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 module.exports = toArray
 
 function toArray(list, index) {
@@ -52131,7 +52159,7 @@ function toArray(list, index) {
     return array
 }
 
-},{}],105:[function(require,module,exports){
+},{}],108:[function(require,module,exports){
 (function(self) {
   'use strict';
 
@@ -52218,7 +52246,10 @@ function toArray(list, index) {
       headers.forEach(function(value, name) {
         this.append(name, value)
       }, this)
-
+    } else if (Array.isArray(headers)) {
+      headers.forEach(function(header) {
+        this.append(header[0], header[1])
+      }, this)
     } else if (headers) {
       Object.getOwnPropertyNames(headers).forEach(function(name) {
         this.append(name, headers[name])
@@ -52437,9 +52468,7 @@ function toArray(list, index) {
     options = options || {}
     var body = options.body
 
-    if (typeof input === 'string') {
-      this.url = input
-    } else {
+    if (input instanceof Request) {
       if (input.bodyUsed) {
         throw new TypeError('Already read')
       }
@@ -52454,6 +52483,8 @@ function toArray(list, index) {
         body = input._bodyInit
         input.bodyUsed = true
       }
+    } else {
+      this.url = String(input)
     }
 
     this.credentials = options.credentials || this.credentials || 'omit'
@@ -52489,7 +52520,7 @@ function toArray(list, index) {
 
   function parseHeaders(rawHeaders) {
     var headers = new Headers()
-    rawHeaders.split('\r\n').forEach(function(line) {
+    rawHeaders.split(/\r?\n/).forEach(function(line) {
       var parts = line.split(':')
       var key = parts.shift().trim()
       if (key) {
@@ -52591,7 +52622,7 @@ function toArray(list, index) {
   self.fetch.polyfill = true
 })(typeof self !== 'undefined' ? self : this);
 
-},{}],106:[function(require,module,exports){
+},{}],109:[function(require,module,exports){
 (function (global){
 /*! https://mths.be/wtf8 v1.0.0 by @mathias */
 ;(function(root) {
@@ -52829,7 +52860,7 @@ function toArray(list, index) {
 }(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],107:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 'use strict';
 
 var alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_'.split('')
@@ -52899,7 +52930,7 @@ yeast.encode = encode;
 yeast.decode = decode;
 module.exports = yeast;
 
-},{}],108:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -52932,7 +52963,7 @@ function config() {
 	return state;
 }
 
-},{"../constants/ActionTypes":3,"immutable":60}],109:[function(require,module,exports){
+},{"../constants/ActionTypes":3,"immutable":61}],112:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -52959,7 +52990,7 @@ Object.defineProperty(exports, 'config', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./config":108,"./storyfinder":110}],110:[function(require,module,exports){
+},{"./config":111,"./storyfinder":113}],113:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53002,7 +53033,7 @@ var initialState = _immutable2.default.Map({
 		layerIds = layerIds.push(layer.id);
 		state = state.setIn(['layers', layer.id], new Immutable.fromJS(layer));
 	});
-
+	
 	state = state.set('isFetching', false);
 	if(path.size == 1){
 		state = state.setIn(['groups', parentId, 'children'], layerIds);
@@ -53224,7 +53255,7 @@ function layerlist() {
 	return state;
 }
 
-},{"../constants/ActionTypes":3,"immutable":60}],111:[function(require,module,exports){
+},{"../constants/ActionTypes":3,"immutable":61}],114:[function(require,module,exports){
 'use strict';
 
 var _ = require('lodash'),
@@ -53392,7 +53423,7 @@ module.exports = function (store, vis) {
 	initialize();
 };
 
-},{"./actions/StoryfinderActions.js":1,"./templates/search/results.hbs":117,"async":9,"dom-delegate":21,"lodash":75}],112:[function(require,module,exports){
+},{"./actions/StoryfinderActions.js":1,"./templates/search/results.hbs":120,"async":9,"dom-delegate":19,"lodash":76}],115:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53429,68 +53460,67 @@ function configureStore(initialState) {
   return store;
 }
 
-},{"../reducers":109,"redux":87,"redux-thunk":81}],113:[function(require,module,exports){
+},{"../reducers":112,"redux":87,"redux-thunk":81}],116:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"1":function(container,depth0,helpers,partials,data) {
-    return "	<div class=\"caption\"><i class=\"fa fa-gear fa-spin\"></i> Parsing...</div>\n";
+    return "	<div class=\"caption\"><i class=\"fa fa-gear fa-spin\"></i> Parsing...</div>\r\n";
 },"3":function(container,depth0,helpers,partials,data) {
     var stack1;
 
-  return ((stack1 = helpers["if"].call(depth0 != null ? depth0 : {},(depth0 != null ? depth0.site_ids : depth0),{"name":"if","hash":{},"fn":container.program(4, data, 0),"inverse":container.program(15, data, 0),"data":data})) != null ? stack1 : "")
-    + "	\n		<a class=\"btn-search\"><input /><i class=\"icon-search material-icons\">search</i><i class=\"icon-close material-icons\">close</i></a>\n"
-      + "\n     <a class=\"btn-search\" href=\"/logout\"><i class=\"fa fa-sign-out\" aria-hidden=\"true\"></i></a>\n";
+  return ((stack1 = helpers["if"].call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? depth0.site_ids : depth0),{"name":"if","hash":{},"fn":container.program(4, data, 0),"inverse":container.program(15, data, 0),"data":data})) != null ? stack1 : "")
+    + "	\r\n		<a class=\"btn-search\"><input /><i class=\"icon-search material-icons\">search</i><i class=\"icon-close material-icons\">close</i></a>\r\n        <a class=\"btn-search\" href=\"/logout\"><i class=\"fa fa-sign-out\" aria-hidden=\"true\"></i></a>\r\n";
 },"4":function(container,depth0,helpers,partials,data) {
     var stack1;
 
-  return ((stack1 = helpers["if"].call(depth0 != null ? depth0 : {},(depth0 != null ? depth0.groupsize : depth0),{"name":"if","hash":{},"fn":container.program(5, data, 0),"inverse":container.program(13, data, 0),"data":data})) != null ? stack1 : "");
+  return ((stack1 = helpers["if"].call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? depth0.groupsize : depth0),{"name":"if","hash":{},"fn":container.program(5, data, 0),"inverse":container.program(13, data, 0),"data":data})) != null ? stack1 : "");
 },"5":function(container,depth0,helpers,partials,data) {
-    var stack1, helper, alias1=depth0 != null ? depth0 : {}, alias2=container.escapeExpression;
+    var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=container.escapeExpression;
 
-  return "			<a class=\"btn-back\"><i class=\"material-icons\">arrow_back</i></a>\n			<div class=\"caption\">Group of "
+  return "			<a class=\"btn-back\"><i class=\"material-icons\">arrow_back</i></a>\r\n			<div class=\"caption\">Group of "
     + alias2(((helper = (helper = helpers.groupsize || (depth0 != null ? depth0.groupsize : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(alias1,{"name":"groupsize","hash":{},"data":data}) : helper)))
-    + " sites\n				"
+    + " sites\r\n				"
     + alias2(helpers.log.call(alias1,(depth0 != null ? depth0.sites : depth0),{"name":"log","hash":{},"data":data}))
-    + "\n				<small>"
+    + "\r\n				<small>"
     + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.sites : depth0),{"name":"each","hash":{},"fn":container.program(6, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "				</small>\n			</div>\n";
+    + "				</small>\r\n			</div>\r\n";
 },"6":function(container,depth0,helpers,partials,data) {
-    var stack1, alias1=depth0 != null ? depth0 : {};
+    var stack1, alias1=depth0 != null ? depth0 : (container.nullContext || {});
 
-  return "\n"
+  return "\r\n"
     + ((stack1 = helpers["if"].call(alias1,(data && data.index),{"name":"if","hash":{},"fn":container.program(7, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "					<span style=\"display: inline-block; max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis\">\n"
+    + "					<span style=\"display: inline-block; max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis\">\r\n"
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.title : depth0),{"name":"if","hash":{},"fn":container.program(9, data, 0),"inverse":container.program(11, data, 0),"data":data})) != null ? stack1 : "")
-    + "					</span>\n";
+    + "					</span>\r\n";
 },"7":function(container,depth0,helpers,partials,data) {
-    return "						 ,\n";
+    return "						 ,\r\n";
 },"9":function(container,depth0,helpers,partials,data) {
     var helper;
 
   return "						"
-    + container.escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"title","hash":{},"data":data}) : helper)))
-    + "\n";
+    + container.escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : (container.nullContext || {}),{"name":"title","hash":{},"data":data}) : helper)))
+    + "\r\n";
 },"11":function(container,depth0,helpers,partials,data) {
     var helper;
 
   return "						"
-    + container.escapeExpression(((helper = (helper = helpers.url || (depth0 != null ? depth0.url : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"url","hash":{},"data":data}) : helper)))
-    + "\n";
+    + container.escapeExpression(((helper = (helper = helpers.url || (depth0 != null ? depth0.url : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : (container.nullContext || {}),{"name":"url","hash":{},"data":data}) : helper)))
+    + "\r\n";
 },"13":function(container,depth0,helpers,partials,data) {
-    return "			<div class=\"caption\"><i class=\"fa fa-spinner fa-spin\"></i></div>\n";
+    return "			<div class=\"caption\"><i class=\"fa fa-spinner fa-spin\"></i></div>\r\n";
 },"15":function(container,depth0,helpers,partials,data) {
     var stack1;
 
-  return ((stack1 = helpers["if"].call(depth0 != null ? depth0 : {},(depth0 != null ? depth0.site_id : depth0),{"name":"if","hash":{},"fn":container.program(16, data, 0),"inverse":container.program(24, data, 0),"data":data})) != null ? stack1 : "");
+  return ((stack1 = helpers["if"].call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? depth0.site_id : depth0),{"name":"if","hash":{},"fn":container.program(16, data, 0),"inverse":container.program(24, data, 0),"data":data})) != null ? stack1 : "");
 },"16":function(container,depth0,helpers,partials,data) {
     var stack1;
 
-  return ((stack1 = helpers["if"].call(depth0 != null ? depth0 : {},(depth0 != null ? depth0.site : depth0),{"name":"if","hash":{},"fn":container.program(17, data, 0),"inverse":container.program(22, data, 0),"data":data})) != null ? stack1 : "");
+  return ((stack1 = helpers["if"].call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? depth0.site : depth0),{"name":"if","hash":{},"fn":container.program(17, data, 0),"inverse":container.program(22, data, 0),"data":data})) != null ? stack1 : "");
 },"17":function(container,depth0,helpers,partials,data) {
     var stack1;
 
-  return "				<a class=\"btn-back\"><i class=\"material-icons\">arrow_back</i></a>\n"
-    + ((stack1 = helpers["if"].call(depth0 != null ? depth0 : {},((stack1 = (depth0 != null ? depth0.site : depth0)) != null ? stack1.title : stack1),{"name":"if","hash":{},"fn":container.program(18, data, 0),"inverse":container.program(20, data, 0),"data":data})) != null ? stack1 : "");
+  return "				<a class=\"btn-back\"><i class=\"material-icons\">arrow_back</i></a>\r\n"
+    + ((stack1 = helpers["if"].call(depth0 != null ? depth0 : (container.nullContext || {}),((stack1 = (depth0 != null ? depth0.site : depth0)) != null ? stack1.title : stack1),{"name":"if","hash":{},"fn":container.program(18, data, 0),"inverse":container.program(20, data, 0),"data":data})) != null ? stack1 : "");
 },"18":function(container,depth0,helpers,partials,data) {
     var stack1, alias1=container.lambda, alias2=container.escapeExpression;
 
@@ -53498,7 +53528,7 @@ module.exports = HandlebarsCompiler.template({"1":function(container,depth0,help
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.site : depth0)) != null ? stack1.title : stack1), depth0))
     + "<small>"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.site : depth0)) != null ? stack1.url : stack1), depth0))
-    + "</small></div>\n";
+    + "</small></div>\r\n";
 },"20":function(container,depth0,helpers,partials,data) {
     var stack1, alias1=container.lambda, alias2=container.escapeExpression;
 
@@ -53506,161 +53536,161 @@ module.exports = HandlebarsCompiler.template({"1":function(container,depth0,help
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.site : depth0)) != null ? stack1.host : stack1), depth0))
     + "<small>"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.site : depth0)) != null ? stack1.url : stack1), depth0))
-    + "</small></div>\n";
+    + "</small></div>\r\n";
 },"22":function(container,depth0,helpers,partials,data) {
-    return "				<div class=\"caption\"><i class=\"fa fa-spinner fa-spin\"></i></div>\n";
+    return "				<div class=\"caption\"><i class=\"fa fa-spinner fa-spin\"></i></div>\r\n";
 },"24":function(container,depth0,helpers,partials,data) {
-    return "				<a class=\"btn-menu\"><i class=\"material-icons\">menu</i></a>\n				<div class=\"caption\">Global network</div>\n";
+    return "				<a class=\"btn-menu\"><i class=\"material-icons\">menu</i></a>\r\n				<div class=\"caption\">Global network</div>\r\n";
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1;
 
-  return ((stack1 = helpers["if"].call(depth0 != null ? depth0 : {},(depth0 != null ? depth0.loading : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.program(3, data, 0),"data":data})) != null ? stack1 : "");
+  return ((stack1 = helpers["if"].call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? depth0.loading : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.program(3, data, 0),"data":data})) != null ? stack1 : "");
 },"useData":true});
 
-},{"hbsfy/runtime":57}],114:[function(require,module,exports){
+},{"hbsfy/runtime":58}],117:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    var helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
+    var helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
-  return "<div class=\"details-title type-OTH\">\n	<a class=\"btn-back\"><i class=\"material-icons\">close</i></a>\n	<a class=\"btn-save\">save</a>\n	<div class=\"caption\">New element</div>\n</div>\n<div class=\"content-body\">\n	<form>\n	<div class=\"form-group\">\n		<label>Name:</label>\n		<input type=\"text\" class=\"form-control\" placeholder=\"Please enter the name of the new element.\" value=\""
+  return "<div class=\"details-title type-OTH\">\r\n	<a class=\"btn-back\"><i class=\"material-icons\">close</i></a>\r\n	<a class=\"btn-save\">save</a>\r\n	<div class=\"caption\">New element</div>\r\n</div>\r\n<div class=\"content-body\">\r\n	<form>\r\n	<div class=\"form-group\">\r\n		<label>Name:</label>\r\n		<input type=\"text\" class=\"form-control\" placeholder=\"Please enter the name of the new element.\" value=\""
     + alias4(((helper = (helper = helpers.caption || (depth0 != null ? depth0.caption : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"caption","hash":{},"data":data}) : helper)))
-    + "\" name=\"data[entity][name]\" />\n	</div>\n	<strong>Please select a type:</strong>\n	<div class=\"radio\">\n		<label>\n			<input type=\"radio\" name=\"data[entity][type]\" value=\"PER\" />\n			Person\n		</label>\n	</div>\n	<div class=\"radio\">\n		<label>\n			<input type=\"radio\" name=\"data[entity][type]\" value=\"ORG\" />\n			Organisation\n		</label>\n	</div>\n	<div class=\"radio\">\n		<label>\n			<input type=\"radio\" name=\"data[entity][type]\" value=\"LOC\" />\n			Location\n		</label>\n	</div>\n	<div class=\"radio\">\n		<label>\n			<input type=\"radio\" name=\"data[entity][type]\" value=\"OTH\" checked />\n			Other\n		</label>\n	</div>\n	<input type=\"hidden\" name=\"data[article][id]\" value=\""
+    + "\" name=\"data[entity][name]\" />\r\n	</div>\r\n	<strong>Please select a type:</strong>\r\n	<div class=\"radio\">\r\n		<label>\r\n			<input type=\"radio\" name=\"data[entity][type]\" value=\"PER\" />\r\n			Person\r\n		</label>\r\n	</div>\r\n	<div class=\"radio\">\r\n		<label>\r\n			<input type=\"radio\" name=\"data[entity][type]\" value=\"ORG\" />\r\n			Organisation\r\n		</label>\r\n	</div>\r\n	<div class=\"radio\">\r\n		<label>\r\n			<input type=\"radio\" name=\"data[entity][type]\" value=\"LOC\" />\r\n			Location\r\n		</label>\r\n	</div>\r\n	<div class=\"radio\">\r\n		<label>\r\n			<input type=\"radio\" name=\"data[entity][type]\" value=\"OTH\" checked />\r\n			Other\r\n		</label>\r\n	</div>\r\n	<input type=\"hidden\" name=\"data[article][id]\" value=\""
     + alias4(((helper = (helper = helpers.article_id || (depth0 != null ? depth0.article_id : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"article_id","hash":{},"data":data}) : helper)))
-    + "\"/>\n	<!--<div class=\"form-group\">\n		<label>Source (optional):</label>\n		<input type=\"text\" class=\"form-control\" name=\"data[site][url]\" placeholder=\"Please enter the source of the element.\" value=\""
+    + "\"/>\r\n	<!--<div class=\"form-group\">\r\n		<label>Source (optional):</label>\r\n		<input type=\"text\" class=\"form-control\" name=\"data[site][url]\" placeholder=\"Please enter the source of the element.\" value=\""
     + alias4(((helper = (helper = helpers.url || (depth0 != null ? depth0.url : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"url","hash":{},"data":data}) : helper)))
-    + "\" />\n	</div>-->\n	<div class=\"checkbox\">\n		<label>\n			<input type=\"checkbox\" name=\"data[entity][show_always]\" value=\"1\" checked />\n			Element is always visible\n		</label>\n	</div>\n	<div class=\"checkbox\">\n		<label>\n			<input type=\"checkbox\" name=\"data[options][find_relations]\" value=\"1\" checked />\n			Autodetect relations\n		</label>\n	</div>\n	</form>\n</div>";
+    + "\" />\r\n	</div>-->\r\n	<div class=\"checkbox\">\r\n		<label>\r\n			<input type=\"checkbox\" name=\"data[entity][show_always]\" value=\"1\" checked />\r\n			Element is always visible\r\n		</label>\r\n	</div>\r\n	<div class=\"checkbox\">\r\n		<label>\r\n			<input type=\"checkbox\" name=\"data[options][find_relations]\" value=\"1\" checked />\r\n			Autodetect relations\r\n		</label>\r\n	</div>\r\n	</form>\r\n</div>";
 },"useData":true});
 
-},{"hbsfy/runtime":57}],115:[function(require,module,exports){
+},{"hbsfy/runtime":58}],118:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"1":function(container,depth0,helpers,partials,data,blockParams,depths) {
     var stack1, alias1=container.lambda, alias2=container.escapeExpression;
 
-  return "		<div class=\"arrow\">\n			<div class=\"arrow-up\"><i class=\"material-icons\">keyboard_arrow_up</i></div>\n			<div class=\"line\"></div>\n			<div class=\"arrow-down\"><i class=\"material-icons\">keyboard_arrow_down</i></div>\n		</div>\n		<ul>\n			<li>\n				<div class=\"input-group\">\n					<input type=\"text\" class=\"form-control\" placeholder=\"Please enter the primary label for the relation...\" value=\""
+  return "		<div class=\"arrow\">\r\n			<div class=\"arrow-up\"><i class=\"material-icons\">keyboard_arrow_up</i></div>\r\n			<div class=\"line\"></div>\r\n			<div class=\"arrow-down\"><i class=\"material-icons\">keyboard_arrow_down</i></div>\r\n		</div>\r\n		<ul>\r\n			<li>\r\n				<div class=\"input-group\">\r\n					<input type=\"text\" class=\"form-control\" placeholder=\"Please enter the primary label for the relation...\" value=\""
     + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.Relation : depth0)) != null ? stack1.Relationtype : stack1)) != null ? stack1.label : stack1), depth0))
-    + "\" />\n					<div class=\"input-group-btn\">\n						<a class=\"btn btn-default disabled\" data-entity1-id=\""
+    + "\" />\r\n					<div class=\"input-group-btn\">\r\n						<a class=\"btn btn-default disabled\" data-entity1-id=\""
     + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.Entities : depth0)) != null ? stack1["0"] : stack1)) != null ? stack1.id : stack1), depth0))
     + "\" data-entity2-id=\""
     + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.Entities : depth0)) != null ? stack1["1"] : stack1)) != null ? stack1.id : stack1), depth0))
-    + "\"><i class=\"fa fa-check\"></i></a>\n					</div>\n				</div>\n			</li>\n"
-    + ((stack1 = helpers["if"].call(depth0 != null ? depth0 : {},(depth0 != null ? depth0.Sentences : depth0),{"name":"if","hash":{},"fn":container.program(2, data, 0, blockParams, depths),"inverse":container.program(5, data, 0, blockParams, depths),"data":data})) != null ? stack1 : "")
-    + "		</ul>\n";
+    + "\"><i class=\"fa fa-check\"></i></a>\r\n					</div>\r\n				</div>\r\n			</li>\r\n"
+    + ((stack1 = helpers["if"].call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? depth0.Sentences : depth0),{"name":"if","hash":{},"fn":container.program(2, data, 0, blockParams, depths),"inverse":container.program(5, data, 0, blockParams, depths),"data":data})) != null ? stack1 : "")
+    + "		</ul>\r\n";
 },"2":function(container,depth0,helpers,partials,data,blockParams,depths) {
     var stack1;
 
-  return ((stack1 = helpers.each.call(depth0 != null ? depth0 : {},(depth0 != null ? depth0.Sentences : depth0),{"name":"each","hash":{},"fn":container.program(3, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "");
+  return ((stack1 = helpers.each.call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? depth0.Sentences : depth0),{"name":"each","hash":{},"fn":container.program(3, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "");
 },"3":function(container,depth0,helpers,partials,data,blockParams,depths) {
-    var stack1, helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.lambda, alias5=container.escapeExpression;
+    var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.lambda, alias5=container.escapeExpression;
 
-  return "				<li>\n					<div class=\"sentence\">»"
+  return "				<li>\r\n					<div class=\"sentence\">»"
     + ((stack1 = ((helper = (helper = helpers.html || (depth0 != null ? depth0.html : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"html","hash":{},"data":data}) : helper))) != null ? stack1 : "")
-    + "&nbsp;«</div>\n					<div class=\"source\">– Source <a href=\"/Articles/"
+    + "&nbsp;«</div>\r\n					<div class=\"source\">– Source <a href=\"/Articles/"
     + alias5(alias4(((stack1 = (depth0 != null ? depth0.Article : depth0)) != null ? stack1.id : stack1), depth0))
     + "\" target=\"_blank\">"
     + alias5(alias4(((stack1 = ((stack1 = (depth0 != null ? depth0.Article : depth0)) != null ? stack1.Site : stack1)) != null ? stack1.title : stack1), depth0))
     + "</a> visited on "
     + alias5(alias4(((stack1 = ((stack1 = (depth0 != null ? depth0.Article : depth0)) != null ? stack1.Site : stack1)) != null ? stack1.last_visited : stack1), depth0))
-    + " –</div>\n					<div class=\"input-group\">\n						<input type=\"text\" class=\"form-control\" placeholder=\"Please enter a label for the relation...\" value=\""
+    + " –</div>\r\n					<div class=\"input-group\">\r\n						<input type=\"text\" class=\"form-control\" placeholder=\"Please enter a label for the relation...\" value=\""
     + alias5(alias4(((stack1 = (depth0 != null ? depth0.Relationtype : depth0)) != null ? stack1.label : stack1), depth0))
-    + "\" />\n						<div class=\"input-group-btn\">\n							<a class=\"btn btn-default disabled\" data-sentence-id=\""
+    + "\" />\r\n						<div class=\"input-group-btn\">\r\n							<a class=\"btn btn-default disabled\" data-sentence-id=\""
     + alias5(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"id","hash":{},"data":data}) : helper)))
     + "\" data-entity1-id=\""
     + alias5(alias4(((stack1 = ((stack1 = (depths[1] != null ? depths[1].Entities : depths[1])) != null ? stack1["0"] : stack1)) != null ? stack1.id : stack1), depth0))
     + "\" data-entity2-id=\""
     + alias5(alias4(((stack1 = ((stack1 = (depths[1] != null ? depths[1].Entities : depths[1])) != null ? stack1["1"] : stack1)) != null ? stack1.id : stack1), depth0))
-    + "\"><i class=\"fa fa-check\"></i></a>\n						</div>\n					</div>\n				</li>\n";
+    + "\"><i class=\"fa fa-check\"></i></a>\r\n						</div>\r\n					</div>\r\n				</li>\r\n";
 },"5":function(container,depth0,helpers,partials,data) {
-    return "			<li>\n				<div class=\"text-center\">There is currently no source for this relation.</div>\n			</li>\n";
+    return "			<li>\r\n				<div class=\"text-center\">There is currently no source for this relation.</div>\r\n			</li>\r\n";
 },"7":function(container,depth0,helpers,partials,data) {
     var stack1, alias1=container.lambda, alias2=container.escapeExpression;
 
-  return "		<div class=\"new-relation\">\n			There is currently no relation between »"
+  return "		<div class=\"new-relation\">\r\n			There is currently no relation between »"
     + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.Entities : depth0)) != null ? stack1["0"] : stack1)) != null ? stack1.caption : stack1), depth0))
     + "« and »"
     + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.Entities : depth0)) != null ? stack1["1"] : stack1)) != null ? stack1.caption : stack1), depth0))
-    + "«.<br />Do you want to create a new relation?\n			<p />\n			<div class=\"form-group\">\n				<input type=\"text\" class=\"form-control\" placeholder=\"Please enter a label for the new relation...\" value=\"\" />\n			</div>\n			\n			<div class=\"ctrls\">\n				<a class=\"btn-create\" data-entity1=\""
+    + "«.<br />Do you want to create a new relation?\r\n			<p />\r\n			<div class=\"form-group\">\r\n				<input type=\"text\" class=\"form-control\" placeholder=\"Please enter a label for the new relation...\" value=\"\" />\r\n			</div>\r\n			\r\n			<div class=\"ctrls\">\r\n				<a class=\"btn-create\" data-entity1=\""
     + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.Entities : depth0)) != null ? stack1["0"] : stack1)) != null ? stack1.id : stack1), depth0))
     + "\" data-entity2=\""
     + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.Entities : depth0)) != null ? stack1["1"] : stack1)) != null ? stack1.id : stack1), depth0))
-    + "\">Yes, create relation</a>\n				<a class=\"btn-cancel\">No</a>\n			</div>\n		</div>\n";
+    + "\">Yes, create relation</a>\r\n				<a class=\"btn-cancel\">No</a>\r\n			</div>\r\n		</div>\r\n";
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data,blockParams,depths) {
     var stack1, alias1=container.lambda, alias2=container.escapeExpression;
 
   return "<div class=\"details-title type-"
     + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.Entities : depth0)) != null ? stack1["0"] : stack1)) != null ? stack1.type : stack1), depth0))
-    + "\">\n	<a class=\"btn-back\"><i class=\"material-icons\">arrow_back</i></a>\n	<div class=\"caption entity1\">"
+    + "\">\r\n	<a class=\"btn-back\"><i class=\"material-icons\">arrow_back</i></a>\r\n	<div class=\"caption entity1\">"
     + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.Entities : depth0)) != null ? stack1["0"] : stack1)) != null ? stack1.caption : stack1), depth0))
-    + "</div>\n</div>\n<div class=\"content-body\">\n"
-    + ((stack1 = helpers["if"].call(depth0 != null ? depth0 : {},(depth0 != null ? depth0.Relation : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0, blockParams, depths),"inverse":container.program(7, data, 0, blockParams, depths),"data":data})) != null ? stack1 : "")
-    + "</div>\n<div class=\"details-footer type-"
+    + "</div>\r\n</div>\r\n<div class=\"content-body\">\r\n"
+    + ((stack1 = helpers["if"].call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? depth0.Relation : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0, blockParams, depths),"inverse":container.program(7, data, 0, blockParams, depths),"data":data})) != null ? stack1 : "")
+    + "</div>\r\n<div class=\"details-footer type-"
     + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.Entities : depth0)) != null ? stack1["1"] : stack1)) != null ? stack1.type : stack1), depth0))
-    + "\">\n	<div class=\"caption entity2\">"
+    + "\">\r\n	<div class=\"caption entity2\">"
     + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.Entities : depth0)) != null ? stack1["1"] : stack1)) != null ? stack1.caption : stack1), depth0))
-    + "</div>\n</div>";
+    + "</div>\r\n</div>";
 },"useData":true,"useDepths":true});
 
-},{"hbsfy/runtime":57}],116:[function(require,module,exports){
+},{"hbsfy/runtime":58}],119:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"1":function(container,depth0,helpers,partials,data,blockParams,depths) {
     var stack1, alias1=container.lambda, alias2=container.escapeExpression;
 
-  return "	<div class=\"relation\">\n		<div class=\"direction\"><i class=\"material-icons\">repeat</i></div>\n		<div class=\"self type-"
+  return "	<div class=\"relation\">\r\n		<div class=\"direction\"><i class=\"material-icons\">repeat</i></div>\r\n		<div class=\"self type-"
     + alias2(alias1(((stack1 = (depths[1] != null ? depths[1].node : depths[1])) != null ? stack1.type : stack1), depth0))
     + "\">"
     + alias2(alias1(((stack1 = (depths[1] != null ? depths[1].node : depths[1])) != null ? stack1.caption : stack1), depth0))
-    + "</div>\n		<div class=\"relationtype\">"
+    + "</div>\r\n		<div class=\"relationtype\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.relationtype : depth0)) != null ? stack1.label : stack1), depth0))
-    + "</div>\n		<div class=\"neighbour type-"
+    + "</div>\r\n		<div class=\"neighbour type-"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.neighbour : depth0)) != null ? stack1.type : stack1), depth0))
     + "\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.neighbour : depth0)) != null ? stack1.caption : stack1), depth0))
-    + "</div>\n	</div>\n";
+    + "</div>\r\n	</div>\r\n";
 },"3":function(container,depth0,helpers,partials,data) {
-    var stack1, helper, alias1=container.lambda, alias2=container.escapeExpression, alias3=depth0 != null ? depth0 : {};
+    var stack1, helper, alias1=container.lambda, alias2=container.escapeExpression, alias3=depth0 != null ? depth0 : (container.nullContext || {});
 
   return "		<tr class=\"relation type-"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.neighbour : depth0)) != null ? stack1.type : stack1), depth0))
     + "\" data-id=\""
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.neighbour : depth0)) != null ? stack1.id : stack1), depth0))
-    + "\">\n			<td class=\"score\"><div class=\"score\"><div class=\"value\" style=\"height:"
+    + "\">\r\n			<td class=\"score\"><div class=\"score\"><div class=\"value\" style=\"height:"
     + alias2(((helper = (helper = helpers.score || (depth0 != null ? depth0.score : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(alias3,{"name":"score","hash":{},"data":data}) : helper)))
-    + "%\"/></div></td>\n			<td class=\"relation-label\">\n"
+    + "%\"/></div></td>\r\n			<td class=\"relation-label\">\r\n"
     + ((stack1 = helpers["if"].call(alias3,((stack1 = (depth0 != null ? depth0.Relationtype : depth0)) != null ? stack1.label : stack1),{"name":"if","hash":{},"fn":container.program(4, data, 0),"inverse":container.program(6, data, 0),"data":data})) != null ? stack1 : "")
-    + "			</td>\n			<td class=\"neighbour\">"
+    + "			</td>\r\n			<td class=\"neighbour\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.neighbour : depth0)) != null ? stack1.caption : stack1), depth0))
-    + "</td>\n		</tr>\n";
+    + "</td>\r\n		</tr>\r\n";
 },"4":function(container,depth0,helpers,partials,data) {
     var stack1;
 
   return "				"
     + container.escapeExpression(container.lambda(((stack1 = (depth0 != null ? depth0.Relationtype : depth0)) != null ? stack1.label : stack1), depth0))
-    + "\n";
+    + "\r\n";
 },"6":function(container,depth0,helpers,partials,data) {
-    return "				—\n";
+    return "				—\r\n";
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data,blockParams,depths) {
-    var stack1, alias1=depth0 != null ? depth0 : {};
+    var stack1, alias1=depth0 != null ? depth0 : (container.nullContext || {});
 
-  return "<!--<div class=\"relations container-fluid\">\n"
+  return "<!--<div class=\"relations container-fluid\">\r\n"
     + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.relations : depth0),{"name":"each","hash":{},"fn":container.program(1, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "</div>-->\n\n<table class=\"relations table table-hover\">\n	<thead>\n		<tr>\n			<th></th>\n			<th>Label</th>\n			<th>Neighbor</th>\n		</tr>\n	</thead>\n	<tbody>\n"
+    + "</div>-->\r\n\r\n<table class=\"relations table table-hover\">\r\n	<thead>\r\n		<tr>\r\n			<th></th>\r\n			<th>Label</th>\r\n			<th>Neighbor</th>\r\n		</tr>\r\n	</thead>\r\n	<tbody>\r\n"
     + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.Relations : depth0),{"name":"each","hash":{},"fn":container.program(3, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "	</tbody>\n</table>\n\n";
+    + "	</tbody>\r\n</table>\r\n\r\n";
 },"useData":true,"useDepths":true});
 
-},{"hbsfy/runtime":57}],117:[function(require,module,exports){
+},{"hbsfy/runtime":58}],120:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"1":function(container,depth0,helpers,partials,data) {
     var stack1;
 
-  return "<h3>Entities</h3>\n	<div class=\"row\">\n"
-    + ((stack1 = helpers.each.call(depth0 != null ? depth0 : {},(depth0 != null ? depth0.Entities : depth0),{"name":"each","hash":{},"fn":container.program(2, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "	</div>\n	<div class=\"clearfix\"></div>\n";
+  return "<h3>Entities</h3>\r\n	<div class=\"row\">\r\n"
+    + ((stack1 = helpers.each.call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? depth0.Entities : depth0),{"name":"each","hash":{},"fn":container.program(2, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + "	</div>\r\n	<div class=\"clearfix\"></div>\r\n";
 },"2":function(container,depth0,helpers,partials,data) {
-    var helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
+    var helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
   return "		<div class=\"entity type-"
     + alias4(((helper = (helper = helpers.type || (depth0 != null ? depth0.type : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"type","hash":{},"data":data}) : helper)))
@@ -53668,168 +53698,168 @@ module.exports = HandlebarsCompiler.template({"1":function(container,depth0,help
     + alias4(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"id","hash":{},"data":data}) : helper)))
     + "\">"
     + alias4(((helper = (helper = helpers.caption || (depth0 != null ? depth0.caption : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"caption","hash":{},"data":data}) : helper)))
-    + "</div>\n";
+    + "</div>\r\n";
 },"4":function(container,depth0,helpers,partials,data) {
     var stack1;
 
-  return "<h3>Sites</h3>\n	<div class=\"row\">\n"
-    + ((stack1 = helpers.each.call(depth0 != null ? depth0 : {},(depth0 != null ? depth0.Sites : depth0),{"name":"each","hash":{},"fn":container.program(5, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "	</div>\n</div>\n";
+  return "<h3>Sites</h3>\r\n	<div class=\"row\">\r\n"
+    + ((stack1 = helpers.each.call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? depth0.Sites : depth0),{"name":"each","hash":{},"fn":container.program(5, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + "	</div>\r\n</div>\r\n";
 },"5":function(container,depth0,helpers,partials,data) {
-    var stack1, helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
+    var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
-  return "		<div class=\"col-md-4\">\n			<div class=\"site"
+  return "		<div class=\"col-md-4\">\r\n			<div class=\"site"
     + ((stack1 = helpers.unless.call(alias1,(depth0 != null ? depth0.primary_color : depth0),{"name":"unless","hash":{},"fn":container.program(6, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.isLight : depth0),{"name":"if","hash":{},"fn":container.program(6, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "\" style=\""
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.primary_color : depth0),{"name":"if","hash":{},"fn":container.program(8, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "\">\n				<div class=\"thumbnail\" style=\"background-image: url('/images/1/sites/"
+    + "\">\r\n				<div class=\"thumbnail\" style=\"background-image: url('/images/1/sites/"
     + alias4(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"id","hash":{},"data":data}) : helper)))
-    + ".png');\"></div>\n				<div class=\"last-visited\">"
+    + ".png');\"></div>\r\n				<div class=\"last-visited\">"
     + alias4(((helper = (helper = helpers.last_visited || (depth0 != null ? depth0.last_visited : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"last_visited","hash":{},"data":data}) : helper)))
-    + "</div>\n				<h4>"
+    + "</div>\r\n				<h4>"
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.title : depth0),{"name":"if","hash":{},"fn":container.program(10, data, 0),"inverse":container.program(12, data, 0),"data":data})) != null ? stack1 : "")
-    + "				</h4>\n				<div class=\"sentences\">\n"
+    + "				</h4>\r\n				<div class=\"sentences\">\r\n"
     + ((stack1 = helpers.each.call(alias1,((stack1 = (depth0 != null ? depth0.Article : depth0)) != null ? stack1.Sentences : stack1),{"name":"each","hash":{},"fn":container.program(14, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.sentencesMore : depth0),{"name":"if","hash":{},"fn":container.program(16, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "				</div>\n				<ul>\n					<li><a class=\"show-graph\" href=\"#\" data-id=\""
+    + "				</div>\r\n				<ul>\r\n					<li><a class=\"show-graph\" href=\"#\" data-id=\""
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.master_id : depth0),{"name":"if","hash":{},"fn":container.program(18, data, 0),"inverse":container.program(20, data, 0),"data":data})) != null ? stack1 : "")
-    + "\">Open network</a></li>\n					<li><a href=\""
+    + "\">Open network</a></li>\r\n					<li><a href=\""
     + alias4(((helper = (helper = helpers.url || (depth0 != null ? depth0.url : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"url","hash":{},"data":data}) : helper)))
-    + "\" target=\"_blank\">Open site</a></li>\n					<li><a href=\"/Articles/"
+    + "\" target=\"_blank\">Open site</a></li>\r\n					<li><a href=\"/Articles/"
     + alias4(container.lambda(((stack1 = (depth0 != null ? depth0.Article : depth0)) != null ? stack1.id : stack1), depth0))
-    + "\" target=\"_blank\">Open archived article</a></li>\n				</ul>\n			</div>\n		</div>\n";
+    + "\" target=\"_blank\">Open archived article</a></li>\r\n				</ul>\r\n			</div>\r\n		</div>\r\n";
 },"6":function(container,depth0,helpers,partials,data) {
     return " is-light";
 },"8":function(container,depth0,helpers,partials,data) {
     var helper;
 
   return "background-color: #"
-    + container.escapeExpression(((helper = (helper = helpers.primary_color || (depth0 != null ? depth0.primary_color : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"primary_color","hash":{},"data":data}) : helper)));
+    + container.escapeExpression(((helper = (helper = helpers.primary_color || (depth0 != null ? depth0.primary_color : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : (container.nullContext || {}),{"name":"primary_color","hash":{},"data":data}) : helper)));
 },"10":function(container,depth0,helpers,partials,data) {
-    var helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
+    var helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
-  return "\n						"
+  return "\r\n						"
     + alias4(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"title","hash":{},"data":data}) : helper)))
-    + "\n						<small>"
+    + "\r\n						<small>"
     + alias4(((helper = (helper = helpers.url || (depth0 != null ? depth0.url : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"url","hash":{},"data":data}) : helper)))
-    + "</small>\n";
+    + "</small>\r\n";
 },"12":function(container,depth0,helpers,partials,data) {
-    var helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
+    var helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
   return "						"
     + alias4(((helper = (helper = helpers.shortHost || (depth0 != null ? depth0.shortHost : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"shortHost","hash":{},"data":data}) : helper)))
-    + "\n						<small>"
+    + "\r\n						<small>"
     + alias4(((helper = (helper = helpers.shortUrl || (depth0 != null ? depth0.shortUrl : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"shortUrl","hash":{},"data":data}) : helper)))
-    + "</small>\n";
+    + "</small>\r\n";
 },"14":function(container,depth0,helpers,partials,data) {
     var stack1;
 
   return "					<div class=\"sentence\">»"
     + ((stack1 = container.lambda(depth0, depth0)) != null ? stack1 : "")
-    + "</div>\n";
+    + "</div>\r\n";
 },"16":function(container,depth0,helpers,partials,data) {
     var helper;
 
-  return "					<div class=\"sentences-more\">\n						<div class=\"action-show\">+ "
-    + container.escapeExpression(((helper = (helper = helpers.sentencesMore || (depth0 != null ? depth0.sentencesMore : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"sentencesMore","hash":{},"data":data}) : helper)))
-    + " more sentences</div>\n					</div>\n";
+  return "					<div class=\"sentences-more\">\r\n						<div class=\"action-show\">+ "
+    + container.escapeExpression(((helper = (helper = helpers.sentencesMore || (depth0 != null ? depth0.sentencesMore : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : (container.nullContext || {}),{"name":"sentencesMore","hash":{},"data":data}) : helper)))
+    + " more sentences</div>\r\n					</div>\r\n";
 },"18":function(container,depth0,helpers,partials,data) {
     var helper;
 
-  return container.escapeExpression(((helper = (helper = helpers.master_id || (depth0 != null ? depth0.master_id : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"master_id","hash":{},"data":data}) : helper)));
+  return container.escapeExpression(((helper = (helper = helpers.master_id || (depth0 != null ? depth0.master_id : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : (container.nullContext || {}),{"name":"master_id","hash":{},"data":data}) : helper)));
 },"20":function(container,depth0,helpers,partials,data) {
     var helper;
 
-  return container.escapeExpression(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"id","hash":{},"data":data}) : helper)));
+  return container.escapeExpression(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : (container.nullContext || {}),{"name":"id","hash":{},"data":data}) : helper)));
 },"22":function(container,depth0,helpers,partials,data) {
     var stack1;
 
-  return ((stack1 = helpers.unless.call(depth0 != null ? depth0 : {},(depth0 != null ? depth0.Sites : depth0),{"name":"unless","hash":{},"fn":container.program(23, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
+  return ((stack1 = helpers.unless.call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? depth0.Sites : depth0),{"name":"unless","hash":{},"fn":container.program(23, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
 },"23":function(container,depth0,helpers,partials,data) {
-    return "		No results found!\n";
+    return "		No results found!\r\n";
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    var stack1, alias1=depth0 != null ? depth0 : {};
+    var stack1, alias1=depth0 != null ? depth0 : (container.nullContext || {});
 
-  return "<div class=\"container-fluid\">\n"
+  return "<div class=\"container-fluid\">\r\n"
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.Entities : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.Sites : depth0),{"name":"if","hash":{},"fn":container.program(4, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + ((stack1 = helpers.unless.call(alias1,(depth0 != null ? depth0.Entities : depth0),{"name":"unless","hash":{},"fn":container.program(22, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
 },"useData":true});
 
-},{"hbsfy/runtime":57}],118:[function(require,module,exports){
+},{"hbsfy/runtime":58}],121:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"1":function(container,depth0,helpers,partials,data,blockParams,depths) {
-    var stack1, helper, alias1=depth0 != null ? depth0 : {}, alias2=container.lambda, alias3=container.escapeExpression, alias4=helpers.helperMissing, alias5="function";
+    var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=container.lambda, alias3=container.escapeExpression, alias4=helpers.helperMissing, alias5="function";
 
-  return "	<div class=\"col-md-4\">\n		<div class=\"site"
+  return "	<div class=\"col-md-4\">\r\n		<div class=\"site"
     + ((stack1 = helpers.unless.call(alias1,(depth0 != null ? depth0.primary_color : depth0),{"name":"unless","hash":{},"fn":container.program(2, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.isLight : depth0),{"name":"if","hash":{},"fn":container.program(2, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "\" style=\""
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.primary_color : depth0),{"name":"if","hash":{},"fn":container.program(4, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "\">\n			<div class=\"thumbnail\" style=\"background-image: url('/images/"
+    + "\">\r\n			<div class=\"thumbnail\" style=\"background-image: url('/images/"
     + alias3(alias2(((stack1 = (depths[1] != null ? depths[1].Collection : depths[1])) != null ? stack1.id : stack1), depth0))
     + "/sites/"
     + alias3(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : alias4),(typeof helper === alias5 ? helper.call(alias1,{"name":"id","hash":{},"data":data}) : helper)))
-    + ".png');\"></div>\n			<div class=\"last-visited\">"
+    + ".png');\"></div>\r\n			<div class=\"last-visited\">"
     + alias3(((helper = (helper = helpers.last_visited || (depth0 != null ? depth0.last_visited : depth0)) != null ? helper : alias4),(typeof helper === alias5 ? helper.call(alias1,{"name":"last_visited","hash":{},"data":data}) : helper)))
-    + "</div>\n			<h4>"
+    + "</div>\r\n			<h4>"
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.title : depth0),{"name":"if","hash":{},"fn":container.program(6, data, 0, blockParams, depths),"inverse":container.program(8, data, 0, blockParams, depths),"data":data})) != null ? stack1 : "")
-    + "			</h4>\n			<div class=\"sentences\">\n"
+    + "			</h4>\r\n			<div class=\"sentences\">\r\n"
     + ((stack1 = helpers.each.call(alias1,((stack1 = (depth0 != null ? depth0.Article : depth0)) != null ? stack1.sentences : stack1),{"name":"each","hash":{},"fn":container.program(10, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.sentencesMore : depth0),{"name":"if","hash":{},"fn":container.program(12, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "			</div>\n			<ul>\n				<li><a href=\""
+    + "			</div>\r\n			<ul>\r\n				<li><a href=\""
     + alias3(((helper = (helper = helpers.url || (depth0 != null ? depth0.url : depth0)) != null ? helper : alias4),(typeof helper === alias5 ? helper.call(alias1,{"name":"url","hash":{},"data":data}) : helper)))
-    + "\" target=\"_blank\">Open site</a></li>\n				<li><a href=\"/Articles/"
+    + "\" target=\"_blank\">Open site</a></li>\r\n				<li><a href=\"/Articles/"
     + alias3(alias2(((stack1 = (depth0 != null ? depth0.Article : depth0)) != null ? stack1.id : stack1), depth0))
-    + "\" target=\"_blank\">Open archived article</a></li>\n			</ul>\n		</div>\n	</div>\n";
+    + "\" target=\"_blank\">Open archived article</a></li>\r\n			</ul>\r\n		</div>\r\n	</div>\r\n";
 },"2":function(container,depth0,helpers,partials,data) {
     return " is-light";
 },"4":function(container,depth0,helpers,partials,data) {
     var helper;
 
   return "background-color: #"
-    + container.escapeExpression(((helper = (helper = helpers.primary_color || (depth0 != null ? depth0.primary_color : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"primary_color","hash":{},"data":data}) : helper)));
+    + container.escapeExpression(((helper = (helper = helpers.primary_color || (depth0 != null ? depth0.primary_color : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : (container.nullContext || {}),{"name":"primary_color","hash":{},"data":data}) : helper)));
 },"6":function(container,depth0,helpers,partials,data) {
-    var helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
+    var helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
-  return "\n					"
+  return "\r\n					"
     + alias4(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"title","hash":{},"data":data}) : helper)))
-    + "\n					<small>"
+    + "\r\n					<small>"
     + alias4(((helper = (helper = helpers.url || (depth0 != null ? depth0.url : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"url","hash":{},"data":data}) : helper)))
-    + "</small>\n";
+    + "</small>\r\n";
 },"8":function(container,depth0,helpers,partials,data) {
-    var helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
+    var helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
   return "					"
     + alias4(((helper = (helper = helpers.shortHost || (depth0 != null ? depth0.shortHost : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"shortHost","hash":{},"data":data}) : helper)))
-    + "\n					<small>"
+    + "\r\n					<small>"
     + alias4(((helper = (helper = helpers.shortUrl || (depth0 != null ? depth0.shortUrl : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"shortUrl","hash":{},"data":data}) : helper)))
-    + "</small>\n";
+    + "</small>\r\n";
 },"10":function(container,depth0,helpers,partials,data) {
     var stack1, helper;
 
   return "				<div class=\"sentence\">»"
-    + ((stack1 = ((helper = (helper = helpers.html || (depth0 != null ? depth0.html : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"html","hash":{},"data":data}) : helper))) != null ? stack1 : "")
-    + "</div>\n";
+    + ((stack1 = ((helper = (helper = helpers.html || (depth0 != null ? depth0.html : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : (container.nullContext || {}),{"name":"html","hash":{},"data":data}) : helper))) != null ? stack1 : "")
+    + "</div>\r\n";
 },"12":function(container,depth0,helpers,partials,data) {
-    var helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
+    var helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
-  return "				<div class=\"sentences-more\">\n					<div class=\"action-show\">View "
+  return "				<div class=\"sentences-more\">\r\n					<div class=\"action-show\">View "
     + alias4(((helper = (helper = helpers.sentencesMore || (depth0 != null ? depth0.sentencesMore : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"sentencesMore","hash":{},"data":data}) : helper)))
-    + " more sentences<i class=\"fa fa-chevron-down pull-right\"></i></div>\n					<div class=\"action-hide\">Hide "
+    + " more sentences<i class=\"fa fa-chevron-down pull-right\"></i></div>\r\n					<div class=\"action-hide\">Hide "
     + alias4(((helper = (helper = helpers.sentencesMore || (depth0 != null ? depth0.sentencesMore : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"sentencesMore","hash":{},"data":data}) : helper)))
-    + " sentences<i class=\"fa fa-chevron-up pull-right\"></i></div>\n				</div>\n";
+    + " sentences<i class=\"fa fa-chevron-up pull-right\"></i></div>\r\n				</div>\r\n";
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data,blockParams,depths) {
     var stack1;
 
-  return "<div class=\"container-fluid\">\n"
-    + ((stack1 = helpers.each.call(depth0 != null ? depth0 : {},(depth0 != null ? depth0.Sites : depth0),{"name":"each","hash":{},"fn":container.program(1, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+  return "<div class=\"container-fluid\">\r\n"
+    + ((stack1 = helpers.each.call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? depth0.Sites : depth0),{"name":"each","hash":{},"fn":container.program(1, data, 0, blockParams, depths),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "</div>";
 },"useData":true,"useDepths":true});
 
-},{"hbsfy/runtime":57}],119:[function(require,module,exports){
+},{"hbsfy/runtime":58}],122:[function(require,module,exports){
 'use strict';
 
 var d3 = require('d3'),
@@ -54166,11 +54196,8 @@ module.exports = function Vis(store) {
 			if (!bKeepInViewport) return d.x;
 
 			/*if(d.x > width - 100 && d.y > height - 100)
-			/*if(d.x > width - 100 && d.y > height - 100)
    	d.x = width - 100;
-   	d.x = width - 100;
-
-   if(d.x < 100 && d.y < 100)
+   	if(d.x < 100 && d.y < 100)
    	d.x = 100;*/
 
 			return d.x = Math.max(10, Math.min(width, d.x));
@@ -54221,15 +54248,11 @@ module.exports = function Vis(store) {
 
 		/*layoutNodes.forEach(function(d){
   	var pagerank = 0.5;
-
-  	if(!_.isUndefined(getScalingFactor(d)))
+  		if(!_.isUndefined(getScalingFactor(d)))
   		pagerank = getScalingFactor(d);
-
-  	pagerank = pagerank / 2 + 0.75;
-
-  	console.log(pagerank);
-
-  	d.width = options.labelRadius * pagerank * 2 + 20;
+  		pagerank = pagerank / 2 + 0.75;
+  		console.log(pagerank);
+  		d.width = options.labelRadius * pagerank * 2 + 20;
   	d.height = options.labelRadius * pagerank * 2 + 20;
   	console.log(d.width, d.height);
   });*/
@@ -54294,13 +54317,14 @@ module.exports = function Vis(store) {
 	this.toggleLinkMode = toggleLinkMode;
 
 	function merge(tgt, src, callback) {
+		console.log("Merge!");
 		setData();
 
 		removeSelection();
 		//closeNode(el);
 
 		//var id = d3.select(el).datum().id;
-		console.log('Merging ' + src + ' -> ' + tgt);
+		//console.log('Merging ' + src + ' -> ' + tgt);
 		gG.mergeNodes(tgt, src);
 
 		fetch('/Entities/' + tgt + '/' + src, {
@@ -54315,12 +54339,12 @@ module.exports = function Vis(store) {
 			//console.log(json);
 		});
 
-        console.log('postmessage: refreshHighlighting');
-        if(typeof parent !== null) {
-            parent.postMessage(["msg", {
-                action: 'refreshHighlighting'
-            }], "*");
-        }
+		console.log('postmessage: refreshHighlighting');
+		if (typeof parent !== null) {
+			parent.postMessage(["msg", {
+				action: 'refreshHighlighting'
+			}], "*");
+		}
 
 		//Knoten nicht neu Ranken, ansonsten werden ggf. weitere Knoten ausgeblendet!
 		//gG.rankNodes();
@@ -54340,6 +54364,7 @@ module.exports = function Vis(store) {
 			});
 
 			d3cola = cola.d3adaptor();
+			console.log("d3cola merge");
 			elNew = { nodes: null, nodeIds: {}, labels: null, links: null, linkIds: {} };
 			elExisting = { nodes: null, nodeIds: {}, labels: null, links: null, linkIds: {} };
 
@@ -54357,8 +54382,7 @@ module.exports = function Vis(store) {
 	/*store.subscribe(() => {
  	var state = store.getState().storyfinder;
  	switch(state.get('state')){
-
- 	}
+ 		}
  });*/
 
 	function deleteNode(el, callback) {
@@ -54389,13 +54413,12 @@ module.exports = function Vis(store) {
 		console.log('Deleting ' + id);
 		gG.deleteNode(id);
 
-        console.log('postmessage: refreshHighlighting');
-        if(typeof parent !== null) {
-            parent.postMessage(["msg", {
-                action: 'refreshHighlighting',
-                id: id
-            }], "*");
-        }
+		console.log('postmessage: refreshHighlighting');
+		if (typeof parent !== null) {
+			parent.postMessage(["msg", {
+				action: 'refreshHighlighting'
+			}], "*");
+		}
 
 		//Knoten nicht neu Ranken, ansonsten werden ggf. weitere Knoten ausgeblendet!
 		//gG.rankNodes();
@@ -54710,11 +54733,7 @@ module.exports = function Vis(store) {
 		});
 
 		drag.on('dragend', function (d, e) {
-		    console.log('dragend');
-
 			d3.select(this).attr('class', d3.select(this).attr('class').replace(/\sdragging/g, '').replace(/^dragging/, ''));
-
-            hideDelete();
 
 			if (!_.isNull(labelDragged) && !_.isNull(dragOverDelete)) {
 				deleteNode(this, function () {});
@@ -54727,7 +54746,7 @@ module.exports = function Vis(store) {
 			labelDragged = null;
 			labelHover = null;
 
-
+			hideDelete();
 		});
 	}
 
@@ -54779,8 +54798,7 @@ module.exports = function Vis(store) {
 		/*var title = d3.select('.graph-title');
   	title.attr('class', 'graph-title')
   	;*
-
-  title.select('.caption')
+  	title.select('.caption')
   	.text('Global graph')
   	.select('small')
   	.text('')
@@ -55274,44 +55292,44 @@ module.exports = function Vis(store) {
 	this.update = update;
 
 	function showNode() {
-	    if(!gG.nodeExists(arguments[0])) // you cant show a node that doesn't exist!
-	        return;
+		if (!gG.nodeExists(arguments[0])) // you cant show a node that doesn't exist!
+			return;
 
 		q.push({
 			context: this,
 			callback: arguments[arguments.length - 1],
 			args: arguments,
 			f: function f(id, isTemporarily, callback) {
-                setData();
-                gG.rankNodes();
-                gG.show(id, isTemporarily);
-                gG.buildRenderGraph(maxFocus, maxNeighbours, null);
-                renderGraph = gG.getRenderGraph();
+				setData();
+				gG.rankNodes();
+				gG.show(id, isTemporarily);
+				gG.buildRenderGraph(maxFocus, maxNeighbours, null);
+				renderGraph = gG.getRenderGraph();
 
-                if (!_.isNull(renderGraph.nodes) && renderGraph.nodes.length > 0) {
-                    renderNodes = _.map(renderGraph.nodes, function (n) {
-                        var ret = {};
-                        nodeAttr.forEach(function (attr) {
-                            if (!_.isUndefined(n[attr])) ret[attr] = n[attr];
-                        });
+				if (!_.isNull(renderGraph.nodes) && renderGraph.nodes.length > 0) {
+					renderNodes = _.map(renderGraph.nodes, function (n) {
+						var ret = {};
+						nodeAttr.forEach(function (attr) {
+							if (!_.isUndefined(n[attr])) ret[attr] = n[attr];
+						});
 
-                        if (!_.isUndefined(n.focused)) ret.focused = n.focused;
+						if (!_.isUndefined(n.focused)) ret.focused = n.focused;
 
-                        return ret;
-                    });
+						return ret;
+					});
 
-                    d3cola = cola.d3adaptor();
-                    elNew = { nodes: null, nodeIds: {}, labels: null, links: null, linkIds: {} };
-                    elExisting = { nodes: null, nodeIds: {}, labels: null, links: null, linkIds: {} };
+					d3cola = cola.d3adaptor();
+					elNew = { nodes: null, nodeIds: {}, labels: null, links: null, linkIds: {} };
+					elExisting = { nodes: null, nodeIds: {}, labels: null, links: null, linkIds: {} };
 
-                    async.series([removeDeleted, calculateNewLayout, applyNewData, function (done) {
-                        async.parallel([moveExisting, showNew], done);
-                    }], function () {
-                        d3cola.on('tick', tick);
-                        d3cola.resume();
-                        if (_.isFunction(callback)) setTimeout(callback(true), 0);
-                    });
-                }
+					async.series([removeDeleted, calculateNewLayout, applyNewData, function (done) {
+						async.parallel([moveExisting, showNew], done);
+					}], function () {
+						d3cola.on('tick', tick);
+						d3cola.resume();
+						if (_.isFunction(callback)) setTimeout(callback, 0);
+					});
+				}
 			}
 		});
 	}
@@ -55386,8 +55404,8 @@ module.exports = function Vis(store) {
 				setTimeout(callback, 0);
 			}
 		} else {
-			showNode(nodeId, true, function ( nodeExists ) {
-				console.log('highlight'+nodeExists);
+			showNode(nodeId, true, function (nodeExists) {
+				console.log('highlight' + nodeExists);
 				highlight(nodeId, callback);
 			});
 		}
@@ -55406,7 +55424,7 @@ module.exports = function Vis(store) {
 	this.unhighlight = unhighlight;
 };
 
-},{"./actions/StoryfinderActions.js":1,"./global_graph.js":4,"./libs/cola.js":6,"./vis/helpers/smoothLine.js":120,"./vis/transitions/applyNewData.js":121,"./vis/transitions/moveExisting.js":122,"./vis/transitions/removeDeleted.js":123,"./vis/transitions/showNew.js":124,"async":9,"d3":17,"dom-delegate":21,"es6-promise":34,"isomorphic-fetch":63,"lodash":75}],120:[function(require,module,exports){
+},{"./actions/StoryfinderActions.js":1,"./global_graph.js":4,"./libs/cola.js":6,"./vis/helpers/smoothLine.js":123,"./vis/transitions/applyNewData.js":124,"./vis/transitions/moveExisting.js":125,"./vis/transitions/removeDeleted.js":126,"./vis/transitions/showNew.js":127,"async":9,"d3":17,"dom-delegate":19,"es6-promise":35,"isomorphic-fetch":64,"lodash":76}],123:[function(require,module,exports){
 'use strict';
 
 var d3 = require('d3'),
@@ -55450,7 +55468,7 @@ module.exports = function (l, r) {
 	return lineFunction(lineData);
 };
 
-},{"d3":17,"lodash":75}],121:[function(require,module,exports){
+},{"d3":17,"lodash":76}],124:[function(require,module,exports){
 'use strict';
 
 var _ = require('lodash'),
@@ -55468,7 +55486,7 @@ module.exports = function (options, elNew, elExisting, renderGraph, node, label,
 	}
 
 	/*
- 	Die Liste der Knoten in neue Knoten und bereits vorhandene Knoten aufteilen
+ 	Die Liste der Knoten in neue Knoten und bereits vorhandene Knoten aufteilen	
  */
 	function splitNodes() {
 		//Alte und neue Nodes splitten
@@ -55505,7 +55523,7 @@ module.exports = function (options, elNew, elExisting, renderGraph, node, label,
 	}
 
 	/*
-
+ 		
  */
 	function renderNode(d) {
 		if (d.more > 0) {
@@ -55637,7 +55655,7 @@ module.exports = function (options, elNew, elExisting, renderGraph, node, label,
 				}
 
 				if (!fits && d.type == 'PER') {
-					//Position des letzten Leerzeichens ermitteln
+					//Position des letzten Leerzeichens ermitteln	
 					//console.log(hyphens);
 
 					var pos = null;
@@ -55716,7 +55734,7 @@ module.exports = function (options, elNew, elExisting, renderGraph, node, label,
 		d3.select(this).select('rect').attr('height', h).attr('y', 17).attr('width', w).attr('x', w / -2).attr('rx', 5);
 
 		/*
-  	Circle
+  	Circle	
   */
 		d.width = options.labelRadius * 1.5;
 		d.height = options.labelRadius * 1.5;
@@ -55832,7 +55850,7 @@ module.exports = function (options, elNew, elExisting, renderGraph, node, label,
 			return smoothLine({ x: sx, y: sy }, { x: tx, y: ty });
 		})
 		/*.style('stroke', function(d){
-  	return 'url(#' + d.source.type + '-' + d.target.type + '-gradient)';
+  	return 'url(#' + d.source.type + '-' + d.target.type + '-gradient)';	
   })*/;
 
 		link.select('textPath').text(function (d) {
@@ -55855,7 +55873,7 @@ module.exports = function (options, elNew, elExisting, renderGraph, node, label,
 
 		moreLabels.append('text').attr('dy', '.35em');
 
-		//newLabels.append('rect');
+		//newLabels.append('rect');					
 		newLabels.append('text').attr('class', 'caption');
 
 		label.attr('opacity', function (d, i) {
@@ -55892,7 +55910,7 @@ module.exports = function (options, elNew, elExisting, renderGraph, node, label,
 	this.applyNewData = applyNewData;
 };
 
-},{"../helpers/smoothLine.js":120,"async":9,"d3":17,"hyphenation.de":58,"hypher":59,"lodash":75}],122:[function(require,module,exports){
+},{"../helpers/smoothLine.js":123,"async":9,"d3":17,"hyphenation.de":59,"hypher":60,"lodash":76}],125:[function(require,module,exports){
 'use strict';
 
 var _ = require('lodash'),
@@ -56003,7 +56021,7 @@ module.exports = function (options, elNew, elExisting, renderGraph, node, label,
 	this.moveExisting = moveExisting;
 };
 
-},{"../helpers/smoothLine.js":120,"async":9,"d3":17,"lodash":75}],123:[function(require,module,exports){
+},{"../helpers/smoothLine.js":123,"async":9,"d3":17,"lodash":76}],126:[function(require,module,exports){
 'use strict';
 
 var _ = require('lodash'),
@@ -56016,7 +56034,7 @@ module.exports = function (options, renderGraph, node, label, link) {
 	}
 
 	/*
- 	Geloeschte Elemente im Graphen ausblenden
+ 	Geloeschte Elemente im Graphen ausblenden	
  */
 	function removeDeleted() {
 		var done = arguments[arguments.length - 1];
@@ -56092,7 +56110,7 @@ module.exports = function (options, renderGraph, node, label, link) {
 	this.removeDeleted = removeDeleted;
 };
 
-},{"async":9,"lodash":75}],124:[function(require,module,exports){
+},{"async":9,"lodash":76}],127:[function(require,module,exports){
 'use strict';
 
 var _ = require('lodash'),
@@ -56186,12 +56204,98 @@ module.exports = function (options, elNew, elExisting, renderGraph, node, label,
 	this.showNew = showNew;
 };
 
-},{"../helpers/smoothLine.js":120,"async":9,"d3":17,"lodash":75}],125:[function(require,module,exports){
+},{"../helpers/smoothLine.js":123,"async":9,"d3":17,"lodash":76}],128:[function(require,module,exports){
 
-},{}],126:[function(require,module,exports){
+},{}],129:[function(require,module,exports){
 // shim for using process in browser
-
 var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
 var queue = [];
 var draining = false;
 var currentQueue;
@@ -56216,7 +56320,7 @@ function drainQueue() {
     if (draining) {
         return;
     }
-    var timeout = setTimeout(cleanUpNextTick);
+    var timeout = runTimeout(cleanUpNextTick);
     draining = true;
 
     var len = queue.length;
@@ -56233,7 +56337,7 @@ function drainQueue() {
     }
     currentQueue = null;
     draining = false;
-    clearTimeout(timeout);
+    runClearTimeout(timeout);
 }
 
 process.nextTick = function (fun) {
@@ -56245,7 +56349,7 @@ process.nextTick = function (fun) {
     }
     queue.push(new Item(fun, args));
     if (queue.length === 1 && !draining) {
-        setTimeout(drainQueue, 0);
+        runTimeout(drainQueue);
     }
 };
 
@@ -56273,6 +56377,10 @@ process.off = noop;
 process.removeListener = noop;
 process.removeAllListeners = noop;
 process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
 
 process.binding = function (name) {
     throw new Error('process.binding is not supported');
