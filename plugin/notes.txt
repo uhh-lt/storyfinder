@@ -3,12 +3,13 @@
 
 docker run --rm -ti --name sf-plugin-build -v $(pwd):/usr/local/app -w /usr/local/app node:6 bash
 
- $> npm install -g browserify grunt
- $> cd /usr/local/app/src
+ $> npm install -g browserify grunt crx
+ $> cd /usr/local/app/src/plugin
 
 # follow instructions in src/README.md
 
 # prepare release
 
- $> cd /usr/local/app
+ $> cd /usr/local/app/plugin
  $> npm install && npm run-script copy
+ $> cd.. && crx pack plugin\dist -o release\storyfinder.xyz.crx -p storyfinder\release\storyfinder-plugin.pem
