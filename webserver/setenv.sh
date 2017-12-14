@@ -13,3 +13,5 @@ export GERMANER_PORT="8080"
 
 export NER="corenlp" # germaner
 export NO_KEYWORDS="" # true
+
+export CHROME_ID="hnndfanecdfnonofigcceaahflgfpgbd" # chrome

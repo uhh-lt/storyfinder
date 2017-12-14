@@ -86,6 +86,7 @@ services:
       - NER=corenlp
 #      - NER=germaner
       - NO_KEYWORDS=true
+      - CHROME_ID=pebdjeaapfkjiceloeecpoedbliefnap
     mem_limit: 4g
     memswap_limit: 5g
     networks:

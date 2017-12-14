@@ -64,6 +64,7 @@ services:
       - NER=germaner
       #- NER=corenlp
       - NO_KEYWORDS=T
+      - CHROME_ID=hnndfanecdfnonofigcceaahflgfpgbd
     depends_on:
       mysqlserver:
         condition: service_healthy

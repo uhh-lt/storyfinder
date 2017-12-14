@@ -330,7 +330,7 @@ var d3 = require('d3'),
     Search = require('./search.js'),
     _ = require('lodash');
 
-var CHROME_PLUGIN_ID = "pebdjeaapfkjiceloeecpoedbliefnap";
+var CHROME_PLUGIN_ID =  process.env.CHROME_ID || "pebdjeaapfkjiceloeecpoedbliefnap";
 
 module.exports = function (store) {
 	var nodeDetails = document.body.querySelector('.node-details'),
