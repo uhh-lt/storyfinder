@@ -35,6 +35,19 @@ function startServer(){
 	});
 }
 
+/* Write CHROME_ID to file */
+var fs = require('fs')
+fs.readFile("/public/js/storyfinder.js", 'utf8', function (err,data) {
+    if (err) {
+        return console.log(err);
+    }
+    var result = data.replace(/INSERT_CHROME_PLUGIN_ID_HERE/g, process.env.CHROME_ID);
+
+    fs.writeFile("/public/js/storyfinder.js", result, 'utf8', function (err) {
+        if (err) return console.log(err);
+    });
+});
+
 /*
 Initialise database.
 */
