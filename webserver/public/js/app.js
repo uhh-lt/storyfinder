@@ -15,7 +15,7 @@ var d3 = require('d3')
 	, _ = require('lodash')
 	;
 
-var CHROME_PLUGIN_ID = INSERT_CHROME_PLUGIN_ID_HERE;
+var CHROME_PLUGIN_ID = "INSERT_CHROME_PLUGIN_ID_HERE";
 
 module.exports = function(store){
 	var nodeDetails = document.body.querySelector('.node-details')
