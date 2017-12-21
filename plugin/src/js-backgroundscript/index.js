@@ -46,25 +46,30 @@ function toggleSidebar() {
     } else {
         mainURL = "";
 
-        chrome.windows.getCurrent(function (window) {
+        chrome.windows.getCurrent(function(window) {
+            checkForErrorAndExecuteCallback(window, function (window) {
 
-            // save mainwindow dimensions
-            windowRectangle = {
-                height: window.height,
-                width: window.width,
-                top: window.top,
-                left: window.left
-            };
+                // save mainwindow dimensions
+                windowRectangle = {
+                    height: window.height,
+                    width: window.width,
+                    top: window.top,
+                    left: window.left
+                };
 
-            mainWindowId = window.id;
+                mainWindowId = window.id;
 
-            var popupWidth = Math.round(windowRectangle.width * popupPercentage);
-            var windowWidth = Math.round(windowRectangle.width * windowPercentage);
+                var popupWidth = Math.round(windowRectangle.width * popupPercentage);
+                var windowWidth = Math.round(windowRectangle.width * windowPercentage);
 
-            chrome.windows.update(mainWindowId, {width: windowWidth});
+                chrome.windows.update(mainWindowId, {width: windowWidth});
 
-            createPopup(windowRectangle.left + windowWidth, windowRectangle.top, popupWidth, windowRectangle.height);
-            chrome.contextMenus.update("add-storyfinder", {title: "Add to Storyfinder", enabled: true}, function () {
+                createPopup(windowRectangle.left + windowWidth, windowRectangle.top, popupWidth, windowRectangle.height);
+                chrome.contextMenus.update("add-storyfinder", {
+                    title: "Add to Storyfinder",
+                    enabled: true
+                }, function () {
+                });
             });
         });
     }
@@ -80,7 +85,9 @@ chrome.runtime.onMessage.addListener(function(msg, sender){
             break;
         case "emit-sidebar-event":
             chrome.windows.get(popupWindowId, {populate: true}, function(popup) {
-                chrome.tabs.sendMessage(popup.tabs[0].id , { type: 'msg', data: { action: msg.data.event, data: msg.data.data } });
+                checkForErrorAndExecuteCallback(popup, function(popup) {
+                    chrome.tabs.sendMessage(popup.tabs[0].id , { type: 'msg', data: { action: msg.data.event, data: msg.data.data } });
+                });
             });
             break;
         case "test":
@@ -148,30 +155,34 @@ chrome.windows.onRemoved.addListener(function(windowID) {
 chrome.windows.onFocusChanged.addListener(function(windowId) {
     if (windowId !== -1) {
       chrome.windows.get(windowId, {populate: true, windowTypes: ['normal']}, function(window) {
-          if(window !== null && window !== undefined) {
-              mainWindowId = window.id;
-              chrome.tabs.query({windowId: window.id, active:true}, function(tabs) {
-                  if(tabs[0].url !== mainURL) {
-                      mainURL = tabs[0].url;
-                      onAttach();
-                  }
-              });
-          }
+          checkForErrorAndExecuteCallback(window, function(window) {
+              if(window !== null && window !== undefined) {
+                  mainWindowId = window.id;
+                  chrome.tabs.query({windowId: window.id, active:true}, function(tabs) {
+                      if(tabs[0].url !== mainURL) {
+                          mainURL = tabs[0].url;
+                          onAttach();
+                      }
+                  });
+              }
+          });
       });
     }
 });
 
 chrome.tabs.onActivated.addListener(function(activeInfo) {
     chrome.windows.get(activeInfo.windowId, {populate: true, windowTypes: ['normal']}, function(window) {
-        if(window !== null && window !== undefined) {
-            mainWindowId = window.id;
-            chrome.tabs.get(activeInfo.tabId, function(tab) {
-               if(tab.url !== mainURL) {
-                   mainURL = tab.url;
-                   onAttach();
-               }
-            });
-        }
+        checkForErrorAndExecuteCallback(window, function(window) {
+            if(window !== null && window !== undefined) {
+                mainWindowId = window.id;
+                chrome.tabs.get(activeInfo.tabId, function(tab) {
+                    if(tab.url !== mainURL) {
+                        mainURL = tab.url;
+                        onAttach();
+                    }
+                });
+            }
+        });
     });
 });
 
@@ -188,8 +199,10 @@ chrome.contextMenus.create({
             title: tab.title
         };
 
-        chrome.windows.get(popupWindowId, { populate: true }, function (popup) {
-            chrome.tabs.sendMessage(popup.tabs[0].id, { type: "msg", data: { action: "create", data: data } });
+        chrome.windows.get(popupWindowId, { populate: true }, function(popup) {
+            checkForErrorAndExecuteCallback(popup, function (popup) {
+                chrome.tabs.sendMessage(popup.tabs[0].id, { type: "msg", data: { action: "create", data: data } });
+            });
         });
     },
     enabled: false
@@ -227,14 +240,19 @@ function saveRemote(url, data, callback) {
         oReq.open("PUT", url);
         oReq.setRequestHeader("Content-type", "application/json");
         oReq.setRequestHeader("Authorization", "Basic " + window.btoa(items.username + ":" + items.password));
+
+        console.log(data);
+
         oReq.send(JSON.stringify(data));
     });
 }
 
 function setArticle(article, thetab) {
     if(thetab !== undefined && thetab !== null) {
-        chrome.tabs.get(thetab, function (tab) {
-            setArticleHelper(article, tab);
+        chrome.tabs.get(thetab, function(tab) {
+            checkForErrorAndExecuteCallback(tab, function (tab) {
+                setArticleHelper(article, tab);
+            });
         });
     } else {
         chrome.tabs.query({active: true, windowId:mainWindowId}, function (tabs) {
@@ -310,7 +328,9 @@ function setArticleHelper(article, tab) {
 
                     if(bIsNew && !bIsRelevant){
                         chrome.windows.get(popupWindowId, {populate: true}, function(popup) {
-                            chrome.tabs.sendMessage(popup.tabs[0].id , {type: 'msg', data: {action: 'not-relevant', data: data.Site}});
+                            checkForErrorAndExecuteCallback(popup, function(popup) {
+                                chrome.tabs.sendMessage(popup.tabs[0].id , {type: 'msg', data: {action: 'not-relevant', data: data.Site}});
+                            });
                         });
                     }
 
@@ -479,4 +499,12 @@ function createReadabilityTab(html) {
 
     chrome.tabs.create({url:url, active:true}, function(tab) {
     });
+}
+
+function checkForErrorAndExecuteCallback(parameter, callback) {
+    if (chrome.runtime.lastError) {
+        console.log(chrome.runtime.lastError.message);
+    } else {
+        callback(parameter);
+    }
 }
