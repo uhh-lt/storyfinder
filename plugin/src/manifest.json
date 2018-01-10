@@ -7,7 +7,8 @@
   "homepage_url": "https://uhh-lt.github.io/storyfinder/",
   "update_url": "https://www.google.com",
   "icons": {
-    "48": "icon-48.png"
+    "48": "icon-48.png",
+    "500": "icon-500.png"
   },
 
   "permissions": [
