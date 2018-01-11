@@ -1,15 +1,20 @@
 # Instructions to start the server
 
 1. Create dockers
+
+only for dev-server:
 2. Attach to docker
+3. Build the server with npm run build
 4. npm start
+
+5. Server is now accessible at http://localhost:3055/
 
 # Docker
 
 ### Choose docker-compose file:
 docker-compose-dev: Development Version, uses CHROME_ID = pebdjeaapfkjiceloeecpoedbliefnap
 
-docker-compose: Live Version, uses CHROME_ID = ilpnhljlghnglopiokcbeahkcnbneckd
+docker-compose: Live Version, uses CHROME_ID = hnndfanecdfnonofigcceaahflgfpgbd
 
 ### Create dockers
 
