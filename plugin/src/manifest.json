@@ -1,29 +1,25 @@
 {
   "manifest_version": 2,
   "name": "Storyfinder",
-  "version": "0.0.10",
-  "author": "Language Technology Group - University of Hamburg",
+  "short_name": "Storyfinder",
+  "version": "0.0.12",
+
   "description": "Graph based information and knowledge management of websites and entities.",
-  "homepage_url": "https://uhh-lt.github.io/storyfinder/",
-  "update_url": "https://www.google.com",
   "icons": {
     "48": "icon-48.png",
     "500": "icon-500.png"
   },
 
-  "permissions": [
-    "tabs",
-    "storage",
-    "webRequest",
-    "<all_urls>",
-    "contextMenus",
-    "webNavigation"
-  ],
-
   "browser_action": {
     "default_popup": "menu.html"
   },
 
+  "author": "Language Technology Group - University of Hamburg",
+  "background": {
+    "scripts": [
+      "backgroundscript.js"
+    ]
+  },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
@@ -35,20 +31,20 @@
       ]
     }
   ],
-
+  "homepage_url": "https://uhh-lt.github.io/storyfinder/",
   "options_ui": {
     "page": "options.html"
   },
-
-  "background": {
-    "scripts": [
-      "backgroundscript.js"
-    ]
-  },
-
+  "permissions": [
+    "tabs",
+    "storage",
+    "webRequest",
+    "<all_urls>",
+    "contextMenus",
+    "webNavigation"
+  ],
   "web_accessible_resources":
   [
     "popup.html"
   ]
-
 }

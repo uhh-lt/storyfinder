@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm install -g browserify && npm install && cd public/js && npm install && browserify index.js -t babelify -t [hbsfy -t] -o storyfinder.js && browserify register/register.js -t babelify -t [hbsfy -t] -o register.js"
+    "build": "npm install -g browserify && npm install && cd public/js && npm install && browserify index.js -t babelify -t [hbsfy -t] -o storyfinder.js && browserify register/register.js -t babelify -t [hbsfy -t] -o register.js",
+    "publish": "echo \"Test:\""
   },
   "author": "",
   "license": "ISC",
