@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm install -g browserify && npm install && cd public/js && npm install && browserify index.js -t babelify -t [hbsfy -t] -o storyfinder.js && browserify register/register.js -t babelify -t [hbsfy -t] -o register.js",
-    "publish": "echo \"Test:\""
+    "publish": "docker login && docker build -t uhhlt/storyfinder:latest . && docker push uhhlt/storyfinder:latest"
   },
   "author": "",
   "license": "ISC",

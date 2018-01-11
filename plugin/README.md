@@ -1,4 +1,4 @@
-# recommended workflow
+# Recommended workflow
 
 0. provide the private key under /storyfinder/release/storyfinder-plugin.pem
 1. make changes to the code
@@ -7,7 +7,7 @@
 4. automatically publish the plugin with npm run publish
 5. upload the generated zip file /storyfinder/release/storyfinder.zip to the google developer console
 
-# build the plugin
+# Build the plugin
 
 ## Automatic build
 this will automatically build the files: backgroundscript.js, contentscript.js, contentstyle.css
@@ -27,7 +27,7 @@ $ npm install
 $ browserify index.js -t babelify -t [hbsfy -t] -o ../contentscript.js
 ```
 
-### Build the pageworker
+### Build the backgroundscript
 
 ```
 $ cd /storyfinder/plugin/src/js-backgroundscript
@@ -43,7 +43,7 @@ $ npm install
 $ grunt less
 ```
 
-# publish the plugin
+# Publish the plugin
 
 ## Automatic publish
 this will automatically create storyfinder.crx and storyfinder.zip in /storyfinder/release
