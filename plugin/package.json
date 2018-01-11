@@ -9,6 +9,6 @@
   },
   "scripts": {
     "build": "npm install -g grunt && npm install -g browserify && npm install && cd src/js-contentscript && npm install && browserify index.js -t babelify -t [hbsfy -t] -o ../contentscript.js && cd ../js-backgroundscript && npm install && browserify index.js -t babelify -t [hbsfy -t] -o ../backgroundscript.js && cd ../js-contentstyle && npm install && grunt less",
-    "publish": "npm install && rmdir-cli dist && copyfiles -f src/* dist && copyfiles -f ../release/storyfinder-plugin.pem dist && bestzip ../release/storyfinder.zip dist/* && rname dist/storyfinder-plugin.pem dist/key.pem && crx pack dist -o ../release/storyfinder.crx -p ../release/storyfinder-plugin.pem"
+    "publish": "npm install && rmdir-cli dist && copyfiles -f src/* dist && copyfiles -f ../release/storyfinder-plugin.pem dist && rname dist/storyfinder-plugin.pem dist/key.pem && bestzip ../release/storyfinder.zip dist/* && crx pack dist -o ../release/storyfinder.crx -p ../release/storyfinder-plugin.pem"
   }
 }
