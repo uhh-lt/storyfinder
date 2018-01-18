@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Storyfinder",
   "short_name": "Storyfinder",
-  "version": "0.0.12",
+  "version": "0.0.13",
 
   "description": "Graph based information and knowledge management of websites and entities.",
   "icons": {
