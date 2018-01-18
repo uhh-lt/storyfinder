@@ -119,16 +119,20 @@
             <button class="w3-button dots" onclick="currentDiv(2)">2</button>
             <button class="w3-button dots" onclick="currentDiv(3)">3</button>
             <button class="w3-button dots" onclick="currentDiv(4)">4</button>
+            <button class="w3-button dots" onclick="currentDiv(4)">5</button>
+            <button class="w3-button dots" onclick="currentDiv(4)">6</button>
             <br />
             <button class="w3-button" onclick="plusDivs(-1)">&#10094; Prev</button>
             <button class="w3-button" onclick="plusDivs(1)">Next &#10095;</button>
           </div>
           <br />
           <div style="max-width: 500px;">
-            <img class="screenshots" style="width:100%" src="assets/screen1.png"></img>
-            <img class="screenshots" style="width:100%" src="assets/screen2.png"></img>
-            <img class="screenshots" style="width:100%" src="assets/screen3.png"></img>
-            <img class="screenshots" style="width:100%" src="assets/screen4.png"></img>
+            <img class="screenshots" style="width:100%" src="assets/story1.png"></img>
+            <img class="screenshots" style="width:100%" src="assets/story2.png"></img>
+            <img class="screenshots" style="width:100%" src="assets/story3.png"></img>
+            <img class="screenshots" style="width:100%" src="assets/story4.png"></img>
+            <img class="screenshots" style="width:100%" src="assets/story5.png"></img>
+            <img class="screenshots" style="width:100%" src="assets/story6.png"></img>
           </div>
         </div>
       </div>
@@ -174,13 +178,10 @@
           Download and install the latest <a href="https://www.google.com/chrome/">Google Chrome Browser</a> Application
         </li>
         <li>
-          Download the latest <a href="https://github.com/uhh-lt/storyfinder/releases">Storyfinder plugin</a> (.crx file)
+          Install the latest <a href="https://chrome.google.com/webstore/detail/storyfinder/hnndfanecdfnonofigcceaahflgfpgbd">Storyfinder Extension</a> from the Chrome Web Store
         </li>
         <li>
-          Open the Extensions menu in the Google Chrome Browser
-        </li>
-        <li>
-          Drop the downloaded .crx file into the extensions window
+          Right click the Storyfinder icon in the top right corner and select 'Options'
         </li>
         <li>
           Enter a valid Storyfinder server address in the Storyfinder options menu and save it
@@ -194,16 +195,19 @@
           Create a user and log in to the Storyfinder server
         </li>
         <li>
-          Click the Storyfinder icon in the top right corner in order to use the Storyfinder plugin
+          Left click the Storyfinder icon in order to use the Storyfinder plugin
           <ul>
             <li>
-              activate and deactivate entity highlighting in web pages
+              Activate and deactivate entity highlighting in web pages
             </li>
             <li>
-              switch to a readability view of the current article
+              Parse the current article (manually)
             </li>
             <li>
-              toggle the graph view of the current article in a side pane
+              Toggle the graph view of the current article in a side pane. This will also enable automatic parsing of articles
+            </li>
+            <li>
+              Switch to a readability view of the current article
             </li>
           </ul>
         </li>
@@ -236,10 +240,10 @@
       <h5>Requirements:</h5>
       <ul class="w3-text-grey">
         <li>
-          Docker (>= Version 17.09.0)
+            <a href ="https://store.docker.com/search?type=edition&offering=community">Docker (>= Version 17.09.0)</a>
         </li>
         <li>
-          Docker Compose (>= Version 1.16.1)
+            <a href="https://docs.docker.com/compose/install/"Docker Compose (>= Version 1.16.1)</a>
         </li>
       </ul>
 
@@ -250,13 +254,13 @@
             Download the latest <code>docker-compose.yml</code> file <a href="https://github.com/uhh-lt/storyfinder/releases">here</a>.
           </li>
           <li>
-            run &nbsp;&nbsp;<code>'docker-compose -f &lt;filename&gt; -p storyfinder up'</code>&nbsp;&nbsp; and wait until the server stack is started. (Note: internet connection is required in order to download resources. Data directories for images and database will be created in the current directory.)
+            Run &nbsp;&nbsp;<code>'docker-compose -f &lt;filename&gt; -p storyfinder up'</code>&nbsp;&nbsp; and wait until the server stack is started. (Note: internet connection is required in order to download resources. Data directories for images and database will be created in the current directory.)
           </li>
           <li>
-            you can now access the Storyfinder web page at <a href="http://localhost:3055">http://localhost:3055</a>
+            You can now access the Storyfinder web page at <a href="http://localhost:3055">http://localhost:3055</a>
           </li>
           <li>
-            type &nbsp;&nbsp;<code>'docker-compose -f &lt;filename&gt; -p storyfinder down'</code>&nbsp;&nbsp; to stop the server stack
+            Type &nbsp;&nbsp;<code>'docker-compose -f &lt;filename&gt; -p storyfinder down'</code>&nbsp;&nbsp; to stop the server stack
           </li>
         </ul>
       </div>
