@@ -49,7 +49,7 @@ services:
           - corenlp
 
   germanerserver:
-    image: "kisad/storyfinder-germaner:latest"
+    image: "kisad/storyfinder-germaner-git:latest"
     #image: "kisad/storyfinder-germaner-git:latest"
     #healthcheck:
     #  test: curl -X POST -H 'Content-Type: text/plain' -d 'Angela^MMerkel^Mbesucht^MFrankreich^M.' 'localhost:8080/germaner'
@@ -58,6 +58,8 @@ services:
     #  retries: 3
     #mem_limit: 4g
     #memswap_limit: 5g
+    stdin_open: true
+    tty: true
     networks:
       sf-net:
         aliases:

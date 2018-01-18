@@ -47,13 +47,15 @@ services:
   germanerserver:
     image: "kisad/storyfinder-germaner-git:latest"
     restart: unless-stopped
+    stdin_open: true
+    tty: true
     networks:
       sf-net:
         aliases:
           - germaner
 
   webserver:
-    image: "remstef/storyfinder:latest"
+    image: "uhhlt/storyfinder:latest"
     volumes:
       - ${PWD}/image-data:/usr/src/app/public/images
     ports:
