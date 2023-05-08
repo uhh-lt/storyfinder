@@ -5,10 +5,10 @@
   "main": "Gruntfile.js",
   "dependencies": {},
   "devDependencies": {
-    "grunt": "1.0.1",
-    "grunt-contrib-less": "1.4.0",
-    "grunt-contrib-watch": "1.0.0",
-    "jit-grunt": "0.10.0"
+    "grunt": "^1.0.1",
+    "grunt-contrib-less": "^1.4.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "jit-grunt": "^0.10.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

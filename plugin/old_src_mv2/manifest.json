@@ -1,23 +1,28 @@
 {
-  "manifest_version": 3,
+  "manifest_version": 2,
   "name": "Storyfinder",
   "short_name": "Storyfinder",
-  "version": "0.1.0",
+  "version": "0.0.13",
+
   "description": "Graph based information and knowledge management of websites and entities.",
   "icons": {
     "48": "icon-48.png",
     "500": "icon-500.png"
   },
+
+  "browser_action": {
+    "default_popup": "menu.html"
+  },
+
   "author": "Language Technology Group - University of Hamburg",
   "background": {
-    "service_worker": "service_worker.js"
+    "scripts": [
+      "backgroundscript.js"
+    ]
   },
   "content_scripts": [
     {
-      "matches": [
-        "http://*/*",
-        "https://*/*"
-      ],
+      "matches": ["<all_urls>"],
       "css": [
         "contentstyle.css"
       ],
@@ -34,26 +39,12 @@
     "tabs",
     "storage",
     "webRequest",
+    "<all_urls>",
     "contextMenus",
     "webNavigation"
   ],
-  "host_permissions": [
-    "http://*/*",
-    "https://*/*"
-  ],
-  "web_accessible_resources": [
-    {
-      "resources": [
-        "popup.html"
-      ],
-      "matches": [
-        "http://*/*",
-        "https://*/*"
-      ]
-    }
-  ],
-  "action": {
-    "default_popup": "menu.html"
-  },
-  "content_security_policy": {}
+  "web_accessible_resources":
+  [
+    "popup.html"
+  ]
 }

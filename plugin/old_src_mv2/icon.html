@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+<style>
+
+::before, ::after {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.avatar .logo > span {
+  line-height: 1.42857143;
+  font-size: 14px;
+  display: inline-block;
+  background: #0288d1;
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+  border-radius: 50px;
+  border: 4px solid #FFFFFF;
+  /* box-shadow: 5px 5px 5px #999999; */
+}
+
+.avatar.loading .logo {
+  display: none;
+}
+
+.avatar .logo > span > i:last-child {
+  position: relative;
+  margin-left: -36px;
+  top: 28px;
+  color: #b3e5fc;
+}
+
+.avatar .logo > span > i:first-child {
+  color: #b3e5fc;
+}
+
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.text-center {
+    text-align: center;
+}
+
+</style>
+</head>
+<body>
+
+  <br /><br />
+
+  <div class="avatar text-center">
+    <div class="logo text-center">
+      <span>
+        <i class="fa fa-share-alt fa-4x"></i>
+        <i class="fa fa-share-alt fa-4x fa-rotate-90"></i>
+      </span>
+    </div>
+  </div>
+
+  <br /><br />
+
+  <div class="avatar text-center">
+    <div class="logo text-center">
+      <span style="background: #ff751a;">
+        <i style="color: #ffe0cc;" class="fa fa-share-alt fa-4x"></i>
+        <i style="color: #ffe0cc;" class="fa fa-share-alt fa-4x fa-rotate-90"></i>
+      </span>
+    </div>
+  </div>
+
+  <br /><br />
+
+  <div class="avatar text-center">
+    <div class="logo text-center">
+      <span style="box-shadow: 5px 5px 5px #999999;">
+        <i class="fa fa-share-alt fa-4x"></i>
+        <i class="fa fa-share-alt fa-4x fa-rotate-90"></i>
+      </span>
+    </div>
+  </div>
+
+</body>
+</html>

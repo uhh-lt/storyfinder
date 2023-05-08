@@ -1,0 +1,241 @@
+@colors: #F44366, #E91E63, #9C27B0, #673AB7, #3F51B5, #2196F3, #03A9F4, #00BCD4, #009688, #4CAF50, #8BC34A, #FFC107, #FF9800, #FF5722, #795548;
+@colors2: #D32F2F, #C2185B, #7B1FA2, #512DA8, #303F9F, #1976D2, #0288D1, #0097A7, #00796B, #388E3C, #689F38, #FFA000, #F57C00, #E64A19, #5D4037;
+@colors3: #FFCDD2, #F8BBD0, #E1BEE7, #D1C4E9, #C5CAE9, #BBDEFB, #B3E5FC, #B2EBF2, #B2DFDB, #C8E6C9, #DCEDC8, #FFECB3, #FFE0B2, #FFCCBC, #D7CCC8;
+
+@ORG: 2;
+@OTH: 4;
+@PER: 7;
+@LOC: 10;
+@KEY: 14;
+
+.storyfinder-main {
+	.typed-entity(@type, @idx){
+		@n: ~'.type-@{type}';
+
+		&@{n} {
+			text-shadow: 0px 0px 5px extract(@colors, @idx);
+
+			transition: all 0.3s ease;
+
+			&.storyfinder-highlighted {
+				text-shadow: 0px 0px 2px extract(@colors2, @idx);
+				color: extract(@colors3, @idx);
+			}
+		}
+	}
+
+	.typed-entity-highlighted(@type, @idx){
+		@n: ~'.type-@{type}';
+
+		&@{n} {
+			text-shadow: none !important;
+			color: extract(@colors2, @idx);
+			display: inline-block;
+
+			&:hover {
+				transform: scale(1.1);
+			}
+		}
+	}
+
+	.de-tu-darmstadt-lt-storyfinder-root {
+
+		transition: color 0.3s ease;
+
+		&.storyfinder-highlighted {
+			color: #AAAAAA;
+
+			sf-entity {
+				.typed-entity-highlighted(ORG, @ORG);
+				.typed-entity-highlighted(LOC, @LOC);
+				.typed-entity-highlighted(PER, @PER);
+				.typed-entity-highlighted(OTH, @OTH);
+				.typed-entity-highlighted(KEY, @KEY);
+			}
+		}
+
+		/*border: 1px solid #0000FF;
+        background-color: #EEEEEE;*/
+
+		.entity {
+			//text-decoration: underline;
+			//border-bottom: 1px dotted #0000FF;
+			cursor: context-menu;
+			white-space: nowrap;
+			//color: #FF0000 !important;
+
+			sf-marker {
+				display: inline-block;
+				//font: normal normal normal @fa-font-size-base/1 StoryFinderFontAwesome; // shortening font declaration
+				font-size: 70%; // can't have font-size inherit on line above, so need to override
+				text-rendering: auto; // optimizelegibility throws things off #1094
+				-webkit-font-smoothing: antialiased;
+				-moz-osx-font-smoothing: grayscale;
+				transform: translate(0, 0);
+				//content: @fa-var-info-circle;
+				padding-left: 5px;
+
+				&.internal-ref {
+					&:before {
+						//content: @fa-var-circle;
+					}
+				}
+
+				&.external-ref {
+					&:before {
+						//content: @fa-var-external-link;
+					}
+				}
+			}
+		}
+
+		sf-entity {
+			text-shadow: 0px 0px 5px #FFFF00;
+			.typed-entity(ORG, @ORG);
+			.typed-entity(LOC, @LOC);
+			.typed-entity(PER, @PER);
+			.typed-entity(OTH, @OTH);
+			.typed-entity(KEY, @KEY);
+		}
+
+		sf-entity.storyfinder-highlighted {
+			//text-shadow: 0px 0px 5px #0074ff;
+		}
+
+		/*.entity:after {
+            display: inline-block;
+            font: normal normal normal @fa-font-size-base/1 StoryFinderFontAwesome; // shortening font declaration
+            font-size: inherit; // can't have font-size inherit on line above, so need to override
+            text-rendering: auto; // optimizelegibility throws things off #1094
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            transform: translate(0, 0);
+            content: @fa-var-info-circle;
+            padding-left: 5px;
+        }*/
+
+
+		&.storyfinder {
+			position: absolute;
+			right: 0;
+			width: 40px;
+			height: auto;
+			top: 0px;
+			bottom: 0px;
+			background-color: #FFFFFF;
+			box-shadow: -2px 2px 2px rgba(0,0,0,0.3);
+			z-index: 99900;
+			display: block;
+			//@import "svg.less";
+
+			&.fixed {
+				top: 0 !important;
+				position: fixed;
+			}
+
+			sf-toolbar {
+				.loading {
+					width: 40px;
+					height: 40px;
+					font-size: 30px;
+					vertical-align: middle;
+					line-height: 40px;
+					text-align: center;
+				}
+
+				.btn {
+					height: 40px;
+					border-left: none;
+					border-right: none;
+					line-height: 40px;
+					vertical-align: middle;
+				}
+			}
+
+			.articlemap {
+				position: fixed;
+				right: 40px;
+				bottom: 0px;
+				box-shadow: -2px 2px 2px rgba(0,0,0,0.3);
+
+				img {
+					max-width: 150px;
+					height: 350px;
+				}
+			}
+		}
+	}
+
+	.storyfinder-overlay {
+		position: absolute;
+		top: 0;
+		left: 0;
+		pointer-events: none;
+		z-index: 999999;
+
+		node {
+			pointer-events: visiblePainted;
+		}
+
+		path {
+			stroke: #999999;
+			fill: none;
+		}
+	}
+
+	sf-source {
+		position: absolute;
+		right: 130px;
+		background-color: #FFFFFF;
+		border: 1px solid #CCCCCC;
+		padding: 3px;
+		z-index: 999998;
+		max-width: 120px;
+		font-size: 80%;
+
+		img {
+			width: 120px;
+		}
+	}
+
+	sf-marker-container {
+		z-index: 999999;
+
+		sf-marker {
+			display: none;
+			opacity: 0;
+			transition: opacity 0.1s;
+
+			.marker-above, .marker-below {
+				display:none;
+			}
+
+			&.above, &.below {
+				position: fixed;
+				display: inline-block;
+				opacity: 1;
+
+				padding: 10px;
+				background-color: rgba(0,0,0,0.8);
+				color: #FFFFFF;
+				transition: opacity 0.1s;
+			}
+
+			&.above {
+				bottom: auto;
+				top: 0;
+				.marker-above {
+					display: inline-block;
+				}
+			}
+
+			&.below {
+				top: auto;
+				bottom: 0;
+				.marker-below {
+					display: inline-block;
+				}
+			}
+		}
+	}
+}

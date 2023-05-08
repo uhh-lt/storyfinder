@@ -6,6 +6,8 @@ release
 
 plugin/dist/
 
+storyfinder.code-workspace
+
 ####
 # Created by https://www.gitignore.io/api/node,bower,eclipse,webstorm+all,intellij+all
 

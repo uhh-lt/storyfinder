@@ -29,9 +29,8 @@ buttonSidebar.addEventListener("click", function() {
     window.close();
 });
 
-buttonReadability.addEventListener("click", async function() {
-    alert("send")
-    await chrome.runtime.sendMessage({type:"do-readability"});
+buttonReadability.addEventListener("click", function() {
+    chrome.runtime.sendMessage({type:"do-readability"});
     window.close();
 });
 

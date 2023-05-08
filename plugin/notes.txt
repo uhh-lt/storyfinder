@@ -3,10 +3,10 @@
 
 docker run --rm -ti --name sf-plugin-build -v $(pwd):/usr/local/app -w /usr/local/app node:6 bash
 
- $> npm install -g browserify grunt crx
- $> cd /usr/local/app/src/plugin
+ $> npm install -g browserify grunt@1.0.1 crx
+ $> cd /usr/local/app
 
-# follow instructions in src/README.md
+# follow instructions in ./README.md
 
 # prepare release
 

@@ -1,4 +1,4 @@
-(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var Readability = require('readability-node').Readability,
     _ = require('lodash'),
     async = require('async'),
@@ -356,7 +356,7 @@ function Storyfinder() {
 new Storyfinder();
 
 },{"async":2,"dom-delegate":4,"escape-string-regexp":5,"lodash":6,"readability-node":8}],2:[function(require,module,exports){
-(function (process,global,setImmediate){(function (){
+(function (process,global){
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -1023,13 +1023,10 @@ var reIsUint = /^(?:0|[1-9]\d*)$/;
  * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
  */
 function isIndex(value, length) {
-  var type = typeof value;
   length = length == null ? MAX_SAFE_INTEGER$1 : length;
-
   return !!length &&
-    (type == 'number' ||
-      (type != 'symbol' && reIsUint.test(value))) &&
-        (value > -1 && value % 1 == 0 && value < length);
+    (typeof value == 'number' || reIsUint.test(value)) &&
+    (value > -1 && value % 1 == 0 && value < length);
 }
 
 /** `Object#toString` result references. */
@@ -1115,14 +1112,6 @@ var freeProcess = moduleExports$1 && freeGlobal.process;
 /** Used to access faster Node.js helpers. */
 var nodeUtil = (function() {
   try {
-    // Use `util.types` for Node.js 10+.
-    var types = freeModule$1 && freeModule$1.require && freeModule$1.require('util').types;
-
-    if (types) {
-      return types;
-    }
-
-    // Legacy `process.binding('util')` for Node.js < 10.
     return freeProcess && freeProcess.binding && freeProcess.binding('util');
   } catch (e) {}
 }());
@@ -1307,9 +1296,6 @@ function createObjectIterator(obj) {
     var len = okeys.length;
     return function next() {
         var key = okeys[++i];
-        if (key === '__proto__') {
-            return next();
-        }
         return i < len ? {value: obj[key], key: key} : null;
     };
 }
@@ -1341,7 +1327,6 @@ function _eachOfLimit(limit) {
         var nextElem = iterator(obj);
         var done = false;
         var running = 0;
-        var looping = false;
 
         function iterateeCallback(err, value) {
             running -= 1;
@@ -1353,13 +1338,12 @@ function _eachOfLimit(limit) {
                 done = true;
                 return callback(null);
             }
-            else if (!looping) {
+            else {
                 replenish();
             }
         }
 
         function replenish () {
-            looping = true;
             while (running < limit && !done) {
                 var elem = nextElem();
                 if (elem === null) {
@@ -1372,7 +1356,6 @@ function _eachOfLimit(limit) {
                 running += 1;
                 iteratee(elem.value, elem.key, onlyOnce(iterateeCallback));
             }
-            looping = false;
         }
 
         replenish();
@@ -4193,7 +4176,7 @@ function memoize(fn, hasher) {
 
 /**
  * Calls `callback` on a later loop around the event loop. In Node.js this just
- * calls `process.nextTick`.  In the browser it will use `setImmediate` if
+ * calls `process.nextTicl`.  In the browser it will use `setImmediate` if
  * available, otherwise `setTimeout(callback, 0)`, which means other higher
  * priority events may precede the execution of `callback`.
  *
@@ -5970,8 +5953,8 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 })));
 
-}).call(this)}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("timers").setImmediate)
-},{"_process":16,"timers":17}],3:[function(require,module,exports){
+}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"_process":16}],3:[function(require,module,exports){
 /*jshint browser:true, node:true*/
 
 'use strict';
@@ -6093,7 +6076,7 @@ Delegate.prototype.captureForType = function(eventType) {
  * @param {string} eventType Listen for these events
  * @param {string|undefined} selector Only handle events on elements matching this selector, if undefined match root element
  * @param {function()} handler Handler function - event data passed here will be in event.data
- * @param {boolean} [useCapture] see 'useCapture' in <https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener>
+ * @param {Object} [eventData] Data to pass in event.data
  * @returns {Delegate} This method is chainable
  */
 Delegate.prototype.on = function(eventType, selector, handler, useCapture) {
@@ -6410,6 +6393,7 @@ Delegate.prototype.destroy = function() {
 /**
  * @preserve Create and manage a DOM event delegator.
  *
+ * @version 0.3.0
  * @codingstandard ftlabs-jsv2
  * @copyright The Financial Times Limited [All Rights Reserved]
  * @license MIT License (see LICENSE.txt)
@@ -6436,11 +6420,11 @@ module.exports = function (str) {
 };
 
 },{}],6:[function(require,module,exports){
-(function (global){(function (){
+(function (global){
 /**
  * @license
  * Lodash <https://lodash.com/>
- * Copyright OpenJS Foundation and other contributors <https://openjsf.org/>
+ * Copyright JS Foundation and other contributors <https://js.foundation/>
  * Released under MIT license <https://lodash.com/license>
  * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
  * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -6451,15 +6435,14 @@ module.exports = function (str) {
   var undefined;
 
   /** Used as the semantic version number. */
-  var VERSION = '4.17.21';
+  var VERSION = '4.17.4';
 
   /** Used as the size to enable large array optimizations. */
   var LARGE_ARRAY_SIZE = 200;
 
   /** Error message constants. */
   var CORE_ERROR_TEXT = 'Unsupported core-js use. Try https://npms.io/search?q=ponyfill.',
-      FUNC_ERROR_TEXT = 'Expected a function',
-      INVALID_TEMPL_VAR_ERROR_TEXT = 'Invalid `variable` option passed into `_.template`';
+      FUNC_ERROR_TEXT = 'Expected a function';
 
   /** Used to stand-in for `undefined` hash values. */
   var HASH_UNDEFINED = '__lodash_hash_undefined__';
@@ -6583,6 +6566,7 @@ module.exports = function (str) {
   /** Used to match property names within property paths. */
   var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
       reIsPlainProp = /^\w*$/,
+      reLeadingDot = /^\./,
       rePropName = /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|$))/g;
 
   /**
@@ -6592,11 +6576,10 @@ module.exports = function (str) {
   var reRegExpChar = /[\\^$.*+?()[\]{}|]/g,
       reHasRegExpChar = RegExp(reRegExpChar.source);
 
-  /** Used to match leading whitespace. */
-  var reTrimStart = /^\s+/;
-
-  /** Used to match a single whitespace character. */
-  var reWhitespace = /\s/;
+  /** Used to match leading and trailing whitespace. */
+  var reTrim = /^\s+|\s+$/g,
+      reTrimStart = /^\s+/,
+      reTrimEnd = /\s+$/;
 
   /** Used to match wrap detail comments. */
   var reWrapComment = /\{(?:\n\/\* \[wrapped with .+\] \*\/)?\n?/,
@@ -6605,18 +6588,6 @@ module.exports = function (str) {
 
   /** Used to match words composed of alphanumeric characters. */
   var reAsciiWord = /[^\x00-\x2f\x3a-\x40\x5b-\x60\x7b-\x7f]+/g;
-
-  /**
-   * Used to validate the `validate` option in `_.template` variable.
-   *
-   * Forbids characters which could potentially change the meaning of the function argument definition:
-   * - "()," (modification of function parameters)
-   * - "=" (default value)
-   * - "[]{}" (destructuring of function parameters)
-   * - "/" (beginning of a comment)
-   * - whitespace
-   */
-  var reForbiddenIdentifierChars = /[()=,{}\[\]\/\s]/;
 
   /** Used to match backslashes in property paths. */
   var reEscapeChar = /\\(\\)?/g;
@@ -6695,8 +6666,8 @@ module.exports = function (str) {
       reOptMod = rsModifier + '?',
       rsOptVar = '[' + rsVarRange + ']?',
       rsOptJoin = '(?:' + rsZWJ + '(?:' + [rsNonAstral, rsRegional, rsSurrPair].join('|') + ')' + rsOptVar + reOptMod + ')*',
-      rsOrdLower = '\\d*(?:1st|2nd|3rd|(?![123])\\dth)(?=\\b|[A-Z_])',
-      rsOrdUpper = '\\d*(?:1ST|2ND|3RD|(?![123])\\dTH)(?=\\b|[a-z_])',
+      rsOrdLower = '\\d*(?:(?:1st|2nd|3rd|(?![123])\\dth)\\b)',
+      rsOrdUpper = '\\d*(?:(?:1ST|2ND|3RD|(?![123])\\dTH)\\b)',
       rsSeq = rsOptVar + reOptMod + rsOptJoin,
       rsEmoji = '(?:' + [rsDingbat, rsRegional, rsSurrPair].join('|') + ')' + rsSeq,
       rsSymbol = '(?:' + [rsNonAstral + rsCombo + '?', rsCombo, rsRegional, rsSurrPair, rsAstral].join('|') + ')';
@@ -6729,7 +6700,7 @@ module.exports = function (str) {
   var reHasUnicode = RegExp('[' + rsZWJ + rsAstralRange  + rsComboRange + rsVarRange + ']');
 
   /** Used to detect strings that need a more robust regexp to match words. */
-  var reHasUnicodeWord = /[a-z][A-Z]|[A-Z]{2}[a-z]|[0-9][a-zA-Z]|[a-zA-Z][0-9]|[^a-zA-Z0-9 ]/;
+  var reHasUnicodeWord = /[a-z][A-Z]|[A-Z]{2,}[a-z]|[0-9][a-zA-Z]|[a-zA-Z][0-9]|[^a-zA-Z0-9 ]/;
 
   /** Used to assign default `context` object properties. */
   var contextProps = [
@@ -6889,14 +6860,6 @@ module.exports = function (str) {
   /** Used to access faster Node.js helpers. */
   var nodeUtil = (function() {
     try {
-      // Use `util.types` for Node.js 10+.
-      var types = freeModule && freeModule.require && freeModule.require('util').types;
-
-      if (types) {
-        return types;
-      }
-
-      // Legacy `process.binding('util')` for Node.js < 10.
       return freeProcess && freeProcess.binding && freeProcess.binding('util');
     } catch (e) {}
   }());
@@ -6910,6 +6873,34 @@ module.exports = function (str) {
       nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
 
   /*--------------------------------------------------------------------------*/
+
+  /**
+   * Adds the key-value `pair` to `map`.
+   *
+   * @private
+   * @param {Object} map The map to modify.
+   * @param {Array} pair The key-value pair to add.
+   * @returns {Object} Returns `map`.
+   */
+  function addMapEntry(map, pair) {
+    // Don't return `map.set` because it's not chainable in IE 11.
+    map.set(pair[0], pair[1]);
+    return map;
+  }
+
+  /**
+   * Adds `value` to `set`.
+   *
+   * @private
+   * @param {Object} set The set to modify.
+   * @param {*} value The value to add.
+   * @returns {Object} Returns `set`.
+   */
+  function addSetEntry(set, value) {
+    // Don't return `set.add` because it's not chainable in IE 11.
+    set.add(value);
+    return set;
+  }
 
   /**
    * A faster alternative to `Function#apply`, this function invokes `func`
@@ -7447,19 +7438,6 @@ module.exports = function (str) {
   }
 
   /**
-   * The base implementation of `_.trim`.
-   *
-   * @private
-   * @param {string} string The string to trim.
-   * @returns {string} Returns the trimmed string.
-   */
-  function baseTrim(string) {
-    return string
-      ? string.slice(0, trimmedEndIndex(string) + 1).replace(reTrimStart, '')
-      : string;
-  }
-
-  /**
    * The base implementation of `_.unary` without support for storing metadata.
    *
    * @private
@@ -7790,21 +7768,6 @@ module.exports = function (str) {
     return hasUnicode(string)
       ? unicodeToArray(string)
       : asciiToArray(string);
-  }
-
-  /**
-   * Used by `_.trim` and `_.trimEnd` to get the index of the last non-whitespace
-   * character of `string`.
-   *
-   * @private
-   * @param {string} string The string to inspect.
-   * @returns {number} Returns the index of the last non-whitespace character.
-   */
-  function trimmedEndIndex(string) {
-    var index = string.length;
-
-    while (index-- && reWhitespace.test(string.charAt(index))) {}
-    return index;
   }
 
   /**
@@ -9137,7 +9100,7 @@ module.exports = function (str) {
           if (!cloneableTags[tag]) {
             return object ? value : {};
           }
-          result = initCloneByTag(value, tag, isDeep);
+          result = initCloneByTag(value, tag, baseClone, isDeep);
         }
       }
       // Check for circular references and return its corresponding clone.
@@ -9147,16 +9110,6 @@ module.exports = function (str) {
         return stacked;
       }
       stack.set(value, result);
-
-      if (isSet(value)) {
-        value.forEach(function(subValue) {
-          result.add(baseClone(subValue, bitmask, customizer, subValue, value, stack));
-        });
-      } else if (isMap(value)) {
-        value.forEach(function(subValue, key) {
-          result.set(key, baseClone(subValue, bitmask, customizer, key, value, stack));
-        });
-      }
 
       var keysFunc = isFull
         ? (isFlat ? getAllKeysIn : getAllKeys)
@@ -10079,13 +10032,13 @@ module.exports = function (str) {
         return;
       }
       baseFor(source, function(srcValue, key) {
-        stack || (stack = new Stack);
         if (isObject(srcValue)) {
+          stack || (stack = new Stack);
           baseMergeDeep(object, source, key, srcIndex, baseMerge, customizer, stack);
         }
         else {
           var newValue = customizer
-            ? customizer(safeGet(object, key), srcValue, (key + ''), object, source, stack)
+            ? customizer(object[key], srcValue, (key + ''), object, source, stack)
             : undefined;
 
           if (newValue === undefined) {
@@ -10112,8 +10065,8 @@ module.exports = function (str) {
      *  counterparts.
      */
     function baseMergeDeep(object, source, key, srcIndex, mergeFunc, customizer, stack) {
-      var objValue = safeGet(object, key),
-          srcValue = safeGet(source, key),
+      var objValue = object[key],
+          srcValue = source[key],
           stacked = stack.get(srcValue);
 
       if (stacked) {
@@ -10156,7 +10109,7 @@ module.exports = function (str) {
           if (isArguments(objValue)) {
             newValue = toPlainObject(objValue);
           }
-          else if (!isObject(objValue) || isFunction(objValue)) {
+          else if (!isObject(objValue) || (srcIndex && isFunction(objValue))) {
             newValue = initCloneObject(srcValue);
           }
         }
@@ -10200,21 +10153,8 @@ module.exports = function (str) {
      * @returns {Array} Returns the new sorted array.
      */
     function baseOrderBy(collection, iteratees, orders) {
-      if (iteratees.length) {
-        iteratees = arrayMap(iteratees, function(iteratee) {
-          if (isArray(iteratee)) {
-            return function(value) {
-              return baseGet(value, iteratee.length === 1 ? iteratee[0] : iteratee);
-            }
-          }
-          return iteratee;
-        });
-      } else {
-        iteratees = [identity];
-      }
-
       var index = -1;
-      iteratees = arrayMap(iteratees, baseUnary(getIteratee()));
+      iteratees = arrayMap(iteratees.length ? iteratees : [identity], baseUnary(getIteratee()));
 
       var result = baseMap(collection, function(value, key, collection) {
         var criteria = arrayMap(iteratees, function(iteratee) {
@@ -10471,10 +10411,6 @@ module.exports = function (str) {
         var key = toKey(path[index]),
             newValue = value;
 
-        if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
-          return object;
-        }
-
         if (index != lastIndex) {
           var objValue = nested[key];
           newValue = customizer ? customizer(objValue, key, nested) : undefined;
@@ -10627,14 +10563,11 @@ module.exports = function (str) {
      *  into `array`.
      */
     function baseSortedIndexBy(array, value, iteratee, retHighest) {
-      var low = 0,
-          high = array == null ? 0 : array.length;
-      if (high === 0) {
-        return 0;
-      }
-
       value = iteratee(value);
-      var valIsNaN = value !== value,
+
+      var low = 0,
+          high = array == null ? 0 : array.length,
+          valIsNaN = value !== value,
           valIsNull = value === null,
           valIsSymbol = isSymbol(value),
           valIsUndefined = value === undefined;
@@ -11042,6 +10975,20 @@ module.exports = function (str) {
     }
 
     /**
+     * Creates a clone of `map`.
+     *
+     * @private
+     * @param {Object} map The map to clone.
+     * @param {Function} cloneFunc The function to clone values.
+     * @param {boolean} [isDeep] Specify a deep clone.
+     * @returns {Object} Returns the cloned map.
+     */
+    function cloneMap(map, isDeep, cloneFunc) {
+      var array = isDeep ? cloneFunc(mapToArray(map), CLONE_DEEP_FLAG) : mapToArray(map);
+      return arrayReduce(array, addMapEntry, new map.constructor);
+    }
+
+    /**
      * Creates a clone of `regexp`.
      *
      * @private
@@ -11052,6 +10999,20 @@ module.exports = function (str) {
       var result = new regexp.constructor(regexp.source, reFlags.exec(regexp));
       result.lastIndex = regexp.lastIndex;
       return result;
+    }
+
+    /**
+     * Creates a clone of `set`.
+     *
+     * @private
+     * @param {Object} set The set to clone.
+     * @param {Function} cloneFunc The function to clone values.
+     * @param {boolean} [isDeep] Specify a deep clone.
+     * @returns {Object} Returns the cloned set.
+     */
+    function cloneSet(set, isDeep, cloneFunc) {
+      var array = isDeep ? cloneFunc(setToArray(set), CLONE_DEEP_FLAG) : setToArray(set);
+      return arrayReduce(array, addSetEntry, new set.constructor);
     }
 
     /**
@@ -11917,7 +11878,7 @@ module.exports = function (str) {
       return function(number, precision) {
         number = toNumber(number);
         precision = precision == null ? 0 : nativeMin(toInteger(precision), 292);
-        if (precision && nativeIsFinite(number)) {
+        if (precision) {
           // Shift with exponential notation to avoid floating-point issues.
           // See [MDN](https://mdn.io/round#Examples) for more details.
           var pair = (toString(number) + 'e').split('e'),
@@ -12119,11 +12080,10 @@ module.exports = function (str) {
       if (arrLength != othLength && !(isPartial && othLength > arrLength)) {
         return false;
       }
-      // Check that cyclic values are equal.
-      var arrStacked = stack.get(array);
-      var othStacked = stack.get(other);
-      if (arrStacked && othStacked) {
-        return arrStacked == other && othStacked == array;
+      // Assume cyclic values are equal.
+      var stacked = stack.get(array);
+      if (stacked && stack.get(other)) {
+        return stacked == other;
       }
       var index = -1,
           result = true,
@@ -12285,11 +12245,10 @@ module.exports = function (str) {
           return false;
         }
       }
-      // Check that cyclic values are equal.
-      var objStacked = stack.get(object);
-      var othStacked = stack.get(other);
-      if (objStacked && othStacked) {
-        return objStacked == other && othStacked == object;
+      // Assume cyclic values are equal.
+      var stacked = stack.get(object);
+      if (stacked && stack.get(other)) {
+        return stacked == other;
       }
       var result = true;
       stack.set(object, other);
@@ -12650,7 +12609,7 @@ module.exports = function (str) {
      */
     function initCloneArray(array) {
       var length = array.length,
-          result = new array.constructor(length);
+          result = array.constructor(length);
 
       // Add properties assigned by `RegExp#exec`.
       if (length && typeof array[0] == 'string' && hasOwnProperty.call(array, 'index')) {
@@ -12677,15 +12636,16 @@ module.exports = function (str) {
      * Initializes an object clone based on its `toStringTag`.
      *
      * **Note:** This function only supports cloning values with tags of
-     * `Boolean`, `Date`, `Error`, `Map`, `Number`, `RegExp`, `Set`, or `String`.
+     * `Boolean`, `Date`, `Error`, `Number`, `RegExp`, or `String`.
      *
      * @private
      * @param {Object} object The object to clone.
      * @param {string} tag The `toStringTag` of the object to clone.
+     * @param {Function} cloneFunc The function to clone values.
      * @param {boolean} [isDeep] Specify a deep clone.
      * @returns {Object} Returns the initialized clone.
      */
-    function initCloneByTag(object, tag, isDeep) {
+    function initCloneByTag(object, tag, cloneFunc, isDeep) {
       var Ctor = object.constructor;
       switch (tag) {
         case arrayBufferTag:
@@ -12704,7 +12664,7 @@ module.exports = function (str) {
           return cloneTypedArray(object, isDeep);
 
         case mapTag:
-          return new Ctor;
+          return cloneMap(object, isDeep, cloneFunc);
 
         case numberTag:
         case stringTag:
@@ -12714,7 +12674,7 @@ module.exports = function (str) {
           return cloneRegExp(object);
 
         case setTag:
-          return new Ctor;
+          return cloneSet(object, isDeep, cloneFunc);
 
         case symbolTag:
           return cloneSymbol(object);
@@ -12761,13 +12721,10 @@ module.exports = function (str) {
      * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
      */
     function isIndex(value, length) {
-      var type = typeof value;
       length = length == null ? MAX_SAFE_INTEGER : length;
-
       return !!length &&
-        (type == 'number' ||
-          (type != 'symbol' && reIsUint.test(value))) &&
-            (value > -1 && value % 1 == 0 && value < length);
+        (typeof value == 'number' || reIsUint.test(value)) &&
+        (value > -1 && value % 1 == 0 && value < length);
     }
 
     /**
@@ -13102,26 +13059,6 @@ module.exports = function (str) {
     }
 
     /**
-     * Gets the value at `key`, unless `key` is "__proto__" or "constructor".
-     *
-     * @private
-     * @param {Object} object The object to query.
-     * @param {string} key The key of the property to get.
-     * @returns {*} Returns the property value.
-     */
-    function safeGet(object, key) {
-      if (key === 'constructor' && typeof object[key] === 'function') {
-        return;
-      }
-
-      if (key == '__proto__') {
-        return;
-      }
-
-      return object[key];
-    }
-
-    /**
      * Sets metadata for `func`.
      *
      * **Note:** If this function becomes hot, i.e. is invoked a lot in a short
@@ -13237,11 +13174,11 @@ module.exports = function (str) {
      */
     var stringToPath = memoizeCapped(function(string) {
       var result = [];
-      if (string.charCodeAt(0) === 46 /* . */) {
+      if (reLeadingDot.test(string)) {
         result.push('');
       }
-      string.replace(rePropName, function(match, number, quote, subString) {
-        result.push(quote ? subString.replace(reEscapeChar, '$1') : (number || match));
+      string.replace(rePropName, function(match, number, quote, string) {
+        result.push(quote ? string.replace(reEscapeChar, '$1') : (number || match));
       });
       return result;
     });
@@ -15670,10 +15607,6 @@ module.exports = function (str) {
      * // The `_.property` iteratee shorthand.
      * _.filter(users, 'active');
      * // => objects for ['barney']
-     *
-     * // Combining several predicates using `_.overEvery` or `_.overSome`.
-     * _.filter(users, _.overSome([{ 'age': 36 }, ['age', 40]]));
-     * // => objects for ['fred', 'barney']
      */
     function filter(collection, predicate) {
       var func = isArray(collection) ? arrayFilter : baseFilter;
@@ -16423,15 +16356,15 @@ module.exports = function (str) {
      * var users = [
      *   { 'user': 'fred',   'age': 48 },
      *   { 'user': 'barney', 'age': 36 },
-     *   { 'user': 'fred',   'age': 30 },
+     *   { 'user': 'fred',   'age': 40 },
      *   { 'user': 'barney', 'age': 34 }
      * ];
      *
      * _.sortBy(users, [function(o) { return o.user; }]);
-     * // => objects for [['barney', 36], ['barney', 34], ['fred', 48], ['fred', 30]]
+     * // => objects for [['barney', 36], ['barney', 34], ['fred', 48], ['fred', 40]]
      *
      * _.sortBy(users, ['user', 'age']);
-     * // => objects for [['barney', 34], ['barney', 36], ['fred', 30], ['fred', 48]]
+     * // => objects for [['barney', 34], ['barney', 36], ['fred', 40], ['fred', 48]]
      */
     var sortBy = baseRest(function(collection, iteratees) {
       if (collection == null) {
@@ -16853,11 +16786,9 @@ module.exports = function (str) {
       function remainingWait(time) {
         var timeSinceLastCall = time - lastCallTime,
             timeSinceLastInvoke = time - lastInvokeTime,
-            timeWaiting = wait - timeSinceLastCall;
+            result = wait - timeSinceLastCall;
 
-        return maxing
-          ? nativeMin(timeWaiting, maxWait - timeSinceLastInvoke)
-          : timeWaiting;
+        return maxing ? nativeMin(result, maxWait - timeSinceLastInvoke) : result;
       }
 
       function shouldInvoke(time) {
@@ -16918,7 +16849,6 @@ module.exports = function (str) {
           }
           if (maxing) {
             // Handle invocations in a tight loop.
-            clearTimeout(timerId);
             timerId = setTimeout(timerExpired, wait);
             return invokeFunc(lastCallTime);
           }
@@ -18975,7 +18905,7 @@ module.exports = function (str) {
       if (typeof value != 'string') {
         return value === 0 ? value : +value;
       }
-      value = baseTrim(value);
+      value = value.replace(reTrim, '');
       var isBinary = reIsBinary.test(value);
       return (isBinary || reIsOctal.test(value))
         ? freeParseInt(value.slice(2), isBinary ? 2 : 8)
@@ -19290,35 +19220,9 @@ module.exports = function (str) {
      * _.defaults({ 'a': 1 }, { 'b': 2 }, { 'a': 3 });
      * // => { 'a': 1, 'b': 2 }
      */
-    var defaults = baseRest(function(object, sources) {
-      object = Object(object);
-
-      var index = -1;
-      var length = sources.length;
-      var guard = length > 2 ? sources[2] : undefined;
-
-      if (guard && isIterateeCall(sources[0], sources[1], guard)) {
-        length = 1;
-      }
-
-      while (++index < length) {
-        var source = sources[index];
-        var props = keysIn(source);
-        var propsIndex = -1;
-        var propsLength = props.length;
-
-        while (++propsIndex < propsLength) {
-          var key = props[propsIndex];
-          var value = object[key];
-
-          if (value === undefined ||
-              (eq(value, objectProto[key]) && !hasOwnProperty.call(object, key))) {
-            object[key] = source[key];
-          }
-        }
-      }
-
-      return object;
+    var defaults = baseRest(function(args) {
+      args.push(undefined, customDefaultsAssignIn);
+      return apply(assignInWith, undefined, args);
     });
 
     /**
@@ -19715,11 +19619,6 @@ module.exports = function (str) {
      * // => { '1': 'c', '2': 'b' }
      */
     var invert = createInverter(function(result, value, key) {
-      if (value != null &&
-          typeof value.toString != 'function') {
-        value = nativeObjectToString.call(value);
-      }
-
       result[value] = key;
     }, constant(identity));
 
@@ -19750,11 +19649,6 @@ module.exports = function (str) {
      * // => { 'group1': ['a', 'c'], 'group2': ['b'] }
      */
     var invertBy = createInverter(function(result, value, key) {
-      if (value != null &&
-          typeof value.toString != 'function') {
-        value = nativeObjectToString.call(value);
-      }
-
       if (hasOwnProperty.call(result, value)) {
         result[value].push(key);
       } else {
@@ -21305,12 +21199,9 @@ module.exports = function (str) {
       , 'g');
 
       // Use a sourceURL for easier debugging.
-      // The sourceURL gets injected into the source that's eval-ed, so be careful
-      // to normalize all kinds of whitespace, so e.g. newlines (and unicode versions of it) can't sneak in
-      // and escape the comment, thus injecting code that gets evaled.
       var sourceURL = '//# sourceURL=' +
-        (hasOwnProperty.call(options, 'sourceURL')
-          ? (options.sourceURL + '').replace(/\s/g, ' ')
+        ('sourceURL' in options
+          ? options.sourceURL
           : ('lodash.templateSources[' + (++templateCounter) + ']')
         ) + '\n';
 
@@ -21343,16 +21234,10 @@ module.exports = function (str) {
 
       // If `variable` is not specified wrap a with-statement around the generated
       // code to add the data object to the top of the scope chain.
-      var variable = hasOwnProperty.call(options, 'variable') && options.variable;
+      var variable = options.variable;
       if (!variable) {
         source = 'with (obj) {\n' + source + '\n}\n';
       }
-      // Throw an error if a forbidden character was found in `variable`, to prevent
-      // potential command injection attacks.
-      else if (reForbiddenIdentifierChars.test(variable)) {
-        throw new Error(INVALID_TEMPL_VAR_ERROR_TEXT);
-      }
-
       // Cleanup code by stripping empty strings.
       source = (isEvaluating ? source.replace(reEmptyStringLeading, '') : source)
         .replace(reEmptyStringMiddle, '$1')
@@ -21466,7 +21351,7 @@ module.exports = function (str) {
     function trim(string, chars, guard) {
       string = toString(string);
       if (string && (guard || chars === undefined)) {
-        return baseTrim(string);
+        return string.replace(reTrim, '');
       }
       if (!string || !(chars = baseToString(chars))) {
         return string;
@@ -21501,7 +21386,7 @@ module.exports = function (str) {
     function trimEnd(string, chars, guard) {
       string = toString(string);
       if (string && (guard || chars === undefined)) {
-        return string.slice(0, trimmedEndIndex(string) + 1);
+        return string.replace(reTrimEnd, '');
       }
       if (!string || !(chars = baseToString(chars))) {
         return string;
@@ -22055,9 +21940,6 @@ module.exports = function (str) {
      * values against any array or object value, respectively. See `_.isEqual`
      * for a list of supported value comparisons.
      *
-     * **Note:** Multiple values can be checked by combining several matchers
-     * using `_.overSome`
-     *
      * @static
      * @memberOf _
      * @since 3.0.0
@@ -22073,10 +21955,6 @@ module.exports = function (str) {
      *
      * _.filter(objects, _.matches({ 'a': 4, 'c': 6 }));
      * // => [{ 'a': 4, 'b': 5, 'c': 6 }]
-     *
-     * // Checking for several possible values
-     * _.filter(objects, _.overSome([_.matches({ 'a': 1 }), _.matches({ 'a': 4 })]));
-     * // => [{ 'a': 1, 'b': 2, 'c': 3 }, { 'a': 4, 'b': 5, 'c': 6 }]
      */
     function matches(source) {
       return baseMatches(baseClone(source, CLONE_DEEP_FLAG));
@@ -22090,9 +21968,6 @@ module.exports = function (str) {
      * **Note:** Partial comparisons will match empty array and empty object
      * `srcValue` values against any array or object value, respectively. See
      * `_.isEqual` for a list of supported value comparisons.
-     *
-     * **Note:** Multiple values can be checked by combining several matchers
-     * using `_.overSome`
      *
      * @static
      * @memberOf _
@@ -22110,10 +21985,6 @@ module.exports = function (str) {
      *
      * _.find(objects, _.matchesProperty('a', 4));
      * // => { 'a': 4, 'b': 5, 'c': 6 }
-     *
-     * // Checking for several possible values
-     * _.filter(objects, _.overSome([_.matchesProperty('a', 1), _.matchesProperty('a', 4)]));
-     * // => [{ 'a': 1, 'b': 2, 'c': 3 }, { 'a': 4, 'b': 5, 'c': 6 }]
      */
     function matchesProperty(path, srcValue) {
       return baseMatchesProperty(path, baseClone(srcValue, CLONE_DEEP_FLAG));
@@ -22337,10 +22208,6 @@ module.exports = function (str) {
      * Creates a function that checks if **all** of the `predicates` return
      * truthy when invoked with the arguments it receives.
      *
-     * Following shorthands are possible for providing predicates.
-     * Pass an `Object` and it will be used as an parameter for `_.matches` to create the predicate.
-     * Pass an `Array` of parameters for `_.matchesProperty` and the predicate will be created using them.
-     *
      * @static
      * @memberOf _
      * @since 4.0.0
@@ -22367,10 +22234,6 @@ module.exports = function (str) {
      * Creates a function that checks if **any** of the `predicates` return
      * truthy when invoked with the arguments it receives.
      *
-     * Following shorthands are possible for providing predicates.
-     * Pass an `Object` and it will be used as an parameter for `_.matches` to create the predicate.
-     * Pass an `Array` of parameters for `_.matchesProperty` and the predicate will be created using them.
-     *
      * @static
      * @memberOf _
      * @since 4.0.0
@@ -22390,9 +22253,6 @@ module.exports = function (str) {
      *
      * func(NaN);
      * // => false
-     *
-     * var matchesFunc = _.overSome([{ 'a': 1 }, { 'a': 2 }])
-     * var matchesPropertyFunc = _.overSome([['a', 1], ['a', 2]])
      */
     var overSome = createOver(arraySome);
 
@@ -23579,11 +23439,10 @@ module.exports = function (str) {
     baseForOwn(LazyWrapper.prototype, function(func, methodName) {
       var lodashFunc = lodash[methodName];
       if (lodashFunc) {
-        var key = lodashFunc.name + '';
-        if (!hasOwnProperty.call(realNames, key)) {
-          realNames[key] = [];
-        }
-        realNames[key].push({ 'name': methodName, 'func': lodashFunc });
+        var key = (lodashFunc.name + ''),
+            names = realNames[key] || (realNames[key] = []);
+
+        names.push({ 'name': methodName, 'func': lodashFunc });
       }
     });
 
@@ -23647,7 +23506,7 @@ module.exports = function (str) {
   }
 }.call(this));
 
-}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],7:[function(require,module,exports){
 /*
  * Copyright (c) 2010 Arc90 Inc
@@ -26835,83 +26694,4 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],17:[function(require,module,exports){
-(function (setImmediate,clearImmediate){(function (){
-var nextTick = require('process/browser.js').nextTick;
-var apply = Function.prototype.apply;
-var slice = Array.prototype.slice;
-var immediateIds = {};
-var nextImmediateId = 0;
-
-// DOM APIs, for completeness
-
-exports.setTimeout = function() {
-  return new Timeout(apply.call(setTimeout, window, arguments), clearTimeout);
-};
-exports.setInterval = function() {
-  return new Timeout(apply.call(setInterval, window, arguments), clearInterval);
-};
-exports.clearTimeout =
-exports.clearInterval = function(timeout) { timeout.close(); };
-
-function Timeout(id, clearFn) {
-  this._id = id;
-  this._clearFn = clearFn;
-}
-Timeout.prototype.unref = Timeout.prototype.ref = function() {};
-Timeout.prototype.close = function() {
-  this._clearFn.call(window, this._id);
-};
-
-// Does not start the time, just sets up the members needed.
-exports.enroll = function(item, msecs) {
-  clearTimeout(item._idleTimeoutId);
-  item._idleTimeout = msecs;
-};
-
-exports.unenroll = function(item) {
-  clearTimeout(item._idleTimeoutId);
-  item._idleTimeout = -1;
-};
-
-exports._unrefActive = exports.active = function(item) {
-  clearTimeout(item._idleTimeoutId);
-
-  var msecs = item._idleTimeout;
-  if (msecs >= 0) {
-    item._idleTimeoutId = setTimeout(function onTimeout() {
-      if (item._onTimeout)
-        item._onTimeout();
-    }, msecs);
-  }
-};
-
-// That's not how node.js implements it but the exposed api is the same.
-exports.setImmediate = typeof setImmediate === "function" ? setImmediate : function(fn) {
-  var id = nextImmediateId++;
-  var args = arguments.length < 2 ? false : slice.call(arguments, 1);
-
-  immediateIds[id] = true;
-
-  nextTick(function onNextTick() {
-    if (immediateIds[id]) {
-      // fn.call() is faster so we optimize for the common use-case
-      // @see http://jsperf.com/call-apply-segu
-      if (args) {
-        fn.apply(null, args);
-      } else {
-        fn.call(null);
-      }
-      // Prevent ids from leaking
-      exports.clearImmediate(id);
-    }
-  });
-
-  return id;
-};
-
-exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate : function(id) {
-  delete immediateIds[id];
-};
-}).call(this)}).call(this,require("timers").setImmediate,require("timers").clearImmediate)
-},{"process/browser.js":16,"timers":17}]},{},[1]);
+},{}]},{},[1]);
