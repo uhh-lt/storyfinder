@@ -23,7 +23,8 @@ function saveChanges() {
 function restoreOptions() {
     // Get a value from the Chrome extension storage API.
     chrome.storage.sync.get({
-        server: "http://example.org"
+        // server: "http://example.org"
+        server: "http://ltdemos.informatik.uni-hamburg.de:8090"
     }, function(items) {
         // Set a value in a form.
         document.getElementById('server').value = items.server;
