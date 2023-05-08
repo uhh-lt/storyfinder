@@ -6,6 +6,9 @@ var Readability = require('readability-node').Readability,
     Delegate = require('dom-delegate');
 
 chrome.runtime.sendMessage({ type: 'onAttach' });
+
+console.log('contentscript injected')
+
 chrome.storage.sync.get({
     highlightEntities: false
 }, function (items) {
