@@ -24,7 +24,8 @@ var windowRectangle = {
 
 // LISTENER
 chrome.runtime.onInstalled.addListener(function () {
-    chrome.tabs.create({ url: installURL }, function () {});
+    // TODO stf: active this again
+    // chrome.tabs.create({ url: installURL }, function () {});
 });
 
 chrome.runtime.setUninstallURL(uninstallURL, function () {});
@@ -233,16 +234,35 @@ function saveRemote(url, data, callback) {
         userInitialized: false
     }, function (items) {
         if (items.userInitialized && (items.username === '' || items.password === '')) alert("Username or Password have not been set!");
+        // hack XMLHttpRequest not defined error?
+        // https://stackoverflow.com/questions/38393126/service-worker-and-ajax/38393563#38393563
+        // var oReq = new XMLHttpRequest(); 
+        // oReq.addEventListener("load", reqListener);
+        // oReq.open("PUT", url);
+        // oReq.setRequestHeader("Content-type", "application/json");
+        // oReq.setRequestHeader("Authorization", "Basic " + window.btoa(items.username + ":" + items.password));
 
-        var oReq = new XMLHttpRequest();
-        oReq.addEventListener("load", reqListener);
-        oReq.open("PUT", url);
-        oReq.setRequestHeader("Content-type", "application/json");
-        oReq.setRequestHeader("Authorization", "Basic " + window.btoa(items.username + ":" + items.password));
+        // console.log("store data:" + JSON.stringify(info, null, 2));
 
-        console.log("store data:" + JSON.stringify(info, null, 2));
+        // oReq.send(JSON.stringify(data));
 
-        oReq.send(JSON.stringify(data));
+        fetch(url, {  
+            method: 'put',  
+            headers: {  
+              "Content-type": "application/json; charset=UTF-8",  
+              "Authorization": "Basic " + btoa(items.username + ":" + items.password)
+            },  
+            // credentials: 'include',
+            body: JSON.stringify(data)
+          })
+        //   .then(JSON.parse)  
+          .then(function (data) {  
+            console.log('Request succeeded with JSON response', data);  
+          })  
+          .catch(function (error) {  
+            console.log('Request failed', error);  
+          });
+
     });
 }
 
@@ -287,7 +307,8 @@ function setArticleHelper(article, tab) {
         if (items.server === "") return;
 
         current_parsing_job_urls.add(tab.url);
-        chrome.browserAction.setIcon({ path: "icon-red-48.png", tabId: tab.id });
+        // chrome.browserAction.setIcon({ path: "icon-red-48.png", tabId: tab.id });
+        chrome.action.setIcon({ path: "icon-red-48.png", tabId: tab.id });
 
         async.series([function (next) {
             // favicon holen
@@ -378,6 +399,7 @@ function onAttach() {
                 closePopup();
             } else {
                 console.log("TAB:" + tabs[0].url);
+                // TODO stf: error receiving end does not exist
                 chrome.tabs.sendMessage(tabs[0].id, { type: "getArticle", data: {} });
             }
         });

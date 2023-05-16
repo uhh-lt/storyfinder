@@ -14,34 +14,34 @@ buttonParse.addEventListener("click", function() {
     chrome.storage.sync.get({
         userInitialized: false,
         serverInitialized: false
-    }, function (items) {
+    }, async function (items) {
         if (!items.serverInitialized && !items.userInitialized)  {
             alert("To use this function, please provide a Server URL in Extensions > Storyfinder > Options and log into your account.");
         } else {
             alert("send force-parse-site")
-            chrome.runtime.sendMessage({type:"force-parse-site"});
-            window.close();
+            await chrome.runtime.sendMessage({type:"force-parse-site"});
+            // window.close();
         }
     });
 });
 
-buttonSidebar.addEventListener("click", function() {
+buttonSidebar.addEventListener("click", async function() {
     alert("send toggle-sidebar")
-    chrome.runtime.sendMessage({type:"toggle-sidebar"});
+    await chrome.runtime.sendMessage({type:"toggle-sidebar"});
     window.close();
 });
 
-buttonReadability.addEventListener("click", function() {
+buttonReadability.addEventListener("click", async function() {
     alert("send do-readability")
-    chrome.runtime.sendMessage({type:"do-readability"});
-    window.close();
+    await chrome.runtime.sendMessage({type:"do-readability"});
+    // window.close();
 });
 
 checkboxHighlight.addEventListener("change", function() {
     alert("change event fired")
     chrome.storage.sync.set({
         highlightEntities: checkboxHighlight.checked
-    }, function() {
-        chrome.runtime.sendMessage({type:"highlight-changed", checked: checkboxHighlight.checked});
+    }, async function() {
+        await chrome.runtime.sendMessage({type:"highlight-changed", checked: checkboxHighlight.checked});
     });
 });

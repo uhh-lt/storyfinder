@@ -53,6 +53,7 @@
     }
   ],
   "action": {
+    "default_icon": "icon-48.png",
     "default_popup": "menu.html"
   },
   "content_security_policy": {}
