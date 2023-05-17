@@ -10,7 +10,7 @@
 # Build the plugin
 
 ## Automatic build
-this will automatically build the files: backgroundscript.js, contentscript.js, contentstyle.css
+this will automatically build the files: serive_worker.js, content_script.js, content_style.css
 
 ```
 $ cd /storyfinder/plugin
@@ -19,26 +19,26 @@ $ npm run build
 
 ## Manual build
 
-### Build the contentscript
+### Build the content_script
 
 ```
-$ cd /storyfinder/plugin/src/js-contentscript
+$ cd /storyfinder/plugin/src/js-content_script
 $ npm install
-$ browserify index.js -t babelify -t [hbsfy -t] -o ../contentscript.js
+$ browserify index.js -t babelify -t [hbsfy -t] -o ../content_script.js
 ```
 
 ### Build the backgroundscript
 
 ```
-$ cd /storyfinder/plugin/src/js-backgroundscript
+$ cd /storyfinder/plugin/src/js-service_worker
 $ npm install
-$ browserify index.js -t babelify -t [hbsfy -t] -o ../backgroundscript.js
+$ browserify index.js -t babelify -t [hbsfy -t] -o ../service_worker.js
 ```
 
 ### Build the contentstyle
 
 ```
-$ cd /storyfinder/plugin/src/js-contentstyle
+$ cd /storyfinder/plugin/src/js-content_style
 $ npm install
 $ grunt less
 ```
