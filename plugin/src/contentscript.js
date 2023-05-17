@@ -107,7 +107,7 @@ function Storyfinder() {
         //console.log('document before readability:' + JSON.stringify(documentClone, null, 2))
         var article2 = new Readability(uri, documentClone).parse();
         //console.log('document after readability:' + JSON.stringify(article2, null, 2))
-        var html = '<html><head><meta charset="utf-8"><title>' + article2.title + '</title></head><body><h1>' + article2.title + '</h1><h4>' + article2.byline + '</h4><p>Length:' + article2.length + '</p><h5>Excerpt</h5><p>' + article2.excerpt + '</p>' + article2.content + '</body></html>';
+        var html = '<html><head><meta charset="utf-8"><title>' + article2.title + '</title></head><body><h1>' + article2.title + '</h1><h4>' + ((article2.byline != null) ? article2.byline : '') + '</h4><p>Length:' + article2.length + '</p><h5>Excerpt</h5><p>' + article2.excerpt + '</p>' + article2.content + '</body></html>';
         // console.log('sending html to chrome:' + JSON.stringify(html, null, 2))
         var blob = new Blob([html], { type: 'text/html' });
         var url = window.URL.createObjectURL(blob);
