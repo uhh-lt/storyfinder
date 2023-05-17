@@ -255,7 +255,15 @@ function saveRemote(url, data, callback) {
         password: '',
         userInitialized: false
     }, function (items) {
-        if (items.userInitialized && (items.username === '' || items.password === '')) alert("Username or Password have not been set!");
+        if (items.userInitialized && (items.username === '' || items.password === '')){
+            alert("Username or Password have not been set!");
+            return;
+        }
+        if(!items.userInitialized || items.username === '' || items.password === ''){
+            alert("Username or Password have not been set properly! Try logout and log back in.");
+            return;
+        }
+            
         // hack XMLHttpRequest not defined error?
         // https://stackoverflow.com/questions/38393126/service-worker-and-ajax/38393563#38393563
         // var oReq = new XMLHttpRequest(); 
@@ -346,7 +354,8 @@ function setArticleHelper(article, tab) {
                 if (err) {
                     next(err);
                     current_parsing_job_urls.delete(tab.url);
-                    chrome.browserAction.setIcon({ path: "icon-48.png", tabId: tab.id });
+                    chrome.action.setIcon({ path: "icon-48.png", tabId: tab.id });
+                    // chrome.browserAction.setIcon({ path: "icon-48.png", tabId: tab.id });
                     return;
                 }
 
@@ -376,7 +385,8 @@ function setArticleHelper(article, tab) {
 
                 console.log(response);
                 current_parsing_job_urls.delete(tab.url);
-                chrome.browserAction.setIcon({ path: "icon-48.png", tabId: tab.id });
+                chrome.action.setIcon({ path: "icon-48.png", tabId: tab.id });
+                //chrome.browserAction.setIcon({ path: "icon-48.png", tabId: tab.id });
                 next();
             });
         }, function (next) {
