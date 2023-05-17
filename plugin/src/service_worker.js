@@ -333,10 +333,16 @@ function setArticleHelper(article, tab) {
         server: '',
         serverInitialized: false
     }, function (items) {
-        // TODO stf: replace alert -> not allowed in Mv3
-        if (items.serverInitialized && items.server === '') alert("Server is not defined!");
+        // 
+        if (items.serverInitialized && items.server === '') {
+            alert("Server is not defined!");
+            return;
+        }
 
-        if (items.server === "") return;
+        if (items.server === '') {
+            alert("Server is not defined!");
+            return;
+        }
 
         current_parsing_job_urls.add(tab.url);
         // chrome.browserAction.setIcon({ path: "icon-red-48.png", tabId: tab.id });
