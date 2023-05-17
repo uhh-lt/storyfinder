@@ -22,10 +22,28 @@ var windowRectangle = {
     left: 0
 };
 
+function alert(msg) {
+
+    var options = {
+        type: 'basic',
+        title: "Notification from StoryFinder",
+        message: msg,
+        //contextMessage: msg,
+        eventTime: Date.now(),
+        requireInteraction: false,
+        silent: false,
+        iconUrl: "icon-500.png"
+        };
+    
+    chrome.notifications.create('alert', options, () => {
+        console.log(`Notification sent: '${msg}'`)
+    });
+}
+
 // LISTENER
 chrome.runtime.onInstalled.addListener(function () {
-    // TODO stf: active this again
     // chrome.tabs.create({ url: installURL }, function () {});
+    alert(`StoryFinder extension installed. Visit '${installURL}' for more details.`)
 });
 
 chrome.runtime.setUninstallURL(uninstallURL, function () {});
@@ -72,7 +90,7 @@ function toggleSidebar() {
 }
 
 chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
-    console.log("msg: " + JSON.stringify(msg, null, 2))
+    console.log(`msg: ${JSON.stringify(msg, null, 2)}`)
     switch (msg.type) {
         case "setArticle":
             setArticle(msg.data, msg.tab);
@@ -107,7 +125,7 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
             createReadabilityTab(msg.htmlbloburl);
             break;
         case "highlight-changed":
-            // delegate message from menu to contentscript to change highlighting!
+            // delegate message from menu to content_script to change highlighting!
             chrome.tabs.query({ active: true, windowId: mainWindowId }, function (tabs) {
                 chrome.tabs.sendMessage(tabs[0].id, { type: 'toggle-highlight', checked: msg.checked });
             });
@@ -260,11 +278,12 @@ function saveRemote(url, data, callback) {
             body: JSON.stringify(data)
           })
         //   .then(JSON.parse)  
-          .then(function (data) {  
-            console.log('Request succeeded with JSON response', data);  
-          })  
-          .catch(function (error) {  
-            console.log('Request failed', error);  
+          .then(function (data) {
+            console.log(`Request succeeded with JSON response: ${JSON.stringify(data, null, 2)}`);
+            console.log(data)
+          })
+          .catch(function (error) {
+            console.log('Request failed', error);
           });
 
     });
@@ -306,6 +325,7 @@ function setArticleHelper(article, tab) {
         server: '',
         serverInitialized: false
     }, function (items) {
+        // TODO stf: replace alert -> not allowed in Mv3
         if (items.serverInitialized && items.server === '') alert("Server is not defined!");
 
         if (items.server === "") return;
@@ -387,24 +407,28 @@ function setArticleHelper(article, tab) {
 }
 
 function onAttach() {
-    if (!isPopupOpen()) return;
+    if (!isPopupOpen()) 
+        return;
 
     chrome.storage.sync.get({
         server: '',
         serverInitialized: false
     }, function (items) {
-        if (items.serverInitialized && items.server === '') alert("Server is not defined!");
+        if (items.serverInitialized && items.server === '') 
+            alert('Server is not defined!');
 
-        if (items.server === "") return;
+        if (items.server === '') 
+            return;
 
-        chrome.tabs.query({ active: true, windowId: mainWindowId }, function (tabs) {
+        chrome.tabs.query({ active: true, windowId: mainWindowId }, async function (tabs) {
             mainURL = tabs[0].url;
             if (tabs[0].url.replace(/\/$/g, '').substr(0, items.server.replace(/\/$/g, '').length) === items.server.replace(/\/$/g, '')) {
                 closePopup();
             } else {
-                console.log("TAB:" + tabs[0].url);
+                console.log(`MAINURL: '${mainURL}'\n TAB: url='${tabs[0].url}'\n id='${tabs[0].id}'`);
                 // TODO stf: error receiving end does not exist
-                chrome.tabs.sendMessage(tabs[0].id, { type: "getArticle", data: {} });
+                var result = await chrome.tabs.sendMessage(tabs[0].id, { type: "getArticle", data: { } });
+                console.log(result)
             }
         });
     });

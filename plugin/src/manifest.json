@@ -19,10 +19,10 @@
         "https://*/*"
       ],
       "css": [
-        "contentstyle.css"
+        "content_style.css"
       ],
       "js": [
-        "contentscript.js"
+        "content_script.js"
       ]
     }
   ],
@@ -35,7 +35,8 @@
     "storage",
     "webRequest",
     "contextMenus",
-    "webNavigation"
+    "webNavigation",
+    "notifications"
   ],
   "host_permissions": [
     "http://*/*",
