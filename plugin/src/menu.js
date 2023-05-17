@@ -20,21 +20,19 @@ buttonParse.addEventListener("click", function() {
         } else {
             alert("send force-parse-site")
             await chrome.runtime.sendMessage({type:"force-parse-site"});
-            // window.close();
+            window.close();
         }
     });
 });
 
 buttonSidebar.addEventListener("click", async function() {
-    alert("send toggle-sidebar")
     await chrome.runtime.sendMessage({type:"toggle-sidebar"});
     window.close();
 });
 
 buttonReadability.addEventListener("click", async function() {
-    alert("send do-readability")
     await chrome.runtime.sendMessage({type:"do-readability"});
-    // window.close();
+    window.close();
 });
 
 checkboxHighlight.addEventListener("change", function() {

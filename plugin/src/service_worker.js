@@ -104,7 +104,7 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
             });
             break;
         case "create-readability-tab":
-            createReadabilityTab(msg.html);
+            createReadabilityTab(msg.htmlbloburl);
             break;
         case "highlight-changed":
             // delegate message from menu to contentscript to change highlighting!
@@ -147,13 +147,15 @@ chrome.windows.onRemoved.addListener(function (windowID) {
 });
 
 chrome.windows.onFocusChanged.addListener(function (windowId) {
-    if (windowId !== -1) {
+    if (windowId >= 0) {
         chrome.windows.get(windowId, { populate: true, windowTypes: ['normal'] }, function (window) {
             checkForErrorAndExecuteCallback(window, function (window) {
                 if (window !== null && window !== undefined) {
+                    // console.log(`${window.id}, ${mainWindowId}`)
                     mainWindowId = window.id;
                     chrome.tabs.query({ windowId: window.id, active: true }, function (tabs) {
                         if (tabs[0].url !== mainURL) {
+                            // console.log(`${tabs[0].url}, ${mainURL}`)
                             mainURL = tabs[0].url;
                             onAttach();
                         }
@@ -168,9 +170,11 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
     chrome.windows.get(activeInfo.windowId, { populate: true, windowTypes: ['normal'] }, function (window) {
         checkForErrorAndExecuteCallback(window, function (window) {
             if (window !== null && window !== undefined) {
+                // console.log(`${window.id}, ${mainWindowId}`)
                 mainWindowId = window.id;
                 chrome.tabs.get(activeInfo.tabId, function (tab) {
                     if (tab.url !== mainURL) {
+                        // console.log(`${tab.url}, ${mainURL}`)
                         mainURL = tab.url;
                         onAttach();
                     }
@@ -495,21 +499,16 @@ function isPopupOpen() {
     return popupWindowId !== null;
 }
 
-function createReadabilityTab(html) {
-    var blob = new Blob([html], { type: 'text/html' });
-    var url = window.URL.createObjectURL(blob);
-
-    /*
-    chrome.windows.create({url: url, focused: true, type: "popup"}, function(window) {
-    });
-    */
-
-    chrome.tabs.create({ url: url, active: true }, function (tab) {});
+function createReadabilityTab(htmlbloburl) {    
+    // console.log('create new window')
+    // chrome.windows.create({url: htmlbloburl, focused: true, type: "popup"}, function(window) { });
+    // console.log('create new tab')
+    chrome.tabs.create({ url: htmlbloburl, active: true }, function (tab) {});
 }
 
 function checkForErrorAndExecuteCallback(parameter, callback) {
     if (chrome.runtime.lastError) {
-        console.log(chrome.runtime.lastError.message);
+        console.error(chrome.runtime.lastError.message);
     } else {
         callback(parameter);
     }

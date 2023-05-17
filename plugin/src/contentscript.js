@@ -28,9 +28,9 @@ function Storyfinder() {
         openDelay = 150;
 
     function initializePlugin() {
-        chrome.runtime.onMessage.addListener(communication);
 
         function communication(message) {
+            console.log('received message: ' + JSON.stringify(message, null, 2))
             switch (message.type) {
                 case 'getArticle':
                     onGetArticle(message.data, message.tab);
@@ -88,9 +88,12 @@ function Storyfinder() {
 
             chrome.runtime.sendMessage({ type: 'setArticle', tab: tab, data: article });
         }
+
+        // register listener
+        chrome.runtime.onMessage.addListener(communication);
     }
 
-    function readReadability() {
+    async function readReadability() {
         var loc = document.location;
         var uri = {
             spec: loc.href,
@@ -101,11 +104,16 @@ function Storyfinder() {
         };
 
         var documentClone = document.cloneNode(true);
+        //console.log('document before readability:' + JSON.stringify(documentClone, null, 2))
         var article2 = new Readability(uri, documentClone).parse();
-
+        //console.log('document after readability:' + JSON.stringify(article2, null, 2))
         var html = '<html><head><meta charset="utf-8"><title>' + article2.title + '</title></head><body><h1>' + article2.title + '</h1><h4>' + article2.byline + '</h4><p>Length:' + article2.length + '</p><h5>Excerpt</h5><p>' + article2.excerpt + '</p>' + article2.content + '</body></html>';
-
-        chrome.runtime.sendMessage({ type: 'create-readability-tab', html: html });
+        // console.log('sending html to chrome:' + JSON.stringify(html, null, 2))
+        var blob = new Blob([html], { type: 'text/html' });
+        var url = window.URL.createObjectURL(blob);
+        
+        console.log('sending url to chrome:' + url)
+        await chrome.runtime.sendMessage({ type: 'create-readability-tab', htmlbloburl: url });
     }
 
     /*
