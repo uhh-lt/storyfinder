@@ -72,7 +72,7 @@ function Storyfinder() {
             }
         }
 
-        function onGetArticle(data, tab) {
+        async function onGetArticle(data, tab) {
             if (_.isNull(article)) {
                 if (!getArticle()) {
                     article = {
@@ -86,7 +86,7 @@ function Storyfinder() {
                 article.isRelevant = data.isRelevant;
             }
 
-            chrome.runtime.sendMessage({ type: 'setArticle', tab: tab, data: article });
+            await chrome.runtime.sendMessage({ type: 'setArticle', tab: tab, data: article });
         }
 
         // register listener
@@ -313,11 +313,11 @@ function Storyfinder() {
         });
     }
 
-    function openNode() {
+    async function openNode() {
         if (nodeToOpen !== null) {
             console.log('Opening ' + nodeToOpen);
 
-            chrome.runtime.sendMessage({
+            await chrome.runtime.sendMessage({
                 type: 'emit-sidebar-event',
                 data: {
                     event: 'open',
@@ -327,8 +327,8 @@ function Storyfinder() {
         }
     }
 
-    function setHighlight(id, status) {
-        chrome.runtime.sendMessage({
+    async function setHighlight(id, status) {
+        await chrome.runtime.sendMessage({
             type: 'emit-sidebar-event',
             data: {
                 event: status ? 'highlight' : 'unhighlight',

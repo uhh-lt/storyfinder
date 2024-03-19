@@ -355,12 +355,16 @@ function setArticleHelper(article, tab) {
         }, function (next) {
             // seite prüfen: relevant oder nicht relevant
             // seite parsen
-            saveRemote(items.server.replace(/\/$/, '') + '/Sites', data, function (err, response) {
+            saveRemote(items.server.replace(/\/$/, '') + '/Sites', data, async function (err, response) {
                 console.log(err, response);
+                
+                chrome.action.setIcon({ path: "icon-48.png", tabId: tab.id });
+                //chrome.browserAction.setIcon({ path: "icon-48.png", tabId: tab.id });
+
                 if (err) {
                     next(err);
                     current_parsing_job_urls.delete(tab.url);
-                    chrome.action.setIcon({ path: "icon-48.png", tabId: tab.id });
+                    // chrome.action.setIcon({ path: "icon-48.png", tabId: tab.id });
                     // chrome.browserAction.setIcon({ path: "icon-48.png", tabId: tab.id });
                     return;
                 }
@@ -378,21 +382,19 @@ function setArticleHelper(article, tab) {
                     siteId = response.Site.id;
                     articleId = response.Site.Article.id;
 
-                    chrome.tabs.sendMessage(tab.id, { type: "setEntities", data: response });
+                    await chrome.tabs.sendMessage(tab.id, { type: "setEntities", data: response });
                 }
 
                 if (bIsNew && !bIsRelevant) {
                     chrome.windows.get(popupWindowId, { populate: true }, function (popup) {
-                        checkForErrorAndExecuteCallback(popup, function (popup) {
-                            chrome.tabs.sendMessage(popup.tabs[0].id, { type: 'msg', data: { action: 'not-relevant', data: data.Site } });
+                        checkForErrorAndExecuteCallback(popup, async function (popup) {
+                            await chrome.tabs.sendMessage(popup.tabs[0].id, { type: 'msg', data: { action: 'not-relevant', data: data.Site } });
                         });
                     });
                 }
 
                 console.log(response);
                 current_parsing_job_urls.delete(tab.url);
-                chrome.action.setIcon({ path: "icon-48.png", tabId: tab.id });
-                //chrome.browserAction.setIcon({ path: "icon-48.png", tabId: tab.id });
                 next();
             });
         }, function (next) {
@@ -453,14 +455,14 @@ function onAttach() {
 function parseSite(url) {
     console.log('Parsing site...', url);
 
-    chrome.tabs.query({ active: true, windowId: mainWindowId }, function (tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, { type: "getArticle", tab: tabs[0].id, data: { isRelevant: true } });
+    chrome.tabs.query({ active: true, windowId: mainWindowId }, async function (tabs) {
+        await chrome.tabs.sendMessage(tabs[0].id, { type: "getArticle", tab: tabs[0].id, data: { isRelevant: true } });
     });
 }
 
 function addToHighlighting(entities) {
-    chrome.tabs.query({ active: true, windowId: mainWindowId }, function (tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, { type: "addEntities", data: entities });
+    chrome.tabs.query({ active: true, windowId: mainWindowId }, async function (tabs) {
+        await chrome.tabs.sendMessage(tabs[0].id, { type: "addEntities", data: entities });
     });
 }
 
@@ -481,8 +483,8 @@ function captureTab2(p, callback) {
         }
     });
 
-    chrome.tabs.query({ active: true, windowId: mainWindowId }, function (tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, { type: 'take-screenshot', data: rectangle });
+    chrome.tabs.query({ active: true, windowId: mainWindowId }, async function (tabs) {
+        await chrome.tabs.sendMessage(tabs[0].id, { type: 'take-screenshot', data: rectangle });
     });
 }
 
@@ -496,8 +498,8 @@ function captureTab(p, callback) {
     });
 
     chrome.tabs.captureVisibleTab(function (screenshotUrl) {
-        chrome.tabs.query({ active: true, windowId: mainWindowId }, function (tabs) {
-            chrome.tabs.sendMessage(tabs[0].id, { type: 'take-screenshot', data: screenshotUrl });
+        chrome.tabs.query({ active: true, windowId: mainWindowId }, async function (tabs) {
+            await chrome.tabs.sendMessage(tabs[0].id, { type: 'take-screenshot', data: screenshotUrl });
         });
     });
 }
