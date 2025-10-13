@@ -160,7 +160,7 @@ module.exports = function(db){
 			EntitySentence.add,
 			Relation.add,
 			//RelationSentence.add,
-			Ngram.add
+			//Ngram.add
 		], callback);
 	}
 	
@@ -290,8 +290,10 @@ module.exports = function(db){
 					is_deleted: 0
 				}
 			}, (err, insertId) => {
-				if(err)return setImmediate(() => next(err));
-				
+				if(err){
+					console.log('Error in article.js');
+					return setImmediate(() => next(err));
+				}
 				memo.data.Article.id = insertId;
 				memo.data.Article.site_id = memo.data.Site.id;
 				

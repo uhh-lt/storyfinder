@@ -1,0 +1,16 @@
+/* Keep the legacy graph comfortable when embedded in an iframe */
+html, body { height: 100%; }
+body { overflow: hidden; }
+
+/* Hide or soften elements that don't make sense in embed mode */
+:root[data-embed="1"] .graph-title a[href="/logout"] {
+  pointer-events: none;
+  opacity: .5;
+  filter: grayscale(100%);
+}
+
+/* Optional: avoid accidental page scrolls within details panes */
+:root[data-embed="1"] .node-details,
+:root[data-embed="1"] .relation-details {
+  overscroll-behavior: contain;
+}

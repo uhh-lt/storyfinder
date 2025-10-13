@@ -2,9 +2,11 @@ var _ = require('lodash')
 	, async = require('async')
 	, fs = require('fs')
 	, ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn
-	, evallog = new (require('../libs/evallog.js'))()
+	, createLogger = require('../utils/logger')
 	;
 	
+const logger = createLogger('GraphsController');
+
 module.exports = function(connection, app, passport){
 	var User = new (require('../models/User.js'))(connection)
 		, Site = new (require('../models/Site.js'))(connection)
@@ -27,7 +29,7 @@ module.exports = function(connection, app, passport){
 		], 
 		(err, result) => {
 			if(err){
-				console.log(err);
+				logger.error('graph query failed', err);
 				return setImmediate(() => res.sendStatus(500));
 			}
 			
@@ -40,7 +42,7 @@ module.exports = function(connection, app, passport){
 			, siteId = parseInt(req.params.siteId)
 			;
 			
-		evallog.log('Open graph ' + req.params.siteId);
+		logger.info('graph fetch requested', { siteId: req.params.siteId });
 
 		async.waterfall([
 			(next) => {
@@ -54,7 +56,7 @@ module.exports = function(connection, app, passport){
 		], 
 		(err, result) => {
 			if(err){
-				console.log(err);
+				logger.error('graph query failed', err);
 				return setImmediate(() => res.sendStatus(500));
 			}
 			
@@ -67,7 +69,7 @@ module.exports = function(connection, app, passport){
 			, siteIds = _.map(req.params.siteIds.split(';'), siteId => parseInt(siteId))
 			;
 
-		evallog.log('Open group ' + siteIds.join(';'));
+		logger.info('graph group requested', { siteIds });
 
 		async.waterfall([
 			(next) => {
@@ -81,7 +83,7 @@ module.exports = function(connection, app, passport){
 		], 
 		(err, result) => {
 			if(err){
-				console.log(err);
+				logger.error('graph query failed', err);
 				return setImmediate(() => res.sendStatus(500));
 			}
 			
@@ -191,3 +193,6 @@ module.exports = function(connection, app, passport){
 			);
 		}
 }
+
+
+

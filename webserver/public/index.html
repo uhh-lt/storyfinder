@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <title>StoryFinder - Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">StoryFinder</div>
+      <nav class="tabs" role="tablist" aria-label="Panel Tabs">
+       <a href="#/graph" class="tab" data-tab="graph" title="Graph">
+         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+           <circle cx="6" cy="12" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="18" cy="18" r="2"/>
+           <line x1="8" y1="12" x2="16" y2="6"/><line x1="8" y1="12" x2="16" y2="18"/>
+         </svg>
+         <span class="tab-label">Graph</span>
+       </a>
+     
+       <a href="#/chat" class="tab" data-tab="chat" title="Chat">
+         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+         </svg>
+         <span class="tab-label">Chat</span>
+       </a>
+     
+       <a class="tab tab-right" id="btn-open-tab" style="display:none" title="Open in tab">
+         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+           <path d="M14 3h7v7"/><path d="M21 3l-9 9"/><path d="M5 5h5v5H5z"/><path d="M5 14h5v5H5z"/>
+         </svg>
+         <span class="tab-label">Open</span>
+       </a>
+     
+       <a href="#/login" class="tab" id="tab-login" data-tab="login" title="Login">
+         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+           <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+           <polyline points="10 17 15 12 10 7"/>
+           <line x1="15" y1="12" x2="3" y2="12"/>
+         </svg>
+         <span class="tab-label">Login</span>
+       </a>
+     
+       <span id="user-pill" class="user-pill" style="display:none"></span>
+     
+       <a href="#/login" class="tab" id="btn-logout" style="display:none" title="Logout">
+         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+           <polyline points="16 17 21 12 16 7"/>
+           <line x1="21" y1="12" x2="9" y2="12"/>
+         </svg>
+         <span class="tab-label">Logout</span>
+       </a>
+      </nav>
+  </header>
+
+  <main id="app" class="app-main" aria-live="polite"></main>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

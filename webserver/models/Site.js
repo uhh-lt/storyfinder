@@ -153,28 +153,33 @@ module.exports = function(db){
 		if(arguments.length > 4)
 			options = _.defaults(arguments[4], options);
 			
-		datasource.find('first', {
-			fields: ['id', 'url', 'host', 'title', 'favicon', 'last_visited', 'primary_color'],
-			conditions: {
-				url: url,
-				collection_id: collectionId
-			},
-			order: 'created DESC'
-		}, (err, site) => {
+    datasource.find('first', {
+        fields: ['id', 'url', 'host', 'title', 'favicon', 'last_visited', 'primary_color'],
+        conditions: {
+            url: url,
+            collection_id: collectionId,
+            is_deleted: 0
+        },
+        order: 'created DESC'
+    }, (err, site) => {
 			if(err)return setImmediate(() => callback(err));
 			if(_.isEmpty(site))return setImmediate(() => callback(null, null));
 						
 			async.waterfall([
 				(next) => setImmediate(() => next(null, site)),
 				(site, next) => {
-					Article.findBySite(site.id, (err, article) => {
-						if(err)return setImmediate(() => next(err));
-						
-						site.Article = article;
-						setImmediate(() => next(null, site));
-					});
-				},
-				(site, next) => { //Calculate cosine distance between the stored text and the new text
+                Article.findBySite(site.id, (err, article) => {
+                    if(err)return setImmediate(() => next(err));
+                    // If no active article is found (e.g., previous soft-delete),
+                    // treat as new site to force fresh ingest
+                    if(_.isEmpty(article))
+                        return setImmediate(() => callback(null, null));
+
+                    site.Article = article;
+                    setImmediate(() => next(null, site));
+                });
+            },
+            (site, next) => { //Calculate cosine distance between the stored text and the new text
 					var tokens1 = {}
 						, tokens2 = {}
 						;
@@ -217,6 +222,176 @@ module.exports = function(db){
 	}
 	
 	this.findByUrl = findByUrl;
+
+	function softdeleteCascade(siteId, userId, callback){
+		var DatasourceMysql = require('../datasources/mysql.js');
+		var dsArticles = new DatasourceMysql(db, 'Article', 'articles');
+		var dsSentences = new DatasourceMysql(db, 'Sentence', 'sentences');
+		var dsAE = new DatasourceMysql(db, 'ArticleEntity', 'articles_entities');
+		var dsES = new DatasourceMysql(db, 'EntitySentence', 'entities_sentences');
+		var dsRS = new DatasourceMysql(db, 'RelationSentence', 'relations_sentences');
+		var dsVisits = new DatasourceMysql(db, 'Visit', 'visits');
+		var dsEntities = new DatasourceMysql(db, 'Entity', 'entities');
+		var dsRelations = new DatasourceMysql(db, 'Relation', 'relations');
+		var dsRelationtypes = new DatasourceMysql(db, 'Relationtype', 'relationtypes');
+
+		async.waterfall([
+			(next) => datasource.startUpdate(userId, next),
+			(changelogId, next) => { // soft-delete site itself
+				datasource.update(changelogId, {
+					values: { is_deleted: 1 },
+					conditions: { id: siteId },
+					limit: 1
+				}, (err) => next(err, changelogId));
+			},
+			(changelogId, next) => { // gather article ids for site
+				dsArticles.find('list', {
+					fields: ['id', 'id'],
+					conditions: { site_id: siteId, is_deleted: 0 }
+				}, (err, articleIds) => {
+					if(err) return next(err);
+					next(null, changelogId, _.keys(articleIds));
+				});
+			},
+			(changelogId, articleIds, next) => { // soft-delete articles
+				if(_.isEmpty(articleIds)) return next(null, changelogId, [], []);
+				dsArticles.update(changelogId, {
+					values: { is_deleted: 1 },
+					conditions: { site_id: siteId }
+				}, (err) => next(err, changelogId, articleIds));
+			},
+			(changelogId, articleIds, next) => { // gather sentence ids
+				dsSentences.find('list', {
+					fields: ['id', 'id'],
+					conditions: { article_id: articleIds, is_deleted: 0 }
+				}, (err, sentenceIds) => {
+					if(err) return next(err);
+					next(null, changelogId, articleIds, _.keys(sentenceIds));
+				});
+			},
+			(changelogId, articleIds, sentenceIds, next) => { // soft-delete sentences
+				if(_.isEmpty(sentenceIds)) return next(null, changelogId, articleIds, sentenceIds);
+				dsSentences.update(changelogId, {
+					values: { is_deleted: 1 },
+					conditions: { id: sentenceIds }
+				}, (err) => next(err, changelogId, articleIds, sentenceIds));
+			},
+			(changelogId, articleIds, sentenceIds, next) => { // soft-delete article-entity relations
+				if(_.isEmpty(articleIds)) return next(null, changelogId, articleIds, sentenceIds);
+				dsAE.update(changelogId, {
+					values: { is_deleted: 1 },
+					conditions: { article_id: articleIds }
+				}, (err) => next(err, changelogId, articleIds, sentenceIds));
+			},
+			(changelogId, articleIds, sentenceIds, next) => { // soft-delete entity-sentence relations
+				if(_.isEmpty(sentenceIds)) return next(null, changelogId, articleIds, sentenceIds);
+				dsES.update(changelogId, {
+					values: { is_deleted: 1 },
+					conditions: { sentence_id: sentenceIds }
+				}, (err) => next(err, changelogId, articleIds, sentenceIds));
+			},
+			(changelogId, articleIds, sentenceIds, next) => { // soft-delete relation-sentence relations
+				if(_.isEmpty(sentenceIds)) return next(null, changelogId, articleIds, sentenceIds);
+				dsRS.update(changelogId, {
+					values: { is_deleted: 1 },
+					conditions: { sentence_id: sentenceIds }
+				}, (err) => {
+					if(err) return next(err);
+					// Additional cleanup: remove entities and relations with no remaining links
+					async.series([
+						// Entities that appear only in the deleted articles
+						(cb) => {
+							if(_.isEmpty(articleIds)) return cb();
+							dsAE.find('list', {
+								fields: ['entity_id', 'entity_id'],
+								conditions: { article_id: articleIds }
+							}, (e1, affectedEntities) => {
+								if(e1) return cb(e1);
+								var entityIds = _.keys(affectedEntities);
+								if(_.isEmpty(entityIds)) return cb();
+								dsAE.find('list', {
+									fields: ['entity_id', 'count(*) `total`'],
+									conditions: { entity_id: entityIds, is_deleted: 0 },
+									group: 'entity_id'
+								}, (e2, remaining) => {
+									if(e2) return cb(e2);
+									var toDelete = [];
+									_.forOwn(affectedEntities, (v, id) => { if(_.isUndefined(remaining[id])) toDelete.push(parseInt(id)); });
+									if(_.isEmpty(toDelete)) return cb();
+									dsEntities.update(changelogId, {
+										values: { is_deleted: 1 },
+										conditions: { id: toDelete }
+									}, cb);
+								});
+							});
+						},
+						// Relations that lost all supporting sentences due to this deletion
+						(cb) => {
+							dsRS.find('list', {
+								fields: ['relation_id', 'relation_id'],
+								conditions: { sentence_id: sentenceIds }
+							}, (e3, affectedRelations) => {
+								if(e3) return cb(e3);
+								var relationIds = _.keys(affectedRelations);
+								if(_.isEmpty(relationIds)) return cb();
+								dsRS.find('list', {
+									fields: ['relation_id', 'count(*) `total`'],
+									conditions: { relation_id: relationIds, is_deleted: 0 },
+									group: 'relation_id'
+								}, (e4, remainingR) => {
+									if(e4) return cb(e4);
+									var toDeleteRel = [];
+									_.forOwn(affectedRelations, (v, id) => { if(_.isUndefined(remainingR[id])) toDeleteRel.push(parseInt(id)); });
+									if(_.isEmpty(toDeleteRel)) return cb();
+									dsRelations.update(changelogId, {
+										values: { is_deleted: 1 },
+										conditions: { id: toDeleteRel }
+									}, cb);
+								});
+							});
+						}
+					], (e) => next(e, changelogId));
+				});
+			},
+			(changelogId, next) => { // soft-delete visits to site (optional)
+				dsVisits.update(changelogId, {
+					values: { is_deleted: 1 },
+					conditions: { site_id: siteId }
+				}, (err) => next(err, changelogId));
+			},
+			// Hard-delete legacy article tokens if present (no is_deleted column)
+			(changelogId, next) => {
+				// Collect article ids again for direct delete
+				dsArticles.find('list', {
+					fields: ['id', 'id'],
+					conditions: { site_id: siteId }
+				}, (err, articleIds) => {
+					if(err) return next(err);
+					var ids = _.keys(articleIds);
+					if(_.isEmpty(ids)) return next(null, changelogId);
+					var q = 'DELETE FROM `articles_tokens` WHERE `article_id` IN (' + ids.map(()=>'?').join(',') + ')';
+					db.query(q, ids, (e) => next(e, changelogId));
+				});
+			},
+			// Relationtypes without remaining relations -> soft-delete
+			(changelogId, next) => {
+				db.query('SELECT rt.id FROM relationtypes rt LEFT JOIN relations r ON (r.relationtype_id=rt.id AND r.is_deleted=0) WHERE rt.is_deleted=0 GROUP BY rt.id HAVING COUNT(r.id)=0', [], (err, rows) => {
+					if(err) return next(err);
+					if(_.isEmpty(rows)) return next(null, changelogId);
+					var ids = rows.map(r=>r.id);
+					dsRelationtypes.update(changelogId, {
+						values: { is_deleted: 1 },
+						conditions: { id: ids }
+					}, (e) => next(e, changelogId));
+				});
+			}
+		], (err, changelogId) => {
+			if(err) return setImmediate(() => callback(err));
+			setImmediate(() => callback(null, { changelog_id: changelogId, site_id: siteId }));
+		});
+	}
+
+	this.softdeleteCascade = softdeleteCascade;
 	
 	function add(data, callback){
 		async.waterfall([
@@ -231,7 +406,10 @@ module.exports = function(db){
 			_mAdd,
 			Article.add
 		], (err, memo) => {
-			if(err)return setImmediate(() => callback(err));
+			if(err){
+				console.log('Error in Site.js')
+				return setImmediate(() => callback(err));
+			}
 			setImmediate(() => callback(null, {
 				site_id: memo.data.Site.id,
 				changelog_id: memo.changelog_id
@@ -308,7 +486,7 @@ module.exports = function(db){
 		Memo functions	
 	*/
 		function _mAdd(memo, next){
-			datasource.insert(memo.changelog_id, {
+			datasource.insertOrUpdate(memo.changelog_id, {
 				values: {
 					url: memo.data.Site.url,
 					hash: memo.data.Site.hash,
@@ -318,10 +496,14 @@ module.exports = function(db){
 					last_visited: datasource.now(),
 					collection_id: memo.Collection.id,
 					is_deleted: 0
+				},
+				conditions: {
+					url: memo.data.Site.url,
+					hash: memo.data.Site.hash,
+					collection_id: memo.Collection.id
 				}
 			}, (err, insertId) => {
 				if(err)return setImmediate(() => next(err));
-				
 				memo.data.Site.id = insertId;
 				setImmediate(() => next(null, memo));
 			});

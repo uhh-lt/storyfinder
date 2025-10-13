@@ -2,6 +2,23 @@ var request = require('request')
 	, _ = require('lodash')
 	, async = require('async')
 	;
+var fs = require('fs')
+
+
+function sanitizeBeforeAfter(obj) {
+  if (Array.isArray(obj)) {
+    obj.forEach(sanitizeBeforeAfter);
+  } else if (obj !== null && typeof obj === 'object') {
+    for (const key in obj) {
+      if (key === 'before' || key === 'after') {
+        obj[key] = '';
+      } else {
+        sanitizeBeforeAfter(obj[key]);
+      }
+    }
+  }
+  return obj;
+}
 	
 module.exports = function(){
 	var options = _.defaults(arguments[0], {
@@ -32,17 +49,22 @@ module.exports = function(){
 			//console.log('Parsing: ' + paragraph + "\n********\nRatio: " + ratio + "\n" + avgWordLength + "\n*******");
 			
 			if(ratio < 0.9 || avgWordLength > 10){
-				console.log('Skipping paragraph (Ratio: ' + ratio + ', avg. word length: ' + avgWordLength + ': ' + paragraph.replace(/\s+/g,' '));
+				//console.log('Skipping paragraph (Ratio: ' + ratio + ', avg. word length: ' + avgWordLength + ': ' + paragraph.replace(/\s+/g,' '));
 				return setImmediate(() => nextParagraph(null, null));
 			}
-				
+			var ref = /*'http://localhost:9000'*/ process.env.CORENLP_HOST 
 			request({
-				uri: 'http://' + options.host + ':' + options.port + '/?properties=' + encodeURIComponent(JSON.stringify(properties)),
+				uri: `${ref}/relation`,
 				method: 'POST',
-				body: paragraph,
-				contentType: 'text/plain'
+				body: JSON.stringify({ text: paragraph}),
+				headers: {
+					'Content-Type': 'application/json'
+				}
 			}, function (error, response, body) {
-				
+				if(error)
+				{
+					console.log(error);
+				}
 				body = body.replace(/\\n/g, "\\n")  
 	               .replace(/\\'/g, "\\'")
 	               .replace(/\\"/g, '\\"')
@@ -53,12 +75,19 @@ module.exports = function(){
 	               .replace(/\\f/g, "\\f")
 				   .replace(/[\u0000-\u0019]+/g,"")
 				   ;
+				
 							
 				if (!error && response.statusCode == 200) {
 					setImmediate(function(){
 						var json = null;
 						try {
 							json = JSON.parse(body);
+							if(json.sentences.length !== 0)
+							{
+								var test = sanitizeBeforeAfter(json);
+								json = test;
+								
+							}
 						}catch(e){
 							json = null;
 						}
@@ -70,25 +99,76 @@ module.exports = function(){
 					nextParagraph(null, new Error('Statuscode: ' + response.statusCode + "\n" + body));
 				}
 			});
-		}, (err, parsed) => {
+		}, (err, results) => {
 			if(err)
 				return setImmediate(() => callback(err));
+			//all indices in sentences and results are starting at zero, need to update them with global indices
+			var finalSentences = [];
+			var finalEntities = {};
+			var finalRelations = {};
+			var global_idx = 0;
 
-			var sentences = [];
-			
-			parsed.forEach((p) => {
-				if(_.isError(p))return;
-				if(_.isNull(p))return;
-				if(_.isEmpty(p.sentences))return;
+			results.forEach((paragraph) => {
+				if(_.isError(paragraph))return;
+				if(_.isNull(paragraph))return;
+				if(_.isEmpty(paragraph.sentences))return;
 				
-				p.sentences.forEach((s) => {
-					sentences.push(s);
+				paragraph.sentences.forEach((s) => {
+					s.index += global_idx;
+					finalSentences.push(s);
 				});
+
+				for(let ent in paragraph.entities)
+				{
+					let local_ent = paragraph.entities[ent]
+					local_ent.sent_idx = local_ent.sent_idx.map((pos) => pos += global_idx);
+					if(!finalEntities[ent])
+					{
+						finalEntities[ent] = local_ent;
+					} else 
+					{
+						finalEntities[ent].sent_idx.push(...local_ent.sent_idx);
+					}
+				}
+
+				for(let ent1 in paragraph.relations)
+				{
+					if(!finalRelations[ent1])
+					{
+						finalRelations[ent1] = {};
+					}
+					for(let ent2 in paragraph.relations[ent1])
+					{
+						let adjustedPositions = paragraph.relations[ent1][ent2].positions.map((pos) => pos += global_idx);
+						if(!finalRelations[ent1][ent2])
+						{
+							finalRelations[ent1][ent2] = {
+								positions: [],
+								relations: []
+							};
+						}
+						finalRelations[ent1][ent2].positions.push(...adjustedPositions);
+						finalRelations[ent1][ent2].relations.push(...paragraph.relations[ent1][ent2].relations)
+					}
+				}
+
+				global_idx += paragraph.sentences.length
 			});
 			//return setImmediate(() => callback(new Error('break')));
-			setImmediate(() => callback(null, {sentences: sentences}));
+			var data = {
+				sentences: finalSentences,
+				entities:  finalEntities,
+				relations: finalRelations
+			}
+			dump_to_disk(data)
+			setImmediate(() => callback(null, data));
 		});
 	}
 		
 	this.parse = parse;
+
+	function dump_to_disk(data)
+	{
+		fs.writeFileSync('server_output.json', JSON.stringify(data, null, 4));
+	}
 };

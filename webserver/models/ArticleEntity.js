@@ -146,12 +146,14 @@ module.exports = function(db){
 	this.reassign = reassign;
 	
 	function add(memo, next){
-		async.eachOfSeries(memo.data.Entities, (entity, key, nextEntity) => {			
+		async.eachOfSeries(memo.data.entities, (entity, key, nextEntity) => {			
 			datasource.insertOrUpdate(memo.changelog_id, {
 				values: {
 					article_id: memo.data.Article.id,
 					entity_id: entity.id,
-					count: (memo.data.ngrams[entity.tokens - 1][entity.caption] || []).length,
+					count: entity.count,
+					//old way of doing it
+					//count: (memo.data.ngrams[entity.tokens - 1][entity.caption] || []).length,
 					is_deleted: 0
 				},
 				conditions: {
@@ -164,8 +166,10 @@ module.exports = function(db){
 					}
 				}
 			}, (err, insertId) => {
-				if(err)return setImmediate(() => nextEntity(err));
-				
+				if(err){
+					console.log('error in articleentitiy.js');
+					return setImmediate(() => nextEntity(err));
+				}
 				//entity.id = insertId;				
 				setImmediate(nextEntity);
 			});

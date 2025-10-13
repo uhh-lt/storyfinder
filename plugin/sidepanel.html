@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>StoryFinder Side Panel</title>
+    <style>
+      /* Fill whole panel */
+      html, body { height: 100%; margin: 0; }
+      body {
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        background: #f6f7f9;
+      }
+      /* Floating toolbar: top-right, slightly left of the server UI icons */
+      :root {
+        /* Adjust right offset if needed to avoid overlap with search/logout in the iframe header */
+        --sp-toolbar-top: 18px;
+        --sp-toolbar-right: 100px; /* sits left of the magnifier/export buttons */
+      }
+      #sp-toolbar {
+        position: fixed; top: var(--sp-toolbar-top); right: var(--sp-toolbar-right);
+        z-index: 2147483647;
+        display: flex; gap: 8px;
+        /* Only the button itself should capture clicks */
+        pointer-events: none;
+      }
+      #sp-toolbar button {
+        pointer-events: auto;
+        border: 1px solid rgba(0,0,0,.12);
+        background: #4270d3; color: #fff; /* visible, matches modern Chrome accent */
+        border-radius: 999px; padding: 7px 12px;
+        font-size: 12px; font-weight: 600; cursor: pointer; line-height: 1;
+        box-shadow: 0 2px 8px rgba(0,0,0,.18);
+        opacity: .98;
+      }
+      #sp-toolbar button:hover { filter: brightness(.96); }
+      /* Error/Info message placeholder */
+      #msg {
+        padding: 12px;
+        font-size: 14px;
+        color: #6b0d0d;
+      }
+      /* Iframe will be injected by JS */
+      iframe {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+        background: #f6f7f9;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="sp-toolbar" hidden>
+    </div>
+    <div id="msg" hidden></div>
+    <script src="sidepanel.js"></script>
+  </body>
+</html>

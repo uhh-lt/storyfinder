@@ -1,7 +1,10 @@
 var _ = require('lodash')
 	, async = require('async')
 	, fs = require('fs')
+	, createLogger = require('../utils/logger')
 	;
+
+const logger = createLogger('UsersController');
 
 module.exports = function(connection, app, passport){
 	var User = new (require('../models/User.js'))(connection)
@@ -21,7 +24,7 @@ module.exports = function(connection, app, passport){
 
 		User.exists(req.body.username, (err, userexists) => {
 			if(err){
-				console.log(err);
+				logger.error('User.exists lookup failed', err);
 				return setImmediate(() => {
 					res.sendStatus(500);
 				});
@@ -34,11 +37,11 @@ module.exports = function(connection, app, passport){
 						message: 'An account for the given Email address exists already!'
 					});
 				});
-			console.log("User exists? "+userexists);
+			logger.debug('User exists lookup', userexists);
 
 			User.create(req.body, (err, user) => {
 				if(err){
-					console.log(err);
+					logger.error('User.create failed', err);
 					return setImmediate(() => {
 						res.sendStatus(500);
 					});
@@ -48,7 +51,7 @@ module.exports = function(connection, app, passport){
 
 				User.findById(userId, (err, user) => {
 					if(err){
-						console.log(err);
+						logger.error('User.findById failed', err);
 						return setImmediate(() => {
 							res.sendStatus(500);
 						});
@@ -57,7 +60,7 @@ module.exports = function(connection, app, passport){
 
 					req.login(user, function(err) {
 						if(err){
-							console.log(err);
+							logger.error('req.login failed', err);
 							return setImmediate(() => {
 								res.sendStatus(500);
 							});
@@ -74,55 +77,17 @@ module.exports = function(connection, app, passport){
 	});
 
 	/*
-	Show registration form
-	*/
-	app.get('/register', function (req, res) {
-		fs.readFile(__dirname + '/../public/css/bootstrap.css', function(err, style){
-			if(err){
-				console.log(err);
-				return;
-			}
-			fs.readFile(__dirname + '/../public/register.html', function(err, html){
-				if(err){
-					console.log(err);
-					return;
-				}
-				res.send(html.toString().replace(/\{\{style\}\}/, style.toString()));
-			});
-		});
-	});
-
-	/*
-	Show login form
-	*/
-	app.get('/login', function (req, res) {
-		fs.readFile(__dirname + '/../public/css/bootstrap.css', function(err, style){
-			if(err){
-				console.log(err);
-				return;
-			}
-			fs.readFile(__dirname + '/../public/login.html', function(err, html){
-				if(err){
-					console.log(err);
-					return;
-				}
-				res.send(html.toString().replace(/\{\{style\}\}/, style.toString()));
-			});
-		});
-	});
-
-	/*
 	Login
 	*/
 
 	app.post('/login',
-		passport.authenticate('local', { successRedirect: (process.env.PATH_PREFIX || '/') + 'Users/status', failureRedirect: (process.env.PATH_PREFIX || '/') + 'error404' }));
+		passport.authenticate('local', { successRedirect: (process.env.PATH_PREFIX || '/') + 'Users/status', failureRedirect: (process.env.PATH_PREFIX || '/') + 'error404' }));
 
 	/*
 	Return login status
 	*/
 	app.get('/Users/status', function (req, res, next) {
-		console.log(req.isAuthenticated());
+		logger.debug('Auth status', req.isAuthenticated());
 		if (!req.isAuthenticated || !req.isAuthenticated()) {
 			passport.authenticate('basic', {session: true})(req, res, next);
 		}else{
@@ -133,12 +98,9 @@ module.exports = function(connection, app, passport){
 			success: true
 		});
 	});
-
-	/*
-	Logout
-	*/
-	app.get('/logout', function(req, res){
-		req.logout();
-		res.redirect((process.env.PATH_PREFIX || '/'));
-	});
 };
+
+
+
+
+

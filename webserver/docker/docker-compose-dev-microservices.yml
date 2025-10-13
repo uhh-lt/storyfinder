@@ -1,0 +1,128 @@
+##
+# storyfinder build compose, consistas of webserver, mysql, nlpservers
+##
+version: '2.1'
+
+networks:
+  sf-net:
+
+services:
+  mysqlserver:
+    image: "mysql:5.5"
+    ports: 
+      - "3306:3306"
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_DATABASE=storyfinder
+      - MYSQL_USER=storyfinder
+      - MYSQL_PORT=3306
+      - MYSQL_PASSWORD=storyfinder
+    volumes:
+      - ${PWD}/mysql-data:/var/lib/mysql
+    command: ["--character-set-server=utf8", "--collation-server=utf8_bin"]
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-pstoryfinder", "-ustoryfinder"]
+      interval: 20s
+      timeout: 10s
+      retries: 3
+    networks:
+      sf-net:
+        aliases:
+          - mysql
+
+  relation:
+    build:
+      context: ../../nlpserver
+      dockerfile: Dockerfile.relation
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:9001/health"]
+      interval: 20s
+      timeout: 10s
+      retries: 3
+    expose:
+      - "9001"
+    networks: [sf-net]
+
+
+  summary:
+    build:
+      context: ../../nlpserver
+      dockerfile: Dockerfile.summary
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:9002/health"]
+      interval: 20s
+      timeout: 10s
+      retries: 3
+    expose: 
+      - "9002"
+    restart: unless-stopped
+    networks: 
+      - sf-net
+
+
+  chat:
+    build:
+      context: ../../nlpserver
+      dockerfile: Dockerfile.chat
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:9003/health"]
+      interval: 20s
+      timeout: 10s
+      retries: 3
+    expose:
+      - "9003"
+    restart: unless-stopped
+    networks: 
+      - sf-net
+
+
+  nlp-root:
+    build:
+      context: ../../nlpserver
+      dockerfile: Dockerfile.root
+    environment:
+      - REL_URL=http://relation:9001/
+      - SUM_URL=http://summary:9002/
+      - CHAT_URL=http://chat:9003/
+    depends_on:
+      - relation
+      - summary
+      - chat
+    ports:
+      - "9000:9000"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:9000/health"]
+      interval: 20s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    networks: 
+      - sf-net
+
+
+  webserver:
+    build:
+      context: ..           
+      dockerfile: Dockerfile  
+    depends_on:
+      nlp-root:
+        condition: service_healthy 
+      mysqlserver:
+        condition: service_healthy
+  
+    ports:
+      - "3055:3055"          
+    environment:
+      - NODE_ENV=production
+      - COOKIE_SECRET=1337
+      - MYSQL_HOST=mysql      
+      - MYSQL_PORT=3306
+      - MYSQL_USER=storyfinder
+      - MYSQL_PASSWORD=storyfinder
+      - MYSQL_DATABASE=storyfinder
+      - CORENLP_HOST=http://nlp-root:9000
+      - NER=corenlp
+      - NO_KEYWORDS=True
+    restart: unless-stopped
+    networks:
+      - sf-net

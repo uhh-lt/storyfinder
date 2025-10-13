@@ -1,0 +1,23 @@
+<div id="login-framed" class="card" hidden>
+  <h1>Sign in required</h1>
+  <p>In the side panel, cookies are often blocked. Please open the app in a tab and sign in there.</p>
+  <div class="actions">
+    <button class="btn" id="btn-open-tab">Open in new tab</button>
+  </div>
+  <p class="helper">After signing in, you can use the side panel as usual.</p>
+</div>
+
+<div id="login-top" class="card" hidden>
+  <h1>Sign in</h1>
+  <form id="login-form" class="form-grid" novalidate>
+    <input name="username" type="email" placeholder="Email" autocomplete="username" required />
+    <input name="password" type="password" placeholder="Password" autocomplete="current-password" required />
+    <div id="login-error" class="helper error"></div>
+    <div class="actions">
+      <button class="btn" type="submit">Sign in</button>
+      <a class="btn" href="#/register">Register</a>
+      <a class="btn" href="#/forgot">Forgot password</a>
+    </div>
+  </form>
+  <p class="helper">Use your email and password to sign in.</p>
+</div>

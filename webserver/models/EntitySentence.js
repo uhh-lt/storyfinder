@@ -46,9 +46,9 @@ module.exports = function(db){
 	this.findBySentence = findBySentence;
 	
 	function add(memo, next){
-		async.eachOfSeries(memo.data.Entities, (entity, key, nextEntity) => {
+		async.eachOfSeries(memo.data.entities, (entity, key, nextEntity) => {
 			
-			//Sentences of entity
+			/*Sentences of entity
 			if(_.isUndefined(memo.data.ngrams[entity.tokens - 1]) || _.isUndefined(memo.data.ngrams[entity.tokens - 1][entity.caption]))
 				return setImmediate(nextEntity);
 							
@@ -71,6 +71,30 @@ module.exports = function(db){
 					setImmediate(nextSentence);
 				});
 			}, nextEntity);
+			*/
+			
+			async.eachSeries(entity.sent_idx, (idx, nextSentence) => {
+				var sentenceId = memo.data.sentences[idx].id;
+				datasource.insertOrUpdate(memo.changelog_id, {
+					values: {
+						sentence_id: sentenceId,
+						entity_id: entity.id,
+						is_deleted: 0
+					},
+					conditions: {
+						sentence_id: sentenceId,
+						entity_id: entity.id
+					}
+				}, (err, insertId) => {
+					if(err){
+						console.log('error in entititysentence.js');
+						return setImmediate(nextSentence);
+					}
+					setImmediate(nextSentence);
+				})
+			}, nextEntity);
+
+
 		}, (err) => {
 			if(err)return setImmediate(() => next(err));
 			

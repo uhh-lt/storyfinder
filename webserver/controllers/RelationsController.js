@@ -2,9 +2,12 @@ var _ = require('lodash')
 	, async = require('async')
 	, fs = require('fs')
 	, ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn
-	, evallog = new (require('../libs/evallog.js'))()
+	, createLogger = require('../utils/logger')
 	;
+
 	
+const logger = createLogger('RelationsController');
+
 module.exports = function(connection, app, passport){
 	var User = new (require('../models/User.js'))(connection)
 		, Relation = new (require('../models/Relation.js'))(connection)
@@ -18,7 +21,7 @@ module.exports = function(connection, app, passport){
 			, userId = req.user.id
 			;
 
-		evallog.log('Get relations of entity ' + entityId);
+		logger.info('relations fetch (single)', { entityId });
 
 		async.waterfall([
 			(next) => {setImmediate(() => next(null, {user_id: userId, entity_id: entityId}))},
@@ -28,7 +31,7 @@ module.exports = function(connection, app, passport){
 		],
 		(err, result) => {
 			if(err){
-				console.log(err);
+				logger.error('entity relations lookup failed', err);
 				return setImmediate(() => res.sendStatus(500));
 			}
 			
@@ -43,7 +46,7 @@ module.exports = function(connection, app, passport){
 			;
 			
 		
-		evallog.log('Get relations of entities ' + entity1Id + ' / ' + entity2Id);
+		logger.info('relations fetch (pair)', { entity1Id, entity2Id });
 
 		async.waterfall([
 			(next) => {setImmediate(() => next(null, {user_id: userId, entity_ids: [entity1Id, entity2Id]}))},
@@ -54,7 +57,7 @@ module.exports = function(connection, app, passport){
 		],
 		(err, result) => {
 			if(err){
-				console.log(err);
+				logger.error('pair relations lookup failed', err);
 				return setImmediate(() => res.sendStatus(500));
 			}
 			
@@ -71,7 +74,7 @@ module.exports = function(connection, app, passport){
 			, label = req.body.label
 			;
 
-		evallog.log('Set relation of entities ' + entity1Id + ' / ' + entity2Id + ' with label ' + label);
+		logger.info('relation upsert requested', { entity1Id, entity2Id, label });
 
 		async.waterfall([
 			(next) => {
@@ -88,7 +91,7 @@ module.exports = function(connection, app, passport){
 		],
 		(err, result) => {
 			if(err){
-				console.log(err);
+				logger.error('relation upsert failed', err);
 				return setImmediate(() => res.sendStatus(500));
 			}
 			
@@ -192,3 +195,12 @@ module.exports = function(connection, app, passport){
 			});
 		}
 }
+
+
+
+
+
+
+
+
+

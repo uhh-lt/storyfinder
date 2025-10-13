@@ -1,3 +1,5 @@
+-- databases have to be defined in server.py in 'tables'
+
 CREATE TABLE IF NOT EXISTS `articles` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `site_id` int(10) UNSIGNED NOT NULL,
@@ -49,6 +51,37 @@ CREATE TABLE IF NOT EXISTS `changelogs_updates` (
   KEY `changelog_id` (`changelog_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+/* =========================================
+   Chat Sessions (persistent conversation)
+   ========================================= */
+
+CREATE TABLE IF NOT EXISTS `chat_messages` (
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `session_id` INT(10) UNSIGNED NOT NULL,
+  `user_id` INT(10) UNSIGNED NOT NULL,
+  `role` VARCHAR(16) NOT NULL,
+  `content` LONGTEXT NOT NULL,
+  `created` DATETIME NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `session_created` (`session_id`, `created`),
+  KEY `user_session` (`user_id`, `session_id`)
+) ENGINE=InnoDB   DEFAULT CHARSET=utf8mb4  COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `chat_sessions` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` INT UNSIGNED NOT NULL,
+  `title` TEXT NULL,
+  `created` DATETIME NOT NULL,
+  `last_message_at` DATETIME NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_user_created` (`user_id`,`created`),
+  KEY `idx_user_lastmsg` (`user_id`,`last_message_at`)
+) ENGINE=InnoDB   DEFAULT CHARSET=utf8mb4  COLLATE=utf8mb4_unicode_ci;
+
+/* =========================================
+   ...
+   ========================================= */
+
 CREATE TABLE IF NOT EXISTS `collections` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `user_id` int(10) UNSIGNED NOT NULL,
@@ -94,7 +127,7 @@ CREATE TABLE IF NOT EXISTS `entities_sentences` (
 
 CREATE TABLE IF NOT EXISTS `log_entities` (
   `id` int(10) UNSIGNED NOT NULL DEFAULT '0',
-  `updated_on` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  `updated_on` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `value` varchar(128) DEFAULT NULL,
   `tokens` tinyint(3) UNSIGNED DEFAULT NULL,
   `multiword` varchar(128) DEFAULT NULL,
@@ -128,7 +161,7 @@ CREATE TABLE IF NOT EXISTS `relations` (
   `is_deleted` tinyint(1) DEFAULT NULL,
   `user_generated` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `entity1_entity2` (`entity1_id`,`entity2_id`) USING BTREE,
+  UNIQUE KEY `entity1_entity2_relationtype_id` (`entity1_id`,`entity2_id`, `relationtype_id`) USING BTREE,
   KEY `entity2_id` (`entity2_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -180,6 +213,23 @@ CREATE TABLE IF NOT EXISTS `sites` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `url` (`collection_id`,`url`,`hash`) USING BTREE,
   KEY `url_2` (`url`,`collection_id`,`last_visited`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Table for cached summaries (text-based key + user scoping)
+CREATE TABLE IF NOT EXISTS `summaries` (
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `text_hash` CHAR(64) NOT NULL,           -- SHA-256 hex of article text
+  `user_id` INT(10) UNSIGNED NOT NULL,     -- Basic-Auth user id (server-side)
+  `url` VARCHAR(512) DEFAULT NULL,         -- optional, informative only
+  `raw_text` MEDIUMTEXT NULL,              -- full Readability text
+  `summary` MEDIUMTEXT NOT NULL,
+  `edited` TINYINT(1) NOT NULL DEFAULT 0, 
+  `edited_at` DATETIME NULL,
+  `language` VARCHAR(16) DEFAULT NULL,     -- optional (future)
+  `model` VARCHAR(64) DEFAULT NULL,        -- optional (future)
+  `created` DATETIME NOT NULL,             -- set via NOW() on insert from app
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_hash_user` (`text_hash`, `user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `tokens` (

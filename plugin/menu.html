@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>StoryFinder</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <!-- Extracted styles -->
+  <link rel="stylesheet" href="menu.css" />
+</head>
+<body>
+  <div class="header-box">
+    <img src="icon-48.png" alt="StoryFinder" class="logo">
+    <span class="header-title">StoryFinder Tools</span>
+  </div>
+
+  <!-- Warning banner (shown when server missing or user not logged in) -->
+  <div id="sf-warning" class="sf-warning" role="alert" aria-live="polite"></div>
+
+  <div class="section">
+    <div class="checkbox-container">
+      <input type="checkbox" id="checkbox-highlight" />
+      <label for="checkbox-highlight">Highlighting</label>
+    </div>
+  </div>
+
+  <h2>Core Functions</h2>
+  <div class="section btn-group">
+    <button id="button-parse" class="btn-parse">🔎 Parse</button>
+    <button id="button-sidebar" class="btn-sidebar"></button>
+    <button id="button-readability" class="btn-readability">📖 Readability</button>
+  </div>
+
+  <hr />
+
+  <h2>Extra Tools</h2>
+  <div class="section">
+    <div class="summarize-row">
+      <button id="button-summarize" class="btn-summarize">✂️ Summarize</button>
+
+      <!-- Compact inline switch with label above -->
+      <label class="sf-switch" title="Force refresh (bypass cache)">
+        <span class="sf-label">Force</span>
+        <input type="checkbox" id="sf-force-refresh" />
+        <span class="sf-toggle" aria-hidden="true"></span>
+      </label>
+    </div>
+  </div>
+
+  <script src="menu.js"></script>
+</body>
+</html>

@@ -61,7 +61,7 @@ module.exports = function(Ngram, Article){
 				Only extract elements with a value > t[n]	
 				*/
 				
-				console.log(weights.slice(0, 10));
+				//console.log(weights.slice(0, 10));
 				
 				var keywords = [];
 				
@@ -88,7 +88,7 @@ module.exports = function(Ngram, Article){
 					c = weights.shift();
 				}*/
 								
-				console.log('Keywords', keywords);
+				//console.log('Keywords', keywords);
 				
 				setImmediate(() => callback(null, keywords));
 			});

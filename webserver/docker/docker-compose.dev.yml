@@ -1,0 +1,31 @@
+# keine version-Zeile mehr
+networks:
+  sf-net:
+    external: true
+    name: docker_sf-net   # <— GENAUER Name aus `docker network ls`
+
+services:
+  web:
+    image: docker-webserver:latest
+    ports:
+      - "3055:3055"
+    environment:
+      NODE_ENV: development
+      PORT: 3055
+      COOKIE_SECRET: "1337"
+      MYSQL_HOST: "mysql"
+      MYSQL_PORT: "3306"
+      MYSQL_USER: "storyfinder"
+      MYSQL_PASSWORD: "storyfinder"
+      MYSQL_DATABASE: "storyfinder"
+      CORENLP_HOST: "host.docker.internal"
+      NER: "corenlp"
+      NO_KEYWORDS: "T"
+    volumes:
+      - ..:/usr/src/app:delegated
+      - /usr/src/app/node_modules
+      - /usr/src/app/public/js/node_modules
+    command: ["npm", "start"]
+    restart: unless-stopped
+    networks:
+      - sf-net

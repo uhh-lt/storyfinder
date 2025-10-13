@@ -1,0 +1,7 @@
+You will receive a context and a question.  
+Use the context to answer the question briefly and clearly.  
+
+
+[CONTEXT]
+
+[QUESTION]

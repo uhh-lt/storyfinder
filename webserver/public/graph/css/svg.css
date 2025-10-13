@@ -1,0 +1,95 @@
+		 .background rect {
+			 transition: fill 1s ease;
+			 fill: #FFFFFF;
+		 }
+		
+		.link {
+			stroke: #999;
+			stroke-width: 1px;
+			stroke-opacity: 1;
+			fill: none;
+		}
+		
+		.node {
+			/*fill: #03A9FA;*/
+			fill: none;
+		}
+		
+		.link.is-hidden {
+			stroke-width: 0;
+		}
+				
+		.label text {
+			transition: fill 1s ease;
+			fill: #FFFFFF;
+			text-anchor: middle;
+			font-size: 10px;
+			font-family: Verdana;
+		}
+		
+        .label rect {
+            /* Keep default fill set by JS (type/color), do not force a base color here */
+            transition: fill .25s ease, stroke .25s ease, filter .25s ease;
+            stroke: none;
+            /* remove hardcoded green fill to let D3/JS-provided colors show */
+            /* fill: #8BC34A; */
+        }
+		
+        .label.topNode rect {
+            transition: fill .25s ease;
+            /* leave fill to JS, optional subtle emphasis via stroke */
+            /* fill: #0288D1; */
+        }
+		
+		/* Focus: keep node color; no border; only a soft shadow */
+		.label.focused rect {
+		  /* keep existing fill from JS; hide any focus border */
+		  stroke: none !important;
+		  stroke-width: 0 !important;
+		  stroke-opacity: 0 !important;
+		  filter: url(#dropshadow);
+		}
+
+		/* Some templates draw extra shapes (header/body split, outlines) */
+		.label.focused g rect,
+		.label.focused g path,
+		.label.focused path {
+		  /* neutralize any leftover focus outline */
+		  stroke: none !important;
+		  stroke-width: 0 !important;
+		  stroke-opacity: 0 !important;
+		}
+		
+		/* Nuke hardcoded green from inline styles (hex or rgb variants) */
+		.label.focused [stroke="#8BC34A"],
+		.label.focused [fill="#8BC34A"],
+		.label.focused [stroke="#8bc34a"],
+		.label.focused [fill="#8bc34a"],
+		.label.focused [stroke="rgb(139,195,74)"],
+		.label.focused [fill="rgb(139,195,74)"] {
+		  stroke: none !important;
+		  stroke-opacity: 0 !important;
+		  /* do not force a fill; let the node color shine through */
+		  fill: inherit !important;
+		}
+		
+        .label.focused text {
+            /* keep original text color; no forced white */
+            /* fill: inherit; */
+        }
+
+		svg.grayscale .background rect {
+			/*fill: #d7d7d7;*/
+		}
+		
+		svg.grayscale .label text {
+			fill: #d7d7d7;
+		}
+		
+		svg.grayscale .label rect {
+			fill: #999999;
+		}
+		
+		svg.grayscale .label.topNode rect {
+			fill: #999999;
+		}

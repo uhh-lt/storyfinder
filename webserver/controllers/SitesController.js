@@ -4,31 +4,32 @@ var _ = require('lodash')
 	, crypto = require('crypto')
 	, path = require('path')
 	, ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn
-	, colorThief = new (require('color-thief'))()
-	, evallog = new (require('../libs/evallog.js'))()
+	, colorThief = require('colorthief')
+	, createLogger = require('../utils/logger')
 	;
+const logger = createLogger('SitesController');
 
 module.exports = function(connection, app, passport, io){
-	var User = new (require('../models/User.js'))(connection)
-		, Site = new (require('../models/Site.js'))(connection)
-		, Article = new (require('../models/Article.js'))(connection)
-		, Entity = new (require('../models/Entity.js'))(connection)
-		, Collection = new (require('../models/Collection.js'))(connection)
-		, Ngram = new (require('../models/Ngram.js'))(connection)
-		, GermanerComponent = new (require('./components/GermanerComponent'))({
+	var User = new (require('../models/User.js'))(connection);
+	var Site = new (require('../models/Site.js'))(connection);
+	var Article = new (require('../models/Article.js'))(connection);
+	var Entity = new (require('../models/Entity.js'))(connection);
+	var Collection = new (require('../models/Collection.js'))(connection);
+	var Ngram = new (require('../models/Ngram.js'))(connection);
+	var GermanerComponent = new (require('./components/GermanerComponent'))({
 				port: process.env.GERMANER_PORT || "8080",
 				host: process.env.GERMANER_HOST || "germaner"
-			})
-		, CorenlpComponent = new (require('./components/CorenlpComponent'))({
+			});
+	var CorenlpComponent = new (require('./components/CorenlpComponent'))({
 				port: process.env.CORENLP_PORT || "9000",
 				host: process.env.CORENLP_HOST || "corenlp"
 			}, {
 				"pos.model": "edu/stanford/nlp/models/pos-tagger/german/german-hgc.tagger",
 				"outputFormat": "json"
-			})
-		, StopwordComponent = new (require('./components/StopwordComponent.js'))()
-		, KeywordComponent = new (require('./components/KeywordComponent.js'))(Ngram, Article)
-		, RandomforestComponent = new (require('./components/RandomforestComponent.js'))('./data/trees.txt')
+			});
+	var StopwordComponent = new (require('./components/StopwordComponent.js'))();
+	var KeywordComponent = new (require('./components/KeywordComponent.js'))(Ngram, Article);
+	var RandomforestComponent = new (require('./components/RandomforestComponent.js'))('./data/trees.txt');
 		;
 
 	app.get('/Sites', ensureLoggedIn((process.env.PATH_PREFIX || '/') + 'login'), function (req, res) {
@@ -68,11 +69,11 @@ module.exports = function(connection, app, passport, io){
 		],
 		(err, result) => {
 			if(err){
-				console.log(err);
+				logger.error('site ingest failed', err);
 				return setImmediate(() => res.sendStatus(500));
 			}
 
-			console.log(result);
+			//console.log(result);
 
 			res.send(result);
 		});
@@ -96,12 +97,16 @@ module.exports = function(connection, app, passport, io){
 		Truncate `sites`;
 		Truncate `visits`;
 	*/
-	app.put('/Sites', passport.authenticate('basic', {session: false}), function (req, res) {
+	function authAny(req, res, next) {
+		if (req.user) return next();
+		return passport.authenticate('basic', { session: false })(req, res, next);
+	}
+
+	app.put('/Sites', authAny, function (req, res) {
 		var userId = req.user.id
 			;
 
-		console.log('Open new site');
-		evallog.log('Open site ' + req.body.Site.url);
+		logger.info('site ingest requested', { url: req.body.Site.url });
 
 		io.emit('parsing_site', null);
 
@@ -116,13 +121,11 @@ module.exports = function(connection, app, passport, io){
 		],
 		(err, result) => {
 			if(err){
-				console.log(err);
+				logger.error('site ingest failed', err);
 				return setImmediate(() => res.sendStatus(500));
 			}
 
 			delete result.data;
-
-			//console.log(result);
 
 			if(_.isUndefined(result.is_parseable) || result.is_parseable)
 				io.emit('new_site', result);
@@ -146,7 +149,7 @@ module.exports = function(connection, app, passport, io){
 			})),
 			_mGetCollection, //Get the id of user's default collection
 			(memo, next) => {
-				console.log('Save image in ' + ['..', 'public', 'images', '/' + memo.Collection.id, 'sites'].join('/'));
+				logger.debug('saving site image', { basePath: ['..','public','images', '/' + memo.Collection.id, 'sites'].join('/') });
 				async.reduce(['..', 'public', 'images', '/' + memo.Collection.id, 'sites'], __dirname, (p, folder, nextFolder) => {
 					p = path.join(p, folder);
 
@@ -164,7 +167,7 @@ module.exports = function(connection, app, passport, io){
 						}
 					});
 				}, (err, p) => {
-					if(err)console.log(err);
+					if (err) logger.error('image path ensure failed', err);
 					if(err)return setImmediate(() => next(err));
 
 					memo.path = p;
@@ -201,7 +204,7 @@ module.exports = function(connection, app, passport, io){
 		],
 		(err, result) => {
 			if(err){
-				console.log(err);
+				logger.error('site ingest failed', err);
 				res.sendStatus(500);
 				return false;
 			}
@@ -209,6 +212,51 @@ module.exports = function(connection, app, passport, io){
 			res.send({
 				success: true
 			});
+		});
+	});
+
+	// Delete a site (and all parsed content) from UI
+	app.delete('/Sites/:siteId', ensureLoggedIn((process.env.PATH_PREFIX || '/') + 'login'), function (req, res) {
+		var userId = req.user.id,
+			siteId = parseInt(req.params.siteId);
+
+		logger.info('site delete requested', { siteId });
+
+		async.waterfall([
+			(next) => setImmediate(() => next(null, { user_id: userId, site_id: siteId })),
+			_mGetCollection, // ensure we operate in user's default collection
+			(memo, next) => { // verify site belongs to collection
+				Site.getById(memo.site_id, memo.Collection.id, (err, site) => {
+					if(err) return setImmediate(() => next(err));
+					if(_.isEmpty(site)) return setImmediate(() => next({ code: 404 }));
+					memo.Site = site;
+					setImmediate(() => next(null, memo));
+				});
+			},
+			(memo, next) => { // cascade soft-delete
+				Site.softdeleteCascade(memo.site_id, memo.user_id, (err, result) => {
+					if(err) return setImmediate(() => next(err));
+					memo.result = result;
+					setImmediate(() => next(null, memo));
+				});
+			},
+			(memo, next) => { // try remove preview image if present (best-effort)
+				var imgPath = path.join(__dirname, '..', 'public', 'images', '' + memo.Collection.id, 'sites', memo.site_id + '.png');
+				fs.unlink(imgPath, (err) => {
+					// ignore errors (file may not exist)
+					setImmediate(() => next(null, memo));
+				});
+			}
+		], (err, memo) => {
+			if(err){
+				if(err.code === 404){
+					return res.sendStatus(404);
+				}
+				logger.error('site delete failed', err);
+				return setImmediate(() => res.sendStatus(500));
+			}
+
+			res.send({ success: true, changelog_id: memo.result.changelog_id, site_id: memo.site_id });
 		});
 	});
 
@@ -237,7 +285,7 @@ module.exports = function(connection, app, passport, io){
 		function _isSiteRelevant(data, callback){
 			//if the field data.Site.isRelevant is set to true than the site is marked as relevant by the user
 			if(data.Article.isRelevant){
-        console.log('Article is relevant.');
+        logger.info('article metadata flagged relevant');
         return setImmediate(function() { callback(null, true); } );
       }
 
@@ -325,7 +373,8 @@ console.log(d);
 				multiword = multiword.join(' ');
 
 				if(n > 3){
-					console.log(multiword, candidate.caption);
+					ngram.push(1);
+					//console.log(multiword, candidate.caption);
 				}
 
 				if(multiword != candidate.caption)return null;
@@ -387,7 +436,7 @@ console.log(d);
 				if(err)return setImmediate(() => next(err));
 
 				if(!_.isEmpty(site)){
-					//console.log('Found site ' + memo.data.Site.url)
+					logger.info('site lookup result', { url: memo.data.Site.url })
 					site.is_relevant = true;
 					memo.Site = site;
 					memo.is_new = memo.is_new || false;
@@ -399,7 +448,7 @@ console.log(d);
 					if(err)return setImmediate(() => next(err));
 
 					if(!bIsRelevant){
-						console.log('Site is not relevant');
+						logger.info('site marked not relevant');
 						//Site is not relevant => stop here
 						//memo.is_parsable = false;
 						memo.is_relevant = false;
@@ -410,7 +459,7 @@ console.log(d);
 					memo.is_relevant = true;
 					memo.is_new = true;
 
-					console.log('Site is relevant');
+					logger.info('site marked relevant');
 
 					//Site is relevant => add to database
 					async.waterfall([
@@ -421,8 +470,8 @@ console.log(d);
 								_mParseOpenNLP(memo, function(err, nextMemo){
 									if(err){
 										retries--;
-										console.log(err);
-										console.log('Retry parsing article using corenlp');
+										logger.error('site image update failed', err);
+										logger.info('retry parsing article using corenlp');
 										setImmediate(nextWhile);
 										return;
 									}
@@ -439,13 +488,13 @@ console.log(d);
 								setImmediate(() => next(null, memo));
 							});
 						},
-						_mFindEntities,
-						_mExtractNamedEntities,
-						_mFilterStopwords,
-						_mExtractKeywords,
-						_mExtractRelations,
+						//_mFindEntities,
+						//_mExtractNamedEntities,
+						//_mFilterStopwords,
+						//_mExtractKeywords,
+						//_mExtractRelations,
 						_mAddSite,
-						_mPostprocess,
+						//_mPostprocess,
 						_mGetOrAddSite
 					], next);
 				});
@@ -471,11 +520,14 @@ console.log(d);
 				if(err)return setImmediate(() => next(err));
 
 				if(_.isUndefined(results))return setImmediate(() => next(new Error('Unable to parse article')));
-
+				//console.log(results);
 				memo.data.ngrams = [{}, {}, {}];
 				var sentences = _.reject(results.sentences, _.isUndefined);
-
-				memo.data.sentences = sentences.map((sentence, sentenceIdx) => {
+		
+				memo.data.sentences = sentences;
+				memo.data.entities = results.entities;
+				memo.data.relations = results.relations;
+				/*memo.data.sentences = sentences.map((sentence, sentenceIdx) => {
 					sentence.text = _.map(sentence.tokens, 'originalText').join(' ');
 					//console.log(sentence.text);
 					sentence.tokens.forEach((t, i) => {
@@ -493,7 +545,7 @@ console.log(d);
 						}
 					});
 					return sentence;
-				});
+				});*/
 
 				//console.log(memo.data.ngrams);
 
@@ -509,9 +561,8 @@ console.log(d);
 				Find all single word entities
 			*/
 			memo.data.Entities = {};
-			console.log('Find entities');
+			logger.info('entity extraction started');
 			var mwCandidates = []; //Entities which are candidates for multiwords
-
 			Entity.findByValue(_.keys(memo.data.ngrams[0]), memo.Collection.id, (err, entities) => {
 				if(err)return setImmediate(() => next(err));
 				if(_.isEmpty(entities))return setImmediate(() => next(null, memo));
@@ -564,7 +615,7 @@ console.log(d);
 
 			if("corenlp" != process.env.NER){
 
-				console.log('Extract NEs from GermaNER');
+				logger.debug('extracting NEs from GermaNER');
 
 				var sentences = memo.data.sentences.map(sentence => {
 					return _.map(sentence.tokens, 'originalText')
@@ -575,7 +626,7 @@ console.log(d);
 
 					entities.forEach(entity => {
 						if(entity.value.length > 128){
-							console.log('Entity is too long', entity);
+							logger.debug('entity too long for merge', { entity });
 							return;
 						}
 
@@ -594,7 +645,7 @@ console.log(d);
 							caption: entity.value
 						};
 
-						console.log("germaner type: " + entity.type);
+						logger.debug('germaner entity type', { type: entity.type });
 
 
 						//Add the entity to the memo array
@@ -617,7 +668,7 @@ console.log(d);
 				});
 			} else {
 
-				console.log('Extract NEs from CoreNLP');
+				logger.debug('extracting NEs from CoreNLP');
 
 				var entities = []
 				// entities.push({
@@ -646,6 +697,8 @@ console.log(d);
 						case "0" : return null;
 						case "location" : return "LOC";
 						case "organization" : return "ORG";
+						case "org": return "ORG";
+						case "loc": return "LOC";
 						case "person" : return "PER";
 						case "other" : return "OTH";
 						case "misc" : return "OTH";
@@ -701,7 +754,7 @@ console.log(d);
 
 				entities.forEach(entity => {
 
-					console.log(entity);
+					//console.log(entity);
 
 					//Add the entity to the memo array
 					if(_.isUndefined(memo.data.Entities[entity.caption])){
@@ -746,7 +799,7 @@ console.log(d);
 						containsOnlyStopwords = true;
 
 					if(containsOnlyStopwords){
-						console.log('Removing stopword: ' + ngram);
+						//console.log('Removing stopword: ' + ngram);
 						delete ngrams[ngram];
 					}
 				});
@@ -801,7 +854,7 @@ console.log(d);
 								}, false);
 
 								if(containsToken){
-									console.log('Part of keyword ' + keyword + ' is contained in ' + entity);
+									logger.debug('keyword partially contained in entity', { keyword, entity });
 									return;
 								}
 							}
@@ -830,7 +883,7 @@ console.log(d);
 			Extract relations (Cooccurrences)
 		*/
 		function _mExtractRelations(memo, next){
-			console.log('Extraction relations');
+			logger.info('relation extraction started');
 			var _entities = _.values(memo.data.Entities);
 
 			memo.data.relations = {};
@@ -849,7 +902,7 @@ console.log(d);
 						;
 
 					if(_.isUndefined(sentences2)){
-						console.log(entity2.tokens - 1, entity2.caption);
+						//console.log(entity2.tokens - 1, entity2.caption);
 						continue;
 					}
 
@@ -892,19 +945,21 @@ console.log(d);
 			Register visit
 		*/
 		function _mRegisterVisit(memo, next){
-			console.log('Register Visit');
+			logger.info('register visit');
 			//ToDo
 			setImmediate(() => next(null, memo));
 		}
 
 		function _mAddSite(memo, next){
+			logger.info('Adding Site ', memo.data.sentences)
+
 			Site.add(memo, (err, result) => {
 				if(err)return setImmediate(() => next(err));
 
 				memo.changelog_id = result.changelog_id;
 				memo.data.Site.id = result.id;
 
-				console.log('Site added');
+				logger.info('site added to collection');
 
 				setImmediate(() => next(null, memo));
 			});
@@ -920,11 +975,11 @@ console.log(d);
 				async.forEachOfSeries(sources, (b, sourceName, nextSource) => {
 					var sourceId = memo.data.Entities[sourceName].id;
 
-					console.log('Entity.merge(' + targetId + ' (' + targetName + '), ' + sourceId + ' (' + sourceName + '), ' + memo.user_id + ', ' + memo.changelog_id + ', nextSource)');
+					logger.debug('entity merge prepared', { targetId, targetName, sourceId, sourceName });
 					//setImmediate(nextSource);
 					Entity.merge(targetId, sourceId, memo.user_id, memo.changelog_id, nextSource);
 				}, (err) => {
-					console.log('Done Source');
+					logger.debug('entity merge source completed');
 					nextTarget();
 				});
 			}, (err) => {

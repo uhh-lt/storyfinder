@@ -2,9 +2,11 @@ var _ = require('lodash')
 	, async = require('async')
 	, fs = require('fs')
 	, ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn
-	, evallog = new (require('../libs/evallog.js'))()
+	, createLogger = require('../utils/logger')
 	;
 	
+const logger = createLogger('EntitiesController');
+
 module.exports = function(connection, app, passport, io){
 	var User = new (require('../models/User.js'))(connection)
 		, Site = new (require('../models/Site.js'))(connection)
@@ -20,7 +22,7 @@ module.exports = function(connection, app, passport, io){
 			, userId = req.user.id
 			;
 			
-		evallog.log('Search for ' + req.query.q);
+		logger.info('search request', { query: req.query.q });
 		
 		async.waterfall([
 			(next) => {setImmediate(() => next(null, {user_id: userId, search: search}))},
@@ -49,11 +51,11 @@ module.exports = function(connection, app, passport, io){
 			}*/
 		], (err, results) => {
 			if(err){
-				console.log(err);
+				logger.error('entities search failed', err);
 				return setImmediate(() => res.sendStatus(500));
 			}
 			
-			console.log(results);
+			logger.debug('entity results', results);
 			res.send(results);
 		});
 	});
@@ -63,7 +65,7 @@ module.exports = function(connection, app, passport, io){
 			, userId = req.user.id
 			;
 
-		evallog.log('Load entity ' + entityId);
+		logger.info('entity fetch request', { entityId });
 
 		async.waterfall([
 			(next) => {setImmediate(() => next(null, {user_id: userId, entity_id: entityId}))},
@@ -73,7 +75,7 @@ module.exports = function(connection, app, passport, io){
 		],
 		(err, result) => {
 			if(err){
-				console.log(err);
+				logger.error('entity detail fetch failed', err);
 				return setImmediate(() => res.sendStatus(500));
 			}
 			
@@ -89,7 +91,7 @@ module.exports = function(connection, app, passport, io){
 			, data = req.body
 			;
 			
-		evallog.log('Add new entity ' + JSON.stringify(req.body.data));
+		logger.info('entity create request', { payload: req.body.data });
 
 		async.waterfall([
 			(next) => {setImmediate(() => next(null, {user_id: userId, data: data.data}))},
@@ -98,7 +100,7 @@ module.exports = function(connection, app, passport, io){
 		],
 		(err, result) => {
 			if(err){
-				console.log(err);
+				logger.error('entity create failed', err);
 				return setImmediate(() => res.sendStatus(500));
 			}
 			
@@ -124,11 +126,10 @@ module.exports = function(connection, app, passport, io){
 			, userId = req.user.id
 			;
 			
-		evallog.log('Merge entities ' + sourceId + ' to ' + targetId);
-		console.log('Merge entities ' + sourceId + ' to ' + targetId);
+		logger.info('merge requested', { sourceId, targetId });
 		Entity.merge(targetId, sourceId, userId, (err, result) => {
 			if(err){
-				console.log(err);
+				logger.error('entity merge failed', err);
 				return setImmediate(() => res.sendStatus(500));
 			}
 			
@@ -141,11 +142,11 @@ module.exports = function(connection, app, passport, io){
 			, userId = req.user.id
 			;
 
-		evallog.log('Delete entity ' + entityId);
+		logger.info('entity delete request', { entityId });
 
 		Entity.softdelete(entityId, userId, (err, result) => {
 			if(err){
-				console.log(err);
+				logger.error('entity delete failed', err);
 				return setImmediate(() => res.sendStatus(500));
 			}
 			
@@ -341,7 +342,7 @@ module.exports = function(connection, app, passport, io){
 												return;
 											}
 																						
-											console.log('Relation ' + needle + ' - ' + node.caption + ' found:', sentence.text);
+											logger.debug('relation match', { needle, node: node.caption, sentence: sentence.text });
 											
 											saveRelation(entity.id, node.id, sentence.id, function(err, relationId){
 												if(err){
@@ -395,15 +396,15 @@ module.exports = function(connection, app, passport, io){
 					args.push(Math.max(1, sentences.length));
 				});
 				
-				console.log('INSERT INTO articles_entites (article_id, entity_id, count, is_deleted) VALUES ' + q.join(','));
-				console.log(args);
+				logger.debug('articles_entities insert sql', q.join(','));
+				logger.debug('articles_entities insert args', args);
 				
 				//setImmediate(callback);
 				connection.query('INSERT INTO articles_entities (article_id, entity_id, count, is_deleted) VALUES ' + q.join(','), args, callback);
 			},
 		], function(err){
 			if(err){
-				console.log(err);
+				logger.error('articles_entities upsert failed', err);
 				res.sendStatus(500);
 				return;
 			}
@@ -415,3 +416,7 @@ module.exports = function(connection, app, passport, io){
 		});
 	});
 */
+
+
+
+

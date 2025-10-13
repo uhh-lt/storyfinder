@@ -3,8 +3,11 @@ var _ = require('lodash')
 	, fs = require('fs')
 	, path = require('path')
 	, ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn
-	, evallog = new (require('../libs/evallog.js'))()
+	, ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn
 	;
+const createLogger = require('../utils/logger');
+const logger = createLogger('ArticlesController');
+
 	
 module.exports = function(connection, app, passport){
 	var User = new (require('../models/User.js'))(connection)
@@ -18,7 +21,7 @@ module.exports = function(connection, app, passport){
 			, articleId = req.params.articleId
 			;
 			
-		evallog.log('Open article ' + articleId);
+		logger.info('article fetch requested', { articleId });
 			
 		async.waterfall([
 			(next) => setImmediate(() => next(null, {article_id: articleId})),
@@ -64,7 +67,7 @@ module.exports = function(connection, app, passport){
 		], 
 		(err, result) => {
 			if(err){
-				console.log(err);
+	logger.error('article fetch failed', err);
 				return setImmediate(() => res.sendStatus(500));
 			}
 			
@@ -120,7 +123,7 @@ module.exports = function(connection, app, passport){
 		], 
 		(err, result) => {
 			if(err){
-				console.log(err);
+	logger.error('article image save failed', err);
 				res.sendStatus(500);
 				return false;
 			}
@@ -149,3 +152,4 @@ module.exports = function(connection, app, passport){
 			);
 		}
 }
+

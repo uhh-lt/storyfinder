@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "baseUrl": ".",
+    "typeRoots": ["./types", "./chrome_types/@types"]
+  },
+  "include": ["./", "event-delegation.min.js"]
+}

@@ -56,7 +56,7 @@ module.exports = function(db){
 			ArticleEntity.getDocumentfrequency(_.keys(entitiesInArticle), (err, df) => {	
 				if(err)return setImmediate(() => callback(err));
 				
-				console.log(df);
+				//console.log(df);
 				
 				datasource.find('all', {
 					fields: ['id', 'caption', 'type', 'show_always'],
@@ -271,7 +271,7 @@ module.exports = function(db){
 	this.search = search;
 	
 	function add(memo, next){
-		async.eachOfSeries(memo.data.Entities, (entity, key, nextEntity) => {
+		async.eachOfSeries(memo.data.entities, (entity, key, nextEntity) => {
 			if(!_.isUndefined(entity.id))return setImmediate(nextEntity);
 			
 			datasource.insertOrUpdate(memo.changelog_id, {
@@ -288,19 +288,24 @@ module.exports = function(db){
 				},
 				conditions: {
 					value: entity.value,
-					tokens: entity.tokens,
+					//tokens: entity.tokens,
 					multiword: entity.multiword,
 					collection_id: memo.Collection.id
 				}
 			}, (err, insertId) => {
-				if(err)return setImmediate(() => nextEntity(err));
+				if(err){
+					console.log('error setting entities');
+					return setImmediate(() => nextEntity(err));
+				}
 				
 				entity.id = insertId;				
 				setImmediate(nextEntity);
 			});
 		}, (err) => {
-			if(err)return setImmediate(() => next(err));
-			
+			if(err){
+				console.log('Error in entity.js');
+				return setImmediate(() => next(err));
+			}
 			setImmediate(() => next(null, memo));
 		});
 	}

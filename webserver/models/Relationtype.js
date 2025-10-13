@@ -1,3 +1,4 @@
+const mysql = require('../datasources/mysql.js');
 var DatasourceMysql = require('../datasources/mysql.js')
 	, async = require('async')
 	, _ = require('lodash')

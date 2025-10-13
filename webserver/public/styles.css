@@ -1,0 +1,363 @@
+/*
+  Global Stylesheet (styles.css)
+  - Scope: All public views and layout
+  - Conventions: compact, readable, with section headers
+  - Note: Comments indicate primary usage locations for maintainability
+*/
+
+/* ===== CSS Variables ===================================================== */
+:root {
+  --bg: #0b1020;
+  --ink: #eaf0ff;
+  --muted: #a9b4d0;
+  --card: #11193a;
+  --border: #23335f;
+  --tab: #172143;
+  --tabActive: #1e2b56;
+  --accent: #5b8ffd;
+}
+
+/* ===== Base & Layout ===================================================== */
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+}
+
+/* App header and main container (used in public/index.html) */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, #0c1330, #0a1026);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.app-main { height: calc(100vh - 52px); padding: 12px; }
+.brand { font-weight: 800; letter-spacing: .2px; }
+
+/* ===== Components ======================================================== */
+/* Card container: used across views (login.html, register.html, forgot.html) */
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; }
+.card h1 { margin: 0 0 8px 0; font-size: 18px; }
+.card p { margin: 0 0 10px 0; color: var(--muted); }
+
+/* Helper text (used across views for subtle hints) */
+.helper { opacity: .8; font-size: 12px; }
+
+/* Buttons: used for both <button> and <a class="btn"> */
+.btn, a.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  appearance: none;
+  border: 1px solid var(--border);
+  background: var(--tabActive);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 8px 14px;
+  border-radius: 10px;
+  text-decoration: none; /* remove underline for links */
+  cursor: pointer;
+  transition: background .2s ease, border-color .2s ease, transform .1s ease;
+}
+.btn:hover, a.btn:hover { background: #1a2550; border-color: #3c56aa; }
+.btn:active, a.btn:active { transform: translateY(1px); }
+/* Button variants (used across views, incl. chat drawers/modals) */
+/* Utility: left-align button content (used in sessions list) */
+.btn--left { justify-content: flex-start; }
+
+/* User indicator (top right in index.html) */
+.user-pill {
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--tabActive);
+  font-weight: 700;
+  font-size: 12px;
+  opacity: .95;
+}
+
+/* Embedded iframes (graph/chat panels) */
+iframe.embed { width: 100%; height: 100%; border: 0; background: #0e1530; border-radius: 12px; }
+
+/* ===== Tabs (header navigation in index.html) ============================ */
+.tabs { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--tab);
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all .2s ease;
+  min-width: 80px; /* slightly wider with text */
+  text-align: center;
+}
+.tab:hover { background: #1a2550; border-color: #2f427c; }
+.tab.is-active { background: var(--tabActive); border-color: #3750a3; box-shadow: 0 0 0 1px rgba(91,143,253,.15) inset; }
+.tab-right { margin-left: 8px; }
+.tab .icon { width: 18px; height: 18px; stroke-width: 2; stroke: currentColor; flex-shrink: 0; }
+.tab-label { display: inline; }
+@media (max-width: 600px) {
+  /* Compact mode: icon-only tabs on narrow screens */
+  .tab-label { display: none; }
+  .tab { padding: 6px; min-width: auto; }
+}
+
+/* ===== Auth Views (login/register/forgot) ================================ */
+/* Forms (used in views/html/login.html and views/html/register.html) */
+.form-grid { display: grid; gap: 8px; max-width: 360px; }
+
+/* Action rows (used in login/register/forgot views) */
+.actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+
+/* Error messages (used in login form via #login-error.helper.error) */
+.error { color: #ff7a7a; display: none; /* visibility controlled via JS */ }
+
+
+/* ===== Chat View ========================================================= */
+/* Container and layout (used in views/html/chat.html) */
+.chat-card { display: grid; grid-template-rows: auto 1fr auto; min-height: 70vh; }
+.chat-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.chat-header h1 { margin: 0; }
+.chat-header-left { display: flex; align-items: center; gap: 8px; }
+.chat-header > div { min-width: 0; }
+#sf-context-pill { margin-left: 8px; }
+
+/* Header actions (label compacting on narrow space) */
+#sf-header-actions { display: flex; gap: 8px; overflow: hidden; }
+#sf-header-actions .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 32px;           /* ensure consistent height for icon-only */
+  padding: 0 10px;        /* unify vertical padding; center icons */
+  min-width: 32px;        /* square-ish when icon-only */
+}
+#sf-header-actions .btn svg { width: 18px; height: 18px; }
+#sf-header-actions .btn .sf-btn-label { display: inline; }
+#sf-header-actions.is-compact .btn .sf-btn-label { display: none; }
+#sf-header-actions.is-compact .btn { padding: 0 8px; }
+
+/* Main chat area and list */
+#sf-chat-main { position: relative; overflow: auto; margin-top: 8px; border: 1px solid var(--border); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 10px; max-height: 60vh; }
+#sf-chat-list { display: flex; flex-direction: column; gap: 10px; }
+
+/* Composer */
+#sf-chat-composer { margin-top: 10px; }
+.chat-composer-grid { display: grid; gap: 8px; }
+.sf-composer-row { display: flex; gap: 8px; align-items: center; justify-content: space-between; }
+.sf-composer-row #sf-chat-status { flex: 1 1 auto; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.sf-composer-row #sf-chat-send { flex: 0 0 auto; }
+
+/* Templates bar (compact buttons in composer) */
+#sf-chat-templates .actions { gap: 6px; }
+#sf-chat-templates .btn {
+  padding: 4px 10px;
+  font-size: 12px;
+  min-height: 28px;
+  height: 28px;
+  border-radius: 8px;
+}
+/* Slightly reduce spacing of inline caret spans inside template buttons */
+#sf-chat-templates .btn span {
+  font-size: 11px;
+  right: 6px;
+}
+
+/* Message content: code blocks and bubbles */
+#sf-chat-list pre { margin: 0; padding: 10px; border: 1px solid var(--border); border-radius: 10px; overflow: auto; }
+#sf-chat-list code { font-family: ui-monospace, SFMono-Regular, Consolas, Menlo, monospace; font-size: 0.95em; }
+#sf-chat-list .bubble {
+  /* Base bubble box */
+  position: relative;
+  color: var(--ink);
+  padding: 10px 12px;
+  border-radius: 12px;
+  white-space: pre-wrap;
+  line-height: 1.45;
+  max-width: 85%;
+  border: 1px solid var(--border);
+}
+/* Bubble variants */
+#sf-chat-list .bubble--user { align-self: flex-end; background: var(--tabActive); }
+#sf-chat-list .bubble--assistant { align-self: flex-start; background: var(--card); }
+#sf-chat-list .bubble--placeholder em { opacity: .9; }
+#sf-chat-list .bubble .meta-row { display: flex; justify-content: flex-end; align-items: center; gap: 4px; margin-top: 4px; opacity: 0.8; font-size: 11px; color: inherit; }
+#sf-chat-list .bubble .meta-row button { padding: 2px; border: none; background: transparent; color: #ccc; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 4px; }
+#sf-chat-list .bubble .meta-row button:hover { background: rgba(255,255,255,0.08); color: #fff; }
+
+/* Bubble spacing tweaks */
+#sf-chat-list .bubble p { margin: 6px 0; color: inherit; }
+#sf-chat-list .bubble ul,
+#sf-chat-list .bubble ol { margin: 6px 0 6px 20px; padding-left: 18px; color: inherit; }
+#sf-chat-list .bubble li { margin: 3px 0; }
+#sf-chat-list .bubble > :first-child { margin-top: 0; }
+#sf-chat-list .bubble > :last-child { margin-bottom: 0; }
+
+/* Tables inside assistant bubbles */
+#sf-chat-list .bubble table { width: 100%; border-collapse: collapse; margin: 6px 0; table-layout: auto; }
+#sf-chat-list .bubble thead th { background: rgba(255,255,255,0.05); font-weight: 700; }
+#sf-chat-list .bubble th,
+#sf-chat-list .bubble td { border: 1px solid var(--border); padding: 6px 8px; vertical-align: top; word-break: break-word; }
+#sf-chat-list .bubble tbody tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+/* Headings inside bubbles */
+#sf-chat-list .bubble h1,
+#sf-chat-list .bubble h2,
+#sf-chat-list .bubble h3,
+#sf-chat-list .bubble h4,
+#sf-chat-list .bubble h5,
+#sf-chat-list .bubble h6 { margin: 8px 0 4px; line-height: 1.3; color: inherit; }
+#sf-chat-list .bubble h1 { font-size: 1.25em; }
+#sf-chat-list .bubble h2 { font-size: 1.20em; }
+#sf-chat-list .bubble h3 { font-size: 1.12em; }
+#sf-chat-list .bubble h4 { font-size: 1.05em; }
+#sf-chat-list .bubble h5 { font-size: 1.0em; }
+#sf-chat-list .bubble h6 { font-size: 0.95em; opacity: .95; }
+
+/* Small icon button utility (used in chat actions) */
+.sf-icon-btn { background: transparent; border: none; color: #ccc; cursor: pointer; padding: 4px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; transition: background 0.2s, color 0.2s; }
+.sf-icon-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+/* Inputs */
+#sf-chat-input { width: 100%; resize: vertical; }
+
+/* Banner overlay (inside #sf-chat-main) */
+.sf-banner {
+  /* Sticky inside #sf-chat-main so it stays visible while scrolling */
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  pointer-events: none;
+  /* Hidden baseline: no padding/margin; animate only opacity/transform */
+  padding: 0;
+  margin: 0;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  font-size: 13px;
+  line-height: 1.35;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  white-space: normal; /* allow wrapping for long text */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  transition: opacity .18s ease, transform .18s ease;
+  opacity: 0;
+  transform: translateY(-4px);
+}
+.sf-banner.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  padding: 8px 12px;
+  margin: 0 0 8px 0;
+  min-height: 32px; /* ensure readable height */
+}
+.sf-banner.is-info  { background: #11351f; border-color: #2f6; color: #dfffe9; }
+.sf-banner.is-error { background: #4b1d1d; border-color: #a33; color: #ffdede; }
+
+/* Drawers (Sessions, Context) */
+.drawer-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.35);
+  opacity: 0; pointer-events: none;
+  transition: opacity .2s ease;
+  z-index: 40;
+}
+.drawer-backdrop.is-open { opacity: 1; pointer-events: auto; }
+.drawer-panel {
+  position: fixed; top: 0; height: 100vh;
+  width: 380px; max-width: 90vw;
+  background: var(--card);
+  border-left: 1px solid var(--border);
+  box-shadow: 0 0 30px rgba(0,0,0,0.3);
+  padding: 12px;
+  overflow: auto; /* allow scrolling full content incl. action rows */
+  transform: translateX(100%);
+  transition: transform .2s ease;
+  z-index: 50;
+}
+.drawer-panel--right { right: 0; }
+.drawer-panel.is-open { transform: translateX(0); }
+.drawer-header { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.drawer-header h3 { margin: 0; }
+.drawer-subtle { margin-top: 6px; }
+
+/* Sessions drawer list */
+#sf-sessions-list { display: grid; gap: 6px; margin-top: 10px; overflow: auto; max-height: calc(100vh - 110px); }
+
+/* Context drawer structure */
+.ctx-fieldset { margin-top: 8px; display: grid; gap: 6px; }
+#sf-ctx-count-row { display: none; margin-top: 8px; gap: 8px; align-items: center; }
+#sf-ctx-manual { display: none; margin-top: 10px; border: 1px solid var(--border); border-radius: 8px; padding: 8px; }
+.ctx-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+#sf-ctx-manual .ctx-row label.helper { display: flex; gap: 6px; align-items: center; }
+#sf-ctx-list { display: grid; gap: 6px; margin-top: 8px; max-height: calc(100vh - 250px); overflow: auto; }
+.ctx-actions-row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px; }
+#sf-ctx-actions-generic { display: none; margin-top: 10px; }
+
+/* Context drawer items (built in chat.js) */
+.ctx-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px;
+  align-items: start;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 8px;
+}
+.ctx-item__meta {
+  overflow: hidden;
+}
+.ctx-item__meta .url {
+  font-size: 13px;
+  opacity: .95;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+/* ===== Modal (generic, used in chat rename/delete) ====================== */
+.modal-backdrop {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 2000;
+}
+.modal {
+  background: #0c1330; /* slightly darker than card for depth */
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  max-width: 90vw;
+  width: 360px;
+  box-shadow: 0 4px 25px rgba(0,0,0,0.4);
+  display: grid;
+  gap: 12px;
+}
+.modal h3 { margin: 0; }
+.modal__actions { display: flex; justify-content: flex-end; gap: 8px; }
+.bubble-editor__textarea { width: 100%; resize: vertical; }
+.bubble-editor__actions { display: flex; gap: 8px; margin-top: 8px; }

@@ -1,16 +1,21 @@
 #
 # StoryFinder build
 #
-FROM node:6
+FROM node:14.21.3
 
 RUN set -ex \
-      && DEBIAN_FRONTEND=noninteractive \
-      && apt-get update \
-      && apt-get install -y --no-install-recommends apt-utils locales libcairo2-dev libjpeg62-turbo-dev libpango1.0-dev libgif-dev build-essential \
-      && sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
-      && dpkg-reconfigure --frontend=noninteractive locales \
-      && update-locale LANG=en_US.UTF-8 \
-      && apt-get clean
+    && sed -i 's|deb.debian.org/debian|archive.debian.org/debian|g' /etc/apt/sources.list \
+    && sed -i '/security.debian.org/d' /etc/apt/sources.list \
+    && echo "deb http://archive.debian.org/debian buster main contrib non-free" > /etc/apt/sources.list \
+    && echo "deb http://archive.debian.org/debian buster-updates main contrib non-free" >> /etc/apt/sources.list \
+    && echo "deb http://archive.debian.org/debian-security buster/updates main contrib non-free" >> /etc/apt/sources.list \
+    && apt-get -o Acquire::Check-Valid-Until=false update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        apt-utils locales libcairo2-dev libjpeg62-turbo-dev libpango1.0-dev libgif-dev build-essential \
+    && sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
+    && dpkg-reconfigure --frontend=noninteractive locales \
+    && update-locale LANG=en_US.UTF-8 \
+    && apt-get clean
 ENV LANG en_US.UTF-8
 
 RUN mkdir -p /usr/src/app
@@ -33,7 +38,7 @@ RUN [ -e /usr/src/app/public/js/node_modules ] && rm -r -f /usr/src/app/public/j
 
 RUN npm install
 
-RUN cd /usr/src/app/public/js && npm install
+RUN cd /usr/src/app/public/graph/js && npm install
 
 EXPOSE 3055
 

@@ -1,0 +1,4 @@
+Stick to the workflow you were given and return a valid json object.
+Here are the sentences for which we need relations:
+
+[TEXT]

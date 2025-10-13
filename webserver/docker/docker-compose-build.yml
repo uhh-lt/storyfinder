@@ -9,6 +9,8 @@ networks:
 services:
   mysqlserver:
     image: "mysql:5.5"
+    ports: 
+      - "3306:3306"
     environment:
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
       - MYSQL_DATABASE=storyfinder
@@ -28,38 +30,26 @@ services:
         aliases:
           - mysql
 
-  corenlpserver:
-    image: "kisad/corenlp-german:latest"
-    healthcheck:
-      test: wget --post-data 'The quick brown fox jumped over the lazy dog.' 'localhost:9000/?properties={"annotators":"tokenize,ssplit,pos,ner","outputFormat":"json"}' -O -
-      interval: 90s
-      timeout: 10s
-      retries: 3
-    mem_limit: 4g
-    memswap_limit: 5g
-    networks:
-      sf-net:
-        aliases:
-          - corenlp
-
   webserver:
+    build:
+      context: ..           # geht eine Ebene hoch ins Webserver-Verzeichnis
+      dockerfile: Dockerfile  # liegt im Webserver-Stamm
     depends_on:
       mysqlserver:
         condition: service_healthy
-      corenlpserver:
-        condition: service_healthy
-    build:
-      context: ../
-      dockerfile: Dockerfile
     ports:
-      - "3055:3055"
+      - "3055:3055"          # expose Port aus eurem launch.json
     environment:
       - NODE_ENV=production
-      - COOKIE_SECRET=92bls37gfc
+      - COOKIE_SECRET=1337
+      - MYSQL_HOST=mysql      # nutzt den Alias aus networks/mysql
+      - MYSQL_PORT=3306
+      - MYSQL_USER=storyfinder
+      - MYSQL_PASSWORD=storyfinder
+      - MYSQL_DATABASE=storyfinder
+      - CORENLP_HOST=host.docker.internal   # leitet auf euren lokal laufenden NLP-Server weiter
       - NER=corenlp
       - NO_KEYWORDS=T
     restart: unless-stopped
-    mem_limit: 4g
-    memswap_limit: 5g
     networks:
       sf-net:

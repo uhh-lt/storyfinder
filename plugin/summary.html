@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>StoryFinder – Summary</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="summary.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="header">
+        <div>
+          <div class="title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M4 4h16v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4z" stroke="currentColor" stroke-width="2"/>
+              <path d="M8 8h8M8 12h8M8 16h5" stroke="currentColor" stroke-width="2" />
+            </svg>
+            <span>Summary</span>
+
+            <span id="badge" class="badge hidden" title="Served from cache">
+              <svg viewBox="0 0 24 24"><path fill="currentColor" d="M9 3h6v2h2a2 2 0 0 1 2 2v2h2v2h-2v2h2v2h-2v2a2 2 0 0 1-2 2h-2v2H9v-2H7a2 2 0 0 1-2-2v-2H3v-2h2v-2H3V9h2V7a2 2 0 0 1 2-2h2V3zm-2 6v6h10V9H7z"/></svg>
+              from cache
+            </span>
+
+            <span id="edited-badge" class="badge badge--success hidden" title="Summary was edited">
+              <svg viewBox="0 0 24 24"><path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z"/></svg>
+              edited
+            </span>
+          </div>
+
+          <div id="meta" class="subline"></div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+          <!-- gleiche Farbe/Klasse für die ersten drei -->
+          <button id="open"  class="btn btn--action" title="Open the source article in a new tab">Open article</button>
+          <button id="copy"  class="btn btn--action" title="Copy the current summary to clipboard">Copy</button>
+          <button id="regen" class="btn btn--action" title="Bypass cache and fetch a fresh summary">Regenerate</button>
+
+          <!-- Edit state -->
+          <button id="edit"   class="btn btn--warn"             title="Edit this summary">Edit</button>
+          <button id="save"   class="btn btn--success hidden"   title="Save your changes">Save</button>
+          <button id="cancel" class="btn btn--cancel hidden"    title="Discard changes">Cancel</button>
+        </div>
+      </div>
+
+      <div class="content">
+        <div id="content" class="summary"></div>
+        <!-- textarea#editor wird im JS dynamisch eingefügt -->
+      </div>
+
+      <div class="footer">
+        <div class="hint">Tip: Use <b>Regenerate</b> to bypass the cache and fetch a fresh summary.</div>
+        <span class="spacer"></span>
+        <div id="status" class="hint"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="summary.js"></script>
+</body>
+</html>

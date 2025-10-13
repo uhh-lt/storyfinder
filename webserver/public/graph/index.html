@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>StoryFinder – Graph</title>
+
+    <!-- Legacy UI styles (now treated as current base) -->
+    <link rel="stylesheet" href="./css/bootstrap.css" />
+    <link rel="stylesheet" href="./css/font-awesome.min.css" />
+    <link rel="stylesheet" href="./css/svg.css" />
+
+    <!-- Embed tweaks for iframe mode -->
+    <link rel="stylesheet" href="./embed.css" />
+    <!-- Fresh adapter for iframe/embed mode (safe by default) -->
+    <script src="./adapter.js"></script>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <!-- Left sidebar (sites list) -->
+        <div class="col-sm-3 websites">
+          <div class="menu-title">
+            <a class="btn-menu"><i class="material-icons">menu</i></a>
+            <div class="btns">
+              <a class="btn-photo"><i class="material-icons">photo_camera</i></a>
+              <a class="btn-open-global" href="/" target="_blank"><i class="material-icons">fullscreen</i></a>
+            </div>
+            <div class="caption">Sites</div>
+          </div>
+          <div class="site-list"><ul><li></li></ul></div>
+        </div>
+
+        <!-- Main graph area -->
+        <div class="col-sm-9 graph-container">
+          <div class="graph-title" id="graph-title">
+            <a class="btn-menu"><i class="material-icons">menu</i></a>
+            <div class="caption">Global network</div>
+            <a class="btn-search">
+              <input />
+              <i class="icon-search material-icons">search</i>
+              <i class="icon-close material-icons">close</i>
+            </a>
+            <!-- Legacy logout link – will be disabled in adapter.js -->
+            <!-- <a class="btn-search" href="/logout"><i class="fa fa-sign-out" aria-hidden="true"></i></a> -->
+          </div>
+
+          <svg>
+            <filter id="dropshadow" height="130%" width="130%">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
+              <feOffset dx="2" dy="2" result="offsetblur" />
+              <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </svg>
+
+          <div class="node-details">
+            <div class="details-title">
+              <a class="btn-back"><i class="material-icons">arrow_back</i></a>
+              <div class="caption">Global network</div>
+              <small>Subtitle</small>
+              <ul class="tabs">
+                <li class="tab-item selected" data-toggle="show-sources">Sources</li>
+                <li class="tab-item" data-toggle="show-relations">Relations</li>
+              </ul>
+            </div>
+            <div class="content-body"></div>
+          </div>
+
+          <div class="relation-details"></div>
+          <div class="node-create"></div>
+          <div class="search-results" id="search-results"></div>
+        </div>
+      </div>
+
+      <div id="site-not-relevant">
+        <div class="dialog-overlay">
+          <div class="dialog">
+            <h4>Add current website to Storyfinder?</h4>
+            The current website may not contain any suitable content. Do you want to add it to Storyfinder anyway?
+            <div class="actions">
+              <a href="#" data-action="dismiss">Cancel</a>
+              <a href="#" data-action="add">Add</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="confirm-delete">
+        <div class="dialog-overlay">
+          <div class="dialog">
+            <h4>Delete page and content?</h4>
+            This will remove the page and all associated data (articles, sentences, links). This cannot be undone.
+            <div class="actions">
+              <a href="#" data-action="cancel">Cancel</a>
+              <a href="#" data-action="confirm" class="btn btn-danger">Delete</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- App bundle from the copied graph folder -->
+    <script src="./js/storyfinder.js"></script>
+  </body>
+</html>

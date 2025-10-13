@@ -49,7 +49,7 @@ module.exports = function(db){
 				setImmediate(() => nextN(err));
 			});
 		}, (err) => {
-			console.log('Done ngrams');
+			//console.log('Done ngrams');
 			if(err)return setImmediate(() => next(err));
 			
 			setImmediate(() => next(null, memo));

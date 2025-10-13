@@ -273,7 +273,7 @@ module.exports = function(db){
 	}
 	
 	
-	function add(memo, next){
+	function add_old(memo, next){
 		//Filter new entities		
 		async.eachOf(memo.data.relations, (relations, entity1, nextRelation1) => {
 			var entity1_id = memo.data.Entities[entity1].id;
@@ -312,7 +312,187 @@ module.exports = function(db){
 		});
 	}
 	
-	this.add = add;
+	this.add_old = add_old;
+
+	function add(memo, callback)
+	{
+		//We have a dict of relations. Each entry is a dict of dicts at each sub dict is an entity with position array(index of the sentence) and relation array(labels for relation, can be empty string)
+		collection_id = memo.Collection.id;
+		changelog_id = memo.changelog_id;
+		const {sentences, entities, relations} = memo.data;
+
+		async.eachOf(relations, (targets, source_entity, callback_1) => {
+			async.eachOf(targets, (relation_data, target_entity, callback_2) => {
+				const {positions, relations} = relation_data;
+
+				async.eachOf(relations, (label, i, callback_3) => {
+					const sentence_index = positions[i];
+					const sentence_insertId = sentences[sentence_index].id; // <= is this the db id for the sentence? Better be...
+
+					//what need doing:
+					//1: find or create relation type
+					//2: find or create relation
+					//3: set relation type for sentence
+					async.waterfall([
+						(next) => {
+							var data = {
+								entity1_id: entities[source_entity].id,
+								entity2_id: entities[target_entity].id,
+								label: label,
+								changelog_id: changelog_id,
+								collection_id: collection_id,
+								sent_id: sentence_insertId
+							}
+							next(null, data);
+						},
+						(data, next) => 
+						{
+							if(data.label){
+								//find or create relation type
+								Relationtype.findByLabel(data.label, data.collection_id, (error, relationtype) => {
+									if(error)
+									{
+										return next(error);
+									}
+
+									if(!_.isEmpty(relationtype))
+									{
+										data.relation_type = relationtype;
+										return next(null, data);
+									}
+
+									var relation_type = {
+										label: data.label,
+										collection_id: data.collection_id,
+										is_deleted: 0
+									};
+
+									Relationtype.create(data.changelog_id, relation_type, (error, relationtypeId) => {
+										if(error)
+										{
+											return next(error);
+										}
+										relation_type.id = relationtypeId;
+										data.relation_type = relation_type;
+
+										next(null, data);
+									});
+								});
+							} else 
+							{
+								//we don't need a relationtype for only coocurring entities
+								next(null, data);
+							} 
+						},
+						(data, next) => {
+							//Find or create relation
+							if(data.label)
+							{
+
+								datasource.insertOrUpdate(data.changelog_id, {
+									values: {
+										entity1_id: Math.min(data.entity1_id, data.entity2_id),
+										entity2_id: Math.max(data.entity1_id, data.entity2_id),
+										relationtype_id: data.relation_type.id,
+										is_deleted: 0,
+										user_generated: 0
+									},
+									conditions: {
+										entity1_id: Math.min(data.entity1_id, data.entity2_id),
+										entity2_id: Math.max(data.entity1_id, data.entity2_id)
+									}
+								}, (error, insertId) => {
+									if(error)
+									{
+										return next(error);
+									}
+									data.relation_id = insertId;
+									return next(null, data);
+								});
+							} else {
+								datasource.insertOrUpdate(data.changelog_id, {
+									values: {
+										entity1_id: Math.min(data.entity1_id, data.entity2_id),
+										entity2_id: Math.max(data.entity1_id, data.entity2_id),
+										is_deleted: 0,
+										user_generated: 0
+									},
+									conditions: {
+										entity1_id: Math.min(data.entity1_id, data.entity2_id),
+										entity2_id: Math.max(data.entity1_id, data.entity2_id)
+									}
+								}, (error, insertId) =>
+								{
+									if(error)
+									{
+										return next(error);
+									}
+									data.relation_id = insertId;
+									return next(null, data);
+								});
+							}
+						},
+						(data, next) => {
+							if(_.isUndefined(data.sent_id) || _.isNull(data.sent_id))
+							{
+								return next(null, data);
+							}
+
+							if(data.label)
+							{
+								RelationSentence.add(data.changelog_id, {
+									relation_id: data.relation_id,
+									sentence_id: data.sent_id,
+									relationtype_id: data.relation_type.id
+								}, (error) => {
+									if(error)
+									{
+										return next(error, data);
+									}
+									return next(null, data);
+
+								});
+							} else {
+								RelationSentence.add(data.changelog_id, {
+									relation_id: data.relation_id,
+									sentence_id: data.sent_id
+								}, (error) => {
+									if(error)
+									{
+										return next(error, data);
+									}
+
+									return next(null, data);
+								});
+							}
+
+						}
+					], (error, data) => {
+						if(error)
+						{
+							console.log('error inside waterfall');
+							return callback_3(error);
+						}
+
+						return callback_3(null);
+					});
+
+
+				}, callback_2);
+			}, callback_1);
+
+		}, (error) => {
+			if(error)
+			{
+				console.log('error after waterfall')
+				return callback(error);
+			}
+
+			return callback(null, memo);
+		});
+	}
+
+	this.add = add
 	
 	function createForEntity(memo, callback){
 		//We know all sentences containing the new entity => Lookup all other entities which are also contained in one of the sentences
