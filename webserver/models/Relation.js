@@ -13,7 +13,9 @@ module.exports = function(db){
 		, Entity = models.Entity || (new (require('./Entity'))(db, models))
 		, EntitySentence = models.EntitySentence || (new (require('./EntitySentence'))(db, models))
 		, RelationSentence = models.RelationSentence || (new (require('./RelationSentence'))(db, models))
+		, createLogger = require('../utils/logger')
 		;
+	const logger = createLogger('Relation')
 	
 	function getByEntities(/*collectionId, [options, ]callback*/){
 		var entities = arguments[0]
@@ -320,6 +322,10 @@ module.exports = function(db){
 		collection_id = memo.Collection.id;
 		changelog_id = memo.changelog_id;
 		const {sentences, entities, relations} = memo.data;
+		logger.info('Inserting parse results into database')
+		logger.info('Number of Sentences: ', sentences.length)
+		logger.info('Number of entities: ', Object.keys(entities).length)
+		logger.info('Number of relations: ', Object.keys(relations).length)		
 
 		async.eachOf(relations, (targets, source_entity, callback_1) => {
 			async.eachOf(targets, (relation_data, target_entity, callback_2) => {

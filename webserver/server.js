@@ -17,7 +17,7 @@ var express = require('express')
 	, port = 3055
 	, mysql = require('mysql')
 	, connection = mysql.createConnection({
-		host     : process.env.MYSQL_HOST || "mysql" /*'127.0.0.1'*/,
+		host     : process.env.MYSQL_HOST || "mysql",
 		port	 : process.env.MYSQL_PORT || 3306,
 		user     : process.env.MYSQL_USER || 'storyfinder',
 		password : process.env.MYSQL_PASSWORD || 'storyfinder',

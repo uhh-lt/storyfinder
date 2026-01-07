@@ -1,6 +1,10 @@
 flask>=3.0.0
 spacy>=3.7.0
 langdetect>=1.0.9
-openai>=1.0.0
+openai>=1.2.0
 requests>=2.32.0
 dotenv>=0.0.5
+fastapi
+uvicorn
+gunicorn
+pydantic

@@ -30,17 +30,29 @@ services:
         aliases:
           - mysql
 
-  relation:
+
+  preprocess:
     build:
-      context: ../../nlpserver
-      dockerfile: Dockerfile.relation
-    healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:9001/health"]
-      interval: 20s
-      timeout: 10s
-      retries: 3
-    expose:
-      - "9001"
+      context: ../../nlpserver/Preprocess
+      dockerfile: Dockerfile.preprocess
+    ports:
+      - "9000:9000"
+    networks: [sf-net]
+
+  ner:
+    build:
+      context: ../../nlpserver/NER
+      dockerfile: Dockerfile.ner
+    ports:
+    - "9001:9001"
+    networks: [sf-net]
+
+  relations:
+    build:
+      context: ../../nlpserver/Relations
+      dockerfile: Dockerfile.relations
+    ports:
+      - "9002:9002"
     networks: [sf-net]
 
 
@@ -49,12 +61,12 @@ services:
       context: ../../nlpserver
       dockerfile: Dockerfile.summary
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:9002/health"]
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:9003/health"]
       interval: 20s
       timeout: 10s
       retries: 3
     expose: 
-      - "9002"
+      - "9003"
     restart: unless-stopped
     networks: 
       - sf-net
@@ -65,64 +77,37 @@ services:
       context: ../../nlpserver
       dockerfile: Dockerfile.chat
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:9003/health"]
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:9004/health"]
       interval: 20s
       timeout: 10s
       retries: 3
     expose:
-      - "9003"
+      - "9004"
     restart: unless-stopped
     networks: 
       - sf-net
 
 
-  nlp-root:
-    build:
-      context: ../../nlpserver
-      dockerfile: Dockerfile.root
-    environment:
-      - REL_URL=http://relation:9001/
-      - SUM_URL=http://summary:9002/
-      - CHAT_URL=http://chat:9003/
-    depends_on:
-      - relation
-      - summary
-      - chat
-    ports:
-      - "9000:9000"
-    healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:9000/health"]
-      interval: 20s
-      timeout: 10s
-      retries: 3
-    restart: unless-stopped
-    networks: 
-      - sf-net
-
-
-  webserver:
-    build:
-      context: ..           
-      dockerfile: Dockerfile  
-    depends_on:
-      nlp-root:
-        condition: service_healthy 
-      mysqlserver:
-        condition: service_healthy
-  
-    ports:
-      - "3055:3055"          
-    environment:
-      - NODE_ENV=production
-      - COOKIE_SECRET=1337
-      - MYSQL_HOST=mysql      
-      - MYSQL_PORT=3306
-      - MYSQL_USER=storyfinder
-      - MYSQL_PASSWORD=storyfinder
-      - MYSQL_DATABASE=storyfinder
-      - CORENLP_HOST=http://nlp-root:9000
-      - NER=corenlp
-      - NO_KEYWORDS=True
-    restart: unless-stopped
-    networks:
-      - sf-net
+#webserver:
+#  build:
+#    context: ..#   
+#    dockerfile: Dockerfile  
+#  depends_on:      
+#    mysqlserver:
+#      condition: service_healthy
+#
+#  ports:
+#    - "3055:3055"#  
+#  environment:
+#    - NODE_ENV=production
+#    - COOKIE_SECRET=1337
+#    - MYSQL_HOST=mysql      
+#    - MYSQL_PORT=3306
+#    - MYSQL_USER=storyfinder
+#    - MYSQL_PASSWORD=storyfinder
+#    - MYSQL_DATABASE=storyfinder
+#    - NER=corenlp
+#    - NO_KEYWORDS=True
+#  restart: unless-stopped
+#  networks:
+#    - sf-net

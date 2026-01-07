@@ -1,0 +1,5 @@
+spacy>=3.7.0
+fastapi
+uvicorn
+gunicorn
+pydantic

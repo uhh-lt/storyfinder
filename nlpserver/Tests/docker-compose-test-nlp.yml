@@ -1,0 +1,27 @@
+networks:
+  sf-net:
+
+services:
+  preprocess:
+    build:
+      context: ../Preprocess
+      dockerfile: Dockerfile.preprocess
+    ports:
+      - "9000:9000"
+    networks: [sf-net]
+
+  ner:
+    build:
+      context: ../NER
+      dockerfile: Dockerfile.ner
+    ports:
+    - "9001:9001"
+    networks: [sf-net]
+
+  relations:
+    build:
+      context: ../Relations
+      dockerfile: Dockerfile.relations
+    ports:
+      - "9002:9002"
+    networks: [sf-net]

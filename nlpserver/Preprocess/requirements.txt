@@ -1,0 +1,5 @@
+langdetect>=1.0.9
+fastapi
+uvicorn
+gunicorn
+pydantic

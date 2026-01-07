@@ -4,5 +4,5 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt 
 COPY . /app
-EXPOSE 9003
+EXPOSE 9004
 CMD ["python", "server_chat.py"]

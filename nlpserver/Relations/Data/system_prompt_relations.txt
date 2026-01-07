@@ -147,9 +147,14 @@ The expected result of the above example is
 }
 Explanation:
 Sentence 4 and sentence 7 contain an empty result because there is no direct relationship between the entities.
-All other entities are in direct interaction with one another. Also note, that for each relation the entities are ordered by occurance in the sentence.
+All other entities are in direct interaction with one another. Also note, that for each relation the entities are ordered by position in the sentence.
 
 ###End of Objective###
+
+###Output Format###
+Respond with a JSON object only. Do not include explanations.  
+Do not include markdown.  
+Your output will be validated against a JSON schema.
 
 
 

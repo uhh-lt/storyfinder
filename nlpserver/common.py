@@ -4,8 +4,8 @@ from collections import OrderedDict
 import spacy
 
 from openai import OpenAI
-from config import (
-    API_KEY, BASE_URL, MODEL_REL, TEMPERATURE, USER_FILE, SYSTEM_FILE, ERROR_LOG_PATH,
+from base_config import (
+    API_KEY, BASE_URL, ERROR_LOG_PATH,
     ROOT, MODEL_SUMMARY, TEMPERATURE_SUMMARY, USER_FILE_SUMMARY,SYSTEM_FILE_SUMMARY,
     MODEL_CHAT, TEMPERATURE_CHAT, USER_FILE_CHAT, SYSTEM_FILE_CHAT
 )
@@ -105,7 +105,7 @@ def map_ner_tag(tag: str):
     return 'ORG'
 
 
-def _normalize_entity_text2(text: str) -> str:
+def normalize_entity(text: str) -> str:
     if not text:
         return ''
     t = text.strip()
@@ -147,22 +147,7 @@ def dump_faulty_json(json_like_object):
     with open(os.path.join(ERROR_LOG_PATH, f'out{len(files)}.txt'), 'w') as f:
         f.write(json_like_object)
 
-def build_prompt(sys_file, us_file, sents: str | None = None):
-    system_prompt = open(sys_file, 'r', encoding='utf-8').read().strip()
-    user_prompt = open(us_file, 'r', encoding='utf-8').read().strip()
 
-    if sents is not None:
-        # Falls in der User-Prompt-Datei ein Platzhalter steht, ersetzen
-        if "[TEXT]" in user_prompt:
-            user_prompt = user_prompt.replace("[TEXT]", sents)
-        else:
-            # sonst Text einfach anhängen
-            user_prompt = f"{user_prompt}\n\n{sents}"
-
-    return [
-        {'role': 'system', 'content': system_prompt},
-        {'role': 'user', 'content': user_prompt}
-    ]
 
 def build_chat_prompt(system_file: str, user_file: str, question: str, context: str):
     """
@@ -246,19 +231,21 @@ def build_messages_with_files(system_file: str, user_file: str, history_messages
     return msgs
 
 
-#prompt for relation extraction via openai 
-def get_relation(sent: str):
-    prompt = build_prompt(SYSTEM_FILE, USER_FILE, sent)
-    response = client.chat.completions.create(
-        model=MODEL_REL,
-        messages=prompt,
-        temperature=TEMPERATURE,
-        seed=42
-    )
+def build_prompt(sys_file, us_file, sents: str | None = None):
+    system_prompt = open(sys_file, 'r', encoding='utf-8').read().strip()
+    user_prompt = open(us_file, 'r', encoding='utf-8').read().strip()
 
-    relations = response.choices[0].message.content
-    
-    return relations
+    if sents is not None:
+        if "[TEXT]" in user_prompt:
+            user_prompt = user_prompt.replace("[TEXT]", sents)
+        else:
+            user_prompt = f"{user_prompt}\n\n{sents}"
+
+    return [
+        {'role': 'system', 'content': system_prompt},
+        {'role': 'user', 'content': user_prompt}
+    ]
+
 
 def extract_relations(relations: str, entities: OrderedDict):
     output = OrderedDict()

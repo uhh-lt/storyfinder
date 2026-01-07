@@ -21,7 +21,7 @@ docker-compose: Live Version, uses CHROME_ID = hnndfanecdfnonofigcceaahflgfpgbd
 ```
 $ cd storyfinder/webserver/docker
 $ docker-compose -f docker-compose-dev.yml -p storyfinder up -d
-$ docker-compose -f docker.compose-dev-microservices.yml up -d for the relation extraction
+$ docker-compose -f docker-compose-dev-microservices.yml up -d for the relation extraction
 ```
 
 ### Attach docker

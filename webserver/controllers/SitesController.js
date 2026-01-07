@@ -951,7 +951,7 @@ console.log(d);
 		}
 
 		function _mAddSite(memo, next){
-			logger.info('Adding Site ', memo.data.sentences)
+			logger.info('Adding Site')
 
 			Site.add(memo, (err, result) => {
 				if(err)return setImmediate(() => next(err));
